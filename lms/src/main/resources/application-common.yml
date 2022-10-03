@@ -6,6 +6,6 @@ server:
   servlet:
     context-path: /lms/api/v1
 
-logging:
-  level:
-    root: debug
+#logging:
+#  level:
+#    root: debug

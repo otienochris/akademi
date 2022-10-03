@@ -1,4 +1,16 @@
 spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/lms
+    username: Akademy
+    password: coo2017*
+    jpa:
+      hibernate.ddl-auto: create
+      generate-ddl: true
+      show-sql: true
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+
