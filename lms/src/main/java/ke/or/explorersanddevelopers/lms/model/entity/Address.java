@@ -6,43 +6,43 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Date;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
- * @author: oduorfrancis134@gmail.com;
- * created_on: Wednesday 28/09/2022
- **/
-@AllArgsConstructor
-@NoArgsConstructor
+ * @author christopherochiengotieno@gmail.com
+ * @version 1.0.0
+ * @since Tuesday, 04/10/2022
+ */
+
 @Getter
 @Setter
-@Builder
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 
 @Entity
-@Table(name = "TOPICS")
-public class Topic {
+@Table(name = "ADDRESSES")
+public class Address {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "TOPIC_ID", nullable = false)
-    private UUID topicId;
+    @GeneratedValue
+    @Column(name = "ADDRESS_ID")
+    private UUID addressId;
 
-    @Column(name = "TITLE", nullable = false)
-    private String title;
+    @Column(name = "STREET")
+    private String street;
 
-    @Column(name = "DESCRIPTION", nullable = false)
-    private String description;
+    @Column(name = "CITY", nullable = false)
+    private String city;
 
-    @Column(name = "LINK")
-    private String link;
+    @Column(name = "STATE", nullable = false)
+    private String state;
 
-    @Lob
-    @Column(name = "CONTENT")
-    private String content;
-
-    @OneToMany
-    @ToString.Exclude
-    private List<SubTopic> subTopics = new ArrayList<>();
+    @Column(name = "POSTAL_CODE")
+    private String postalCode;
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")
@@ -60,8 +60,8 @@ public class Topic {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Topic topic = (Topic) o;
-        return topicId != null && Objects.equals(topicId, topic.topicId);
+        Address address = (Address) o;
+        return addressId != null && Objects.equals(addressId, address.addressId);
     }
 
     @Override

@@ -1,48 +1,56 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
+import ke.or.explorersanddevelopers.lms.enums.InstitutionTypeEnum;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
- * @author: oduorfrancis134@gmail.com;
- * created_on: Wednesday 28/09/2022
- **/
-@AllArgsConstructor
-@NoArgsConstructor
+ * @author christopherochiengotieno@gmail.com
+ * @version 1.0.0
+ * @since Tuesday, 04/10/2022
+ */
 @Getter
 @Setter
-@Builder
 @ToString
-
+@Builder
 @Entity
-@Table(name = "TOPICS")
-public class Topic {
+@Table(name = "INSTITUTIONS")
+@NoArgsConstructor
+@AllArgsConstructor
+public class Institution {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "TOPIC_ID", nullable = false)
-    private UUID topicId;
+    @GeneratedValue
+    @Column(name = "INSTITUTION_ID", nullable = false)
+    private UUID institutionId;
 
     @Column(name = "TITLE", nullable = false)
     private String title;
 
-    @Column(name = "DESCRIPTION", nullable = false)
+    @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "LINK")
-    private String link;
+    @Column(name = "TYPE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private InstitutionTypeEnum type;
 
-    @Lob
-    @Column(name = "CONTENT")
-    private String content;
+    @OneToOne
+    private Address address;
+
+    @Column(name = "LOGO")
+    private byte[] logo;
 
     @OneToMany
     @ToString.Exclude
-    private List<SubTopic> subTopics = new ArrayList<>();
+    private List<Review> reviews;
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")
@@ -60,8 +68,8 @@ public class Topic {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Topic topic = (Topic) o;
-        return topicId != null && Objects.equals(topicId, topic.topicId);
+        Institution that = (Institution) o;
+        return institutionId != null && Objects.equals(institutionId, that.institutionId);
     }
 
     @Override
