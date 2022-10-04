@@ -8,10 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -53,7 +50,7 @@ public class Question {
 
     @OneToMany
     @ToString.Exclude
-    private List<Answer> answers;
+    private List<Answer> answers = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")

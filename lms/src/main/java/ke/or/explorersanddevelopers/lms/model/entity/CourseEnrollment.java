@@ -1,6 +1,6 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
-import ke.or.explorersanddevelopers.lms.enums.Status;
+import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,10 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -34,13 +31,29 @@ public class CourseEnrollment {
 
     @Column(name = "STATUS", nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private Status status;
+    private StatusEnum status;
 
     @Column(name = "AMOUNT")
     private BigDecimal amount;
 
     @Column(name = "COMPLETION_DATE")
     private Date completionDate;
+
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "STUDENT_ID", name = "STUDENT_ID", nullable = false)
+    private Student student;
+
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "COURSE_ID", name = "COURSE_ID", nullable = false)
+    private Course course;
+
+    @OneToMany
+    @ToString.Exclude
+    private List<TestEnrollment> testEnrollments = new ArrayList<>();
+
+    @OneToMany
+    @ToString.Exclude
+    private List<Topic> completedTopics = new ArrayList<>();
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -51,22 +64,6 @@ public class CourseEnrollment {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFICATION_DATE")
     private Date modificationDate;
-
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "STUDENT_ID", name = "STUDENT_ID", nullable = false)
-    private Student studentId;
-
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "COURSE_ID", name = "COURSE_ID", nullable = false)
-    private Course courseId;
-
-    @OneToMany
-    @ToString.Exclude
-    private List<TestEnrollment> testEnrollments;
-
-    @OneToMany
-    @ToString.Exclude
-    private List<Topic> completedTopics;
 
     @Version
     @Column(name = "VERSION")

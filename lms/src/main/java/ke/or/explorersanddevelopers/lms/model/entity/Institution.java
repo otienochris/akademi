@@ -7,10 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -50,7 +47,7 @@ public class Institution {
 
     @OneToMany
     @ToString.Exclude
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")

@@ -31,8 +31,10 @@ public class Instructor extends User {
 
     @Column(name = "EXPERTISE")
     private String expertise;
+
     @Column(name = "TITLE")
     private String title;
+
     @Column(name = "DESCRIPTION")
     private String description;
 

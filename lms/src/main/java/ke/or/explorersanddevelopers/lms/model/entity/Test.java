@@ -31,7 +31,7 @@ public class Test {
 
     @OneToMany
     @ToString.Exclude
-    private List<Topic> topic;
+    private List<Topic> topics = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TEST_TYPE", nullable = false)

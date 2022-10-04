@@ -1,6 +1,6 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
-import ke.or.explorersanddevelopers.lms.enums.Status;
+import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,7 +31,7 @@ public class TestEnrollment {
 
     @Column(name = "STATUS", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private StatusEnum status;
 
     @Column(name = "COMPLETION_DATE")
     private Date completionDate;
@@ -48,7 +48,7 @@ public class TestEnrollment {
 
     @OneToMany
     @ToString.Exclude
-    private List<Test> tests;
+    private List<Test> tests = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")

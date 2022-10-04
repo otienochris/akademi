@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
+import ke.or.explorersanddevelopers.lms.enums.CourseCategoryEnum;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
@@ -46,7 +47,8 @@ public class Course {
     private BigDecimal price;
 
     @Column(name = "CATEGORY", nullable = false)
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private CourseCategoryEnum category;
 
     @Column(name = "INTRODUCTION_VIDEO_LINK")
     private String introductionVideoLink;

@@ -6,5 +6,5 @@ package ke.or.explorersanddevelopers.lms.enums;
  * @since Tuesday, 04/10/2022
  */
 public enum CertificateStatusEnum {
-    GENERATED, DOWNLOADED
+    GENERATED, DOWNLOADED, PENDING
 }

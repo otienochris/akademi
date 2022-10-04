@@ -1,8 +1,6 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -10,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -22,10 +21,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
-//@Builder
 @ToString
-//@AllArgsConstructor
-//@NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 
 @MappedSuperclass
 public abstract class User {
@@ -50,11 +48,11 @@ public abstract class User {
 
     @OneToMany
     @ToString.Exclude
-    private List<Address> addresses;
+    private List<Address> addresses = new ArrayList<>();
 
     @OneToMany
     @ToString.Exclude
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
     @Column(name = "PASSWORD")
     private String password;
