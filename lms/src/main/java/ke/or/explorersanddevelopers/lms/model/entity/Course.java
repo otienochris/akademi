@@ -24,14 +24,17 @@ import java.util.*;
 @Entity
 @Table(name = "COURSES")
 public class Course {
-    @Column(name = "DESCRIPTION", nullable = false)
-    public String description;
+
     @Id
     @GeneratedValue
     @Column(name = "COURSE_ID", nullable = false)
     private UUID courseId;
+
     @Column(name = "TITLE", nullable = false)
     private String title;
+
+    @Column(name = "DESCRIPTION", nullable = false)
+    public String description;
 
     @Column(name = "THUMBNAIL_LINK", nullable = false)
     private String thumbnailLink;
@@ -62,10 +65,12 @@ public class Course {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CREATION_DATE", nullable = false)
     private Date creationDate;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "MODIFICATION_DATE")
     private Date modificationDate;
 
     @Version
