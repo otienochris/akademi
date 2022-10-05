@@ -8,7 +8,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.*;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -29,7 +32,7 @@ public class Course {
     @Id
     @GeneratedValue
     @Column(name = "COURSE_ID", nullable = false)
-    private UUID courseId;
+    private BigDecimal courseId;
 
     @Column(name = "TITLE", nullable = false)
     private String title;
@@ -66,12 +69,10 @@ public class Course {
     private List<Topic> topics = new ArrayList<>();
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATION_DATE", nullable = false)
     private Date creationDate;
 
     @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFICATION_DATE")
     private Date modificationDate;
 

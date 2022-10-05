@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.sql.Date;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -30,7 +30,7 @@ public class SubTopicDto implements Serializable {
     private static final long serialVersionUID = -6899713947264547824L;
     @Null
     @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Subtopic record id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-    private UUID subTopicId;
+    private BigDecimal subTopicId;
 
     @NotNull
     @ApiModelProperty(example = "The first subtopic.", notes = "Subtopic title.")

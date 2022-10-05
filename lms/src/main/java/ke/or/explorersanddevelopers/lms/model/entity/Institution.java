@@ -7,7 +7,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.*;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -27,7 +31,7 @@ public class Institution {
     @Id
     @GeneratedValue
     @Column(name = "INSTITUTION_ID", nullable = false)
-    private UUID institutionId;
+    private BigDecimal institutionId;
 
     @Column(name = "TITLE", nullable = false)
     private String title;

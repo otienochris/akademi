@@ -15,10 +15,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -36,7 +35,7 @@ public class TestEnrollmentDto implements Serializable {
     private static final long serialVersionUID = -5163497779278050798L;
     @Null
     @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Test Enrollment Record Id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-    private UUID testEnrollmentId;
+    private BigDecimal testEnrollmentId;
 
     @NotNull
     @ApiModelProperty(example = "COMPLETED", notes = "Test enrollment status.")

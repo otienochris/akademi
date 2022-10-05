@@ -8,7 +8,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.*;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -27,7 +30,7 @@ public class TestEnrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "TEST_ENROLLMENT_ID", nullable = false)
-    private UUID testEnrollmentId;
+    private BigDecimal testEnrollmentId;
 
     @Column(name = "STATUS", nullable = false)
     @Enumerated(EnumType.STRING)

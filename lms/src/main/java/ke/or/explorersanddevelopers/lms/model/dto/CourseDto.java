@@ -15,10 +15,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author oduorfrancis134@gmail.com;
@@ -38,7 +37,7 @@ public class CourseDto implements Serializable {
     public String description;
     @Null
     @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Course record id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-    private UUID courseId;
+    private BigDecimal courseId;
     @NotNull
     @ApiModelProperty(example = "Introduction to programming.", notes = "A course's title.")
     private String title;

@@ -8,7 +8,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.*;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -27,7 +30,7 @@ public class CourseEnrollment {
     @Id
     @GeneratedValue
     @Column(name = "COURSE_ENROLLMENT_ID", nullable = false)
-    private UUID courseEnrollmentId;
+    private BigDecimal courseEnrollmentId;
 
     @Column(name = "STATUS", nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -56,12 +59,10 @@ public class CourseEnrollment {
     private List<Topic> completedTopics = new ArrayList<>();
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATION_DATE", nullable = false)
     private Date creationDate;
 
     @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFICATION_DATE")
     private Date modificationDate;
 

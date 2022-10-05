@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.sql.Date;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -32,7 +32,7 @@ public class CertificateDto implements Serializable {
     private static final long serialVersionUID = -6684621063380419878L;
     @Null
     @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Certificate Record id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-    private UUID certificateId;
+    private BigDecimal certificateId;
 
     @NotNull
     @ApiModelProperty(example = "COMPLETION", notes = "Certificate type.")

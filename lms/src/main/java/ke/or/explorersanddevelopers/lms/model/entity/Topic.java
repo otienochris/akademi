@@ -6,7 +6,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.*;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -25,7 +29,7 @@ public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "TOPIC_ID", nullable = false)
-    private UUID topicId;
+    private BigDecimal topicId;
 
     @Column(name = "TITLE", nullable = false)
     private String title;

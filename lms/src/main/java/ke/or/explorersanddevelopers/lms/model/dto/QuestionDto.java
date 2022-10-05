@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -35,7 +35,7 @@ public class QuestionDto implements Serializable {
     private static final long serialVersionUID = 3487725639797483723L;
     @Null
     @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Question record id", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-    private UUID questionId;
+    private BigDecimal questionId;
 
     @NotNull
     @ApiModelProperty(example = "Are you okay?", notes = "The actual question")

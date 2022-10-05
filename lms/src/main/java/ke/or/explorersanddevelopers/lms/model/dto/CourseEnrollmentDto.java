@@ -15,10 +15,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -36,7 +35,7 @@ public class CourseEnrollmentDto implements Serializable {
     private static final long serialVersionUID = -926809233618989828L;
     @Null
     @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Course Enrollment record id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-    private UUID courseEnrollmentId;
+    private BigDecimal courseEnrollmentId;
 
     @NotNull
     @ApiModelProperty(example = "COMPLETE", notes = "Course Enrollment status.")

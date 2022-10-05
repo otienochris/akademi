@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -36,7 +36,7 @@ public class TestDto implements Serializable {
     private static final long serialVersionUID = -878009969108979322L;
     @Null
     @ApiModelProperty(example = "", notes = "", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-    private UUID testId;
+    private BigDecimal testId;
 
     @ApiModelProperty(notes = "topics")
     private List<Topic> topics = new ArrayList<>();
