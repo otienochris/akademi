@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.service.impl;
 
+import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
 import ke.or.explorersanddevelopers.lms.mappers.StudentMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Student;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -123,6 +125,13 @@ class StudentServiceImplTest {
         StudentDto actualResponse = studentService.getStudentByCode(BigDecimal.ONE);
 
         assertThat(actualResponse).isEqualTo(expectedResponse);
+    }
+
+    @Test
+    void getStudentByCode_throwsException() {
+        given(studentRepository.getByStudentId(any())).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> studentService.getStudentByCode(BigDecimal.ONE)).isInstanceOf(NoSuchRecordException.class);
     }
 
     @Test

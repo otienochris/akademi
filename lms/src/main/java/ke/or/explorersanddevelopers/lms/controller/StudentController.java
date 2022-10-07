@@ -39,10 +39,10 @@ public class StudentController {
 
     private final StudentService studentService;
 
-
     @PostMapping
     @ApiResponse(code = 201, message = "Student Created and Saved Successfully.")
     public ResponseEntity<StudentDto> saveNewStudent(@RequestBody @Validated StudentDto studentDto){
+        System.out.println(studentDto);
         StudentDto savedStudentDto = studentService.saveNewStudent(studentDto);
         return ResponseEntity.created(linkTo(methodOn(StudentController.class).getStudentById(savedStudentDto.getStudentId())).toUri()).body(addHateoasLinks(savedStudentDto));
     }

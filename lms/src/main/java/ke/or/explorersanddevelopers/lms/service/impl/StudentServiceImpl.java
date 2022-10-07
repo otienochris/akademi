@@ -43,7 +43,13 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDto getStudentByCode(BigDecimal studentId) {
-        Student student = studentRepository.getByStudentId(studentId).orElseThrow(() -> new NoSuchRecordException("Student of id " + studentId + " could not be found."));
+        log.info("Retrieving a student of id: " + studentId);
+        Student student = studentRepository.getByStudentId(studentId).orElseThrow(() -> {
+            String message = "Student of id " + studentId + " could not be found.";
+            log.error(message);
+            throw new NoSuchRecordException(message);
+        });
+        log.info("Successfully retrieved a student of id: " + studentId);
         return studentMapper.toDto(student);
     }
 
