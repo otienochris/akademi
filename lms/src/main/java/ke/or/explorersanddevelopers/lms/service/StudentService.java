@@ -63,7 +63,7 @@ public interface StudentService {
      * @param testId    - the id of the test the student is enrolling to.
      * @return the test enrollment details
      */
-    TestEnrollmentDto enrollStudentToTest(BigDecimal studentId, BigDecimal testId);
+    TestEnrollmentDto enrollStudentToTest(BigDecimal studentId, BigDecimal courseId, BigDecimal testId);
 
     /**
      * This method returns a list of students

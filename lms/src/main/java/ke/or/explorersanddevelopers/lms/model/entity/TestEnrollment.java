@@ -49,9 +49,8 @@ public class TestEnrollment {
     @Column(name = "SCORE", nullable = false)
     private Double score;
 
-    @OneToMany
-    @ToString.Exclude
-    private List<Test> tests = new ArrayList<>();
+    @OneToOne
+    private Test test;
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")

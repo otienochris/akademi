@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
 import ke.or.explorersanddevelopers.lms.model.entity.Question;
-import ke.or.explorersanddevelopers.lms.model.entity.Test;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,7 +54,7 @@ public class TestEnrollmentDto implements Serializable {
     private List<Question> completedQuestions = new ArrayList<>();
 
     @ApiModelProperty(notes = "A list of all chosen tests")
-    private List<Test> tests = new ArrayList<>();
+    private TestDto test;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

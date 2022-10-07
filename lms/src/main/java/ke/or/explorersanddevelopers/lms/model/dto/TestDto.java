@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import ke.or.explorersanddevelopers.lms.enums.TestTypeEnum;
 import ke.or.explorersanddevelopers.lms.enums.YesOrNoEnum;
-import ke.or.explorersanddevelopers.lms.model.entity.Question;
-import ke.or.explorersanddevelopers.lms.model.entity.Topic;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,7 +37,7 @@ public class TestDto implements Serializable {
     private BigDecimal testId;
 
     @ApiModelProperty(notes = "topics")
-    private List<Topic> topics = new ArrayList<>();
+    private List<TopicDto> topics = new ArrayList<>();
 
     @NotNull
     @ApiModelProperty(example = "EXAM", notes = "The type of test.")
@@ -62,7 +60,7 @@ public class TestDto implements Serializable {
     private Date endDateAndTime;
 
     @ApiModelProperty(notes = "Questions within the test.")
-    private List<Question> questions = new ArrayList<>();
+    private List<QuestionDto> questions = new ArrayList<>();
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

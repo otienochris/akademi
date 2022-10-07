@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
-import ke.or.explorersanddevelopers.lms.model.entity.Course;
-import ke.or.explorersanddevelopers.lms.model.entity.Student;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,10 +47,10 @@ public class CourseEnrollmentDto implements Serializable {
     private Date completionDate;
 
     @ApiModelProperty(notes = "The student enrolled for the course.")
-    private Student student;
+    private StudentDto student;
 
     @ApiModelProperty(notes = "The course the student enrolled in.")
-    private Course course;
+    private CourseDto course;
 
     @ApiModelProperty(notes = "A list of test enrollment details chosen by the student.")
     private List<TestEnrollmentDto> testEnrollments = new ArrayList<>();

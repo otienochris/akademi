@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import ke.or.explorersanddevelopers.lms.enums.AnswerTypeEnum;
 import ke.or.explorersanddevelopers.lms.enums.DifficultyLevelEnum;
-import ke.or.explorersanddevelopers.lms.model.entity.Answer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -59,7 +58,7 @@ public class QuestionDto implements Serializable {
     private AnswerTypeEnum answerType;
 
     @ApiModelProperty(notes = "A list of answers")
-    private List<Answer> answers = new ArrayList<>();
+    private List<AnswerDto> answers = new ArrayList<>();
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
