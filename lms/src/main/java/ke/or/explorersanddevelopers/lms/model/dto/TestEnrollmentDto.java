@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
-import ke.or.explorersanddevelopers.lms.model.entity.Question;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,7 +50,7 @@ public class TestEnrollmentDto implements Serializable {
     private Double score;
 
     @ApiModelProperty(notes = "A list of completed topics")
-    private List<Question> completedQuestions = new ArrayList<>();
+    private List<QuestionDto> completedQuestions = new ArrayList<>();
 
     @ApiModelProperty(notes = "A list of all chosen tests")
     private TestDto test;

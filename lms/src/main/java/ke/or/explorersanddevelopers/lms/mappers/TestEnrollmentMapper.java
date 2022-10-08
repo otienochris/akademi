@@ -26,7 +26,8 @@ public interface TestEnrollmentMapper {
      * @return the mapped test enrollment dto
      */
     @Mappings(value = {
-            @Mapping(target = "test", ignore = true)
+            @Mapping(target = "test", ignore = true),
+            @Mapping(target = "completedQuestions", ignore = true)
     })
     TestEnrollmentDto toDto(TestEnrollment testEnrollment);
 }

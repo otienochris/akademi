@@ -145,17 +145,17 @@ class StudentServiceImplTest {
                 .version(version)
                 .build();
 
-        List<Topic> completedTopicsEntities = List.of();
-        List<TestEnrollment> testEnrollmentsEntity = List.of();
         BigDecimal courseEnrollmentId = BigDecimal.valueOf(1);
+        Topic topicDto = Topic.builder().topicId(BigDecimal.ONE).build();
+        TestEnrollment testEnrollmentEntity = TestEnrollment.builder().testEnrollmentId(BigDecimal.ONE).build();
         courseEnrollmentEntity = CourseEnrollment.builder()
                 .courseEnrollmentId(courseEnrollmentId)
                 .student(studentEntity)
                 .course(courseEntity)
                 .amount(BigDecimal.valueOf(100))
-                .completedTopics(completedTopicsEntities)
+                .completedTopics(List.of(topicDto))
                 .completionDate(null)
-                .testEnrollments(testEnrollmentsEntity)
+                .testEnrollments(List.of(testEnrollmentEntity))
                 .status(status)
                 .creationDate(creationDate)
                 .modificationDate(modificationDate)
@@ -165,15 +165,15 @@ class StudentServiceImplTest {
         // test enrollment
         BigDecimal testEnrollmentId = BigDecimal.valueOf(2);
         BigDecimal amount = BigDecimal.valueOf(100);
-        List<Question> completedQuestions = List.of();
         BigDecimal testId = BigDecimal.valueOf(11);
         TestDto test = TestDto.builder().testId(testId).build();
         Double score = 0.0;
 
+        QuestionDto questionEntity = QuestionDto.builder().questionId(BigDecimal.ONE).build();
         testEnrollmentResponseDto = TestEnrollmentDto.builder()
                 .testEnrollmentId(testEnrollmentId)
                 .amount(amount)
-                .completedQuestions(completedQuestions)
+                .completedQuestions(List.of(questionEntity))
                 .completionDate(null)
                 .test(test)
                 .status(StatusEnum.PENDING)

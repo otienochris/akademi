@@ -1,10 +1,14 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
 import ke.or.explorersanddevelopers.lms.model.dto.TestEnrollmentDto;
+import ke.or.explorersanddevelopers.lms.model.entity.Question;
 import ke.or.explorersanddevelopers.lms.model.entity.Test;
 import ke.or.explorersanddevelopers.lms.model.entity.TestEnrollment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -21,12 +25,22 @@ public class TestEnrollmentMapperDecorator implements TestEnrollmentMapper {
     @Qualifier("delegate")
     private TestMapper testMapper;
 
+    @Autowired
+    @Qualifier("delegate")
+    private QuestionMapper questionMapper;
+
     @Override
     public TestEnrollmentDto toDto(TestEnrollment testEnrollment) {
         TestEnrollmentDto mappedTestEnrollmentDto = testEnrollmentMapper.toDto(testEnrollment);
         Test test = testEnrollment.getTest();
         if (test != null)
             mappedTestEnrollmentDto.setTest(testMapper.toDto(test));
+
+        mappedTestEnrollmentDto.setCompletedQuestions(new ArrayList<>());
+        List<Question> completedQuestions = testEnrollment.getCompletedQuestions();
+        if (completedQuestions != null && completedQuestions.size() > 0) {
+            completedQuestions.forEach(question -> mappedTestEnrollmentDto.getCompletedQuestions().add(questionMapper.toDto(question)));
+        }
 
         return mappedTestEnrollmentDto;
     }
