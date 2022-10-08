@@ -32,7 +32,7 @@ public class ReviewDto implements Serializable {
     @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "A review record id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
     private BigDecimal reviewId;
 
-    @Null
+    @NotNull
     @ApiModelProperty(example = "COURSE", notes = "The type of review.")
     private ReviewTypeEnum type;
 

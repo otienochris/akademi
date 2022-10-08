@@ -2,6 +2,9 @@ package ke.or.explorersanddevelopers.lms.controller;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
+import ke.or.explorersanddevelopers.lms.model.dto.CertificateDto;
+import ke.or.explorersanddevelopers.lms.model.dto.ReviewDto;
 import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
 import ke.or.explorersanddevelopers.lms.service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +71,24 @@ public class StudentController {
     @ApiResponse(code = 200, message = "The student was deleted successfully")
     public ResponseEntity<Boolean> deleteStudentById(@PathVariable BigDecimal studentId) {
         return ResponseEntity.ok(studentService.deleteStudentByCode(studentId));
+    }
+
+    @PostMapping("/{studentId}/add-review/{targetId}")
+    @ApiResponse(code = 200, message = "The student submitted the review successfully")
+    public ResponseEntity<Boolean> submitReview(@PathVariable BigDecimal studentId, @PathVariable BigDecimal targetId, @RequestBody @Validated ReviewDto reviewDto) {
+        return ResponseEntity.ok(studentService.submitReview(studentId, targetId, reviewDto));
+    }
+
+    @PostMapping("/{studentId}/add-address")
+    @ApiResponse(code = 200, message = "The student add an address successfully")
+    public ResponseEntity<AddressDto> addAddress(@PathVariable BigDecimal studentId, @RequestBody @Validated AddressDto addressDto) {
+        return ResponseEntity.ok(studentService.addAddress(studentId, addressDto));
+    }
+
+    @GetMapping("/{studentId}/certificates")
+    @ApiResponse(code = 200, message = "The certificates were retrieved successfully")
+    public ResponseEntity<List<CertificateDto>> retrieveCertificates(@PathVariable BigDecimal studentId) {
+        return ResponseEntity.ok(studentService.retrieveCertificates(studentId));
     }
 
     private StudentDto addHateoasLinks(StudentDto savedStudentDto) {

@@ -75,9 +75,10 @@ public interface StudentService {
      * This method submits a review
      *
      * @param studentId - the id of the student submitting the review
+     * @param targetID  - the id of the object being reviewed. Either a course or an instructor
      * @return true if review was submitted successfully
      */
-    Boolean submitReview(BigDecimal studentId, ReviewDto reviewDto);
+    Boolean submitReview(BigDecimal studentId, BigDecimal targetID, ReviewDto reviewDto);
 
     /**
      * This method adds an address to student

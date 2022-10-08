@@ -41,6 +41,7 @@ public class StudentServiceImpl implements StudentService {
     private final AddressMapper addressMapper;
     private final AddressRepository addressRepository;
     private final CertificateMapper certificateMapper;
+    private final InstructorRepository instructorRepository;
 
     @Override
     public StudentDto saveNewStudent(StudentDto studentDto) {
@@ -167,10 +168,55 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Boolean submitReview(BigDecimal studentId, ReviewDto reviewDto) {
+    public Boolean submitReview(BigDecimal studentId, BigDecimal targetID, ReviewDto reviewDto) {
         Student studentByCodeFromDb = getStudentByCodeFromDb(studentId);
 
-        Review savedReview = reviewRepository.save(reviewMapper.toEntity(reviewDto));
+        Review mappedReview = reviewMapper.toEntity(reviewDto);
+        Review savedReview = reviewRepository.save(mappedReview);
+
+        switch (reviewDto.getType()) {
+            case USER:
+                instructorRepository.getByInstructorId(targetID)
+                        .ifPresentOrElse(
+                                (instructor) -> {
+                                    List<Review> reviews = instructor.getReviews();
+                                    if (reviews == null) {
+                                        instructor.setReviews(new ArrayList<>());
+                                        instructor.getReviews().add(savedReview);
+                                    } else {
+                                        instructor.getReviews().add(savedReview);
+                                    }
+
+                                    instructorRepository.save(instructor); // update changes
+                                },
+                                () -> {
+                                    String message = "We could not find an instructor with the provided id [" + targetID + "]";
+                                    log.error(message);
+                                    throw new NoSuchRecordException(message);
+                                });
+
+                break;
+            case COURSE:
+                Course course = courseRepository.getByCourseId(targetID).orElseThrow(() -> {
+                    String message = "We could not find a course with id: " + targetID;
+                    log.error(message);
+                    throw new NoSuchRecordException(message);
+                });
+                List<Review> reviews = course.getReviews();
+                if (reviews == null) {
+                    course.setReviews(new ArrayList<>());
+                    course.getReviews().add(savedReview);
+                } else {
+                    course.getReviews().add(savedReview);
+                }
+                courseRepository.save(course); // update changes
+                break;
+            case APPLICATION:
+                //TODO
+                break;
+            default:
+        }
+
         List<Review> reviews = studentByCodeFromDb.getReviews();
 
         if (reviews != null) {
@@ -206,7 +252,6 @@ public class StudentServiceImpl implements StudentService {
 
         // save changes
         studentRepository.save(student);
-
         return addressMapper.toDto(savedAddress);
     }
 
