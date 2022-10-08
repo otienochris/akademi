@@ -1,8 +1,6 @@
 package ke.or.explorersanddevelopers.lms.service;
 
-import ke.or.explorersanddevelopers.lms.model.dto.CourseEnrollmentDto;
-import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
-import ke.or.explorersanddevelopers.lms.model.dto.TestEnrollmentDto;
+import ke.or.explorersanddevelopers.lms.model.dto.*;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
@@ -29,7 +27,7 @@ public interface StudentService {
      * @param studentDto - the student object with the current details.
      * @return the updated student record
      */
-    StudentDto updateStudent(StudentDto studentDto);
+    StudentDto updateStudent(BigDecimal studentId, StudentDto studentDto);
 
     /**
      * This method retrieves a student by student record id.
@@ -45,7 +43,7 @@ public interface StudentService {
      * @param studentId - the id of the student to be removed
      * @return true if the operation was successful
      */
-    Boolean removeStudentByCode(BigDecimal studentId);
+    Boolean deleteStudentByCode(BigDecimal studentId);
 
     /**
      * This method enrolls a student to a course
@@ -72,4 +70,30 @@ public interface StudentService {
      * @return a list of students
      */
     List<StudentDto> getListOfStudents(Pageable pageable);
+
+    /**
+     * This method submits a review
+     *
+     * @param studentId - the id of the student submitting the review
+     * @return true if review was submitted successfully
+     */
+    Boolean submitReview(BigDecimal studentId, ReviewDto reviewDto);
+
+    /**
+     * This method adds an address to student
+     *
+     * @param studentId  - The id of the student receiving the address
+     * @param addressDto - the address to be added
+     * @return the added address
+     */
+    AddressDto addAddress(BigDecimal studentId, AddressDto addressDto);
+
+    /**
+     * This method retrieves a list of certificates owned by a student
+     *
+     * @param studentId - a student record Id
+     * @return a list of certificates owned by a student
+     */
+    List<CertificateDto> retrieveCertificates(BigDecimal studentId);
+
 }

@@ -25,6 +25,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "ANSWERS")
 public class Answer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ANSWER_ID", nullable = false)

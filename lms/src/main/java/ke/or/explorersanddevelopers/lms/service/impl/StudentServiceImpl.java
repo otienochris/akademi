@@ -3,17 +3,10 @@ package ke.or.explorersanddevelopers.lms.service.impl;
 import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
 import ke.or.explorersanddevelopers.lms.exception.DuplicateRecordException;
 import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
-import ke.or.explorersanddevelopers.lms.mappers.CourseEnrollmentMapper;
-import ke.or.explorersanddevelopers.lms.mappers.StudentMapper;
-import ke.or.explorersanddevelopers.lms.mappers.TestEnrollmentMapper;
-import ke.or.explorersanddevelopers.lms.model.dto.CourseEnrollmentDto;
-import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
-import ke.or.explorersanddevelopers.lms.model.dto.TestEnrollmentDto;
+import ke.or.explorersanddevelopers.lms.mappers.*;
+import ke.or.explorersanddevelopers.lms.model.dto.*;
 import ke.or.explorersanddevelopers.lms.model.entity.*;
-import ke.or.explorersanddevelopers.lms.repositories.CourseEnrollmentRepository;
-import ke.or.explorersanddevelopers.lms.repositories.CourseRepository;
-import ke.or.explorersanddevelopers.lms.repositories.StudentRepository;
-import ke.or.explorersanddevelopers.lms.repositories.TestRepository;
+import ke.or.explorersanddevelopers.lms.repositories.*;
 import ke.or.explorersanddevelopers.lms.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +36,11 @@ public class StudentServiceImpl implements StudentService {
     private final CourseEnrollmentMapper courseEnrollmentMapper;
     private final TestRepository testRepository;
     private final TestEnrollmentMapper testEnrollmentMapper;
+    private final ReviewRepository reviewRepository;
+    private final ReviewMapper reviewMapper;
+    private final AddressMapper addressMapper;
+    private final AddressRepository addressRepository;
+    private final CertificateMapper certificateMapper;
 
     @Override
     public StudentDto saveNewStudent(StudentDto studentDto) {
@@ -63,13 +61,23 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentDto updateStudent(StudentDto studentDto) {
+    public StudentDto updateStudent(BigDecimal studentId, StudentDto studentDto) {
+        log.info("Updating a student of id: " + studentId);
+        Student student = getStudentByCodeFromDb(studentId);
 
-        return null;
+        student.setEmail(studentDto.getEmail());
+        student.setCountryCode(studentDto.getCountryCode());
+        student.setFirstName(student.getFirstName());
+        student.setLastName(student.getLastName());
+
+        Student savedStudent = studentRepository.save(student);
+
+        log.info("Updated a student of id: " + studentId);
+        return studentMapper.toDto(savedStudent);
     }
 
     @Override
-    public Boolean removeStudentByCode(BigDecimal studentId) {
+    public Boolean deleteStudentByCode(BigDecimal studentId) {
         log.info("Deleting a student of student id: " + studentId);
         Student student = getStudentByCodeFromDb(studentId);
         studentRepository.delete(student);
@@ -155,6 +163,58 @@ public class StudentServiceImpl implements StudentService {
             log.warn("Retrieve an empty list of students");
         else
             log.info("Successfully retrieved a list of students");
+        return response;
+    }
+
+    @Override
+    public Boolean submitReview(BigDecimal studentId, ReviewDto reviewDto) {
+        Student studentByCodeFromDb = getStudentByCodeFromDb(studentId);
+
+        Review savedReview = reviewRepository.save(reviewMapper.toEntity(reviewDto));
+        List<Review> reviews = studentByCodeFromDb.getReviews();
+
+        if (reviews != null) {
+            studentByCodeFromDb.getReviews().add(savedReview);
+        } else {
+            studentByCodeFromDb.setReviews(new ArrayList<>());
+            studentByCodeFromDb.getReviews().add(savedReview);
+        }
+
+        studentRepository.save(studentByCodeFromDb);
+        return true;
+    }
+
+    @Override
+    public AddressDto addAddress(BigDecimal studentId, AddressDto addressDto) {
+
+        Student student = getStudentByCodeFromDb(studentId);
+
+        List<Address> addresses = student.getAddresses();
+        // map the address from dto to entity
+        Address mappedAddress = addressMapper.toEntity(addressDto);
+
+        // save the address first
+        Address savedAddress = addressRepository.save(mappedAddress);
+
+        // set eh address
+        if (addresses == null) {
+            student.setAddresses(new ArrayList<>());
+            student.getAddresses().add(savedAddress);
+        } else {
+            student.getAddresses().add(savedAddress);
+        }
+
+        // save changes
+        studentRepository.save(student);
+
+        return addressMapper.toDto(savedAddress);
+    }
+
+    @Override
+    public List<CertificateDto> retrieveCertificates(BigDecimal studentId) {
+        Student studentByCodeFromDb = getStudentByCodeFromDb(studentId);
+        List<CertificateDto> response = new ArrayList<>();
+        studentByCodeFromDb.getCertificates().forEach(certificate -> response.add(certificateMapper.toDto(certificate)));
         return response;
     }
 

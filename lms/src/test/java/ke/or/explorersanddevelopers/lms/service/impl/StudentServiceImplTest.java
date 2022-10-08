@@ -19,6 +19,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
@@ -198,6 +201,17 @@ class StudentServiceImplTest {
     @Test
     @Disabled
     void updateStudent() {
+        String email = "updated@gmail.moc";
+        newStudentDto.setEmail(email);
+        expectedResponse.setEmail(email);
+
+        given(studentRepository.getByStudentId(any())).willReturn(Optional.ofNullable(studentEntity));
+        given(studentRepository.save(any())).willReturn(studentEntity);
+        given(studentMapper.toDto(any())).willReturn(expectedResponse);
+
+        StudentDto actualResponse = studentService.updateStudent(BigDecimal.ONE, newStudentDto);
+
+        assertThat(actualResponse).isEqualTo(expectedResponse);
     }
 
     @Test
@@ -218,10 +232,10 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void removeStudentByCode() {
+    void deleteStudentByCode() {
         given(studentRepository.getByStudentId(any())).willReturn(Optional.ofNullable(studentEntity));
 
-        Boolean actualResponse = studentService.removeStudentByCode(BigDecimal.ONE);
+        Boolean actualResponse = studentService.deleteStudentByCode(BigDecimal.ONE);
 
         then(studentRepository).should(times(1)).delete(any());
         assertThat(actualResponse).isTrue();
@@ -261,5 +275,16 @@ class StudentServiceImplTest {
         TestEnrollmentDto actualResponse = studentService.enrollStudentToTest(BigDecimal.ONE, BigDecimal.TEN, BigDecimal.valueOf(2));
 
         assertThat(actualResponse).isEqualTo(testEnrollmentResponseDto);
+    }
+
+
+    @Test
+    void getListOfStudents() {
+        given(studentRepository.findAll(any(Pageable.class))).willReturn(new PageImpl<>(List.of(studentEntity)));
+        given(studentMapper.toDto(any())).willReturn(expectedResponse);
+
+        List<StudentDto> actualResponse = studentService.getListOfStudents(PageRequest.of(0, 10));
+
+        assertThat(actualResponse).isEqualTo(List.of(expectedResponse));
     }
 }

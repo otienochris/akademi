@@ -60,9 +60,9 @@ class StudentControllerTest {
                 .creationDate(null)
                 .modificationDate(null)
                 .countryCode(countryCode)
-                .addresses(new ArrayList<>())
-                .reviews(new ArrayList<>())
-                .certificates(new ArrayList<>())
+                .addresses(null)
+                .reviews(null)
+                .certificates(null)
                 .build();
 
         responseBody = StudentDto.builder()

@@ -3,10 +3,7 @@ package ke.or.explorersanddevelopers.lms.model.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Email;
@@ -24,7 +21,10 @@ import java.util.List;
  * @since Tuesday, 04/10/2022
  */
 
-@Data
+//@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,10 +33,12 @@ public class StudentDto extends RepresentationModel<StudentDto> implements Seria
 
     private static final long serialVersionUID = 2266645598292072269L;
 
+    @Null
     @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Student record id.")
     private BigDecimal studentId;
 
-    @ApiModelProperty(notes = "Students' certificates")
+    @Null
+    @ApiModelProperty(notes = "Students' certificates", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
     private List<CertificateDto> certificates = new ArrayList<>();
 
     @NotNull
@@ -55,13 +57,15 @@ public class StudentDto extends RepresentationModel<StudentDto> implements Seria
     @ApiModelProperty(example = "KE", notes = "User's country of origin.")
     private String countryCode;
 
-    @ApiModelProperty(example = "true", notes = "Is account diabled?")
+    @ApiModelProperty(example = "true", notes = "Is account disabled?")
     private boolean isAccountDisabled;
 
-    @ApiModelProperty(notes = "A list of users' addresses")
+    @Null
+    @ApiModelProperty(notes = "A list of users' addresses", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
     private List<AddressDto> addresses = new ArrayList<>();
 
-    @ApiModelProperty(notes = "A list of reviews")
+    @Null
+    @ApiModelProperty(notes = "A list of reviews", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
     private List<ReviewDto> reviews = new ArrayList<>();
 
     @Null

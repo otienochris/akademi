@@ -57,16 +57,22 @@ public class StudentController {
     @GetMapping
     @ApiResponse(code = 200, message = "Students' list Retrieved Successfully")
     public ResponseEntity<CollectionModel<StudentDto>> getListOfStudents(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                                                                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize){
+                                                                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
         List<StudentDto> response = new ArrayList<>();
         studentService.getListOfStudents(PageRequest.of(pageNo, pageSize)).forEach(studentDto -> response.add(addHateoasLinks(studentDto)));
         CollectionModel<StudentDto> collectionModel = CollectionModel.of(response);
         return ResponseEntity.ok(collectionModel);
     }
 
+    @DeleteMapping("/{studentId}")
+    @ApiResponse(code = 200, message = "The student was deleted successfully")
+    public ResponseEntity<Boolean> deleteStudentById(@PathVariable BigDecimal studentId) {
+        return ResponseEntity.ok(studentService.deleteStudentByCode(studentId));
+    }
+
     private StudentDto addHateoasLinks(StudentDto savedStudentDto) {
         savedStudentDto.add(linkTo(methodOn(StudentController.class).getStudentById(savedStudentDto.getStudentId())).withSelfRel());
-        savedStudentDto.add(linkTo(methodOn(StudentController.class).getListOfStudents(0,10)).withRel(IanaLinkRelations.COLLECTION));
+        savedStudentDto.add(linkTo(methodOn(StudentController.class).getListOfStudents(0, 10)).withRel(IanaLinkRelations.COLLECTION));
         return savedStudentDto;
     }
 }
