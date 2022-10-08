@@ -3,7 +3,6 @@ package ke.or.explorersanddevelopers.lms.model.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import ke.or.explorersanddevelopers.lms.model.entity.SubTopic;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,7 +48,7 @@ public class TopicDto implements Serializable {
     private String content;
 
     @ApiModelProperty(notes = "A list of subtopics belonging to this particular topic.")
-    private List<SubTopic> subTopics = new ArrayList<>();
+    private List<SubTopicDto> subTopics = new ArrayList<>();
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

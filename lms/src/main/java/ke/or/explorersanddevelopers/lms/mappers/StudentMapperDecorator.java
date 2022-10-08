@@ -26,7 +26,6 @@ public class StudentMapperDecorator implements StudentMapper {
     private StudentMapper studentMapper;
 
     @Autowired
-//    @Qualifier("delegate")
     private ReviewMapper reviewMapper;
 
     @Autowired
@@ -34,7 +33,6 @@ public class StudentMapperDecorator implements StudentMapper {
     private AddressMapper addressMapper;
 
     @Autowired
-//    @Qualifier("delegate")
     private CertificateMapper certificateMapper;
 
     @Override

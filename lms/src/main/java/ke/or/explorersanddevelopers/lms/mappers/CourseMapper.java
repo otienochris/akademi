@@ -22,7 +22,5 @@ public interface CourseMapper {
             @Mapping(target = "topics", ignore = true)
     })
     CourseDto toDto(Course course);
-    //convert Entity to Dto
-    //convert Dto to Entity
-//    Course toEntity(CourseDto courseDto);
+
 }
