@@ -5,12 +5,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import ke.or.explorersanddevelopers.lms.enums.RelativeRoleEnum;
 import ke.or.explorersanddevelopers.lms.enums.RelativeTypeEnum;
-import ke.or.explorersanddevelopers.lms.model.entity.Address;
-import ke.or.explorersanddevelopers.lms.model.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -18,7 +17,6 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,9 +31,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "Relative Dto", description = "Relative Dto details")
-public class RelativeDto implements Serializable {
+public class RelativeDto extends RepresentationModel<RelativeDto> implements Serializable {
 
     private static final long serialVersionUID = -9060854159005391677L;
+
     @Null
     @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Relative record id")
     private BigDecimal relativeId;
@@ -56,23 +55,32 @@ public class RelativeDto implements Serializable {
     @ApiModelProperty(example = "KE", notes = "User's country of origin.")
     private String countryCode;
 
+    @NotNull
     @ApiModelProperty(example = "PARENT", notes = "How the relative relates to the student.")
     private RelativeTypeEnum relativeType;
 
+    @NotNull
     @ApiModelProperty(example = "ACTIVE", notes = "What role does the relative play?")
     private RelativeRoleEnum role;
 
-    @ApiModelProperty(example = "true", notes = "Is account diabled?")
+    @ApiModelProperty(example = "true", notes = "Is account disabled?")
     private boolean isAccountDisabled;
 
+    @Null
     @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Email verification code.")
     private UUID emailVerificationCode;
 
-    @ApiModelProperty(notes = "A list of users' addresses")
-    private List<Address> addresses = new ArrayList<>();
+    @Null
+    @ApiModelProperty(notes = "A list of users' addresses", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    private List<AddressDto> addresses;
 
+    @Null
     @ApiModelProperty(notes = "A list of reviews")
-    private List<Review> reviews = new ArrayList<>();
+    private List<ReviewDto> reviews;
+
+    @Null
+    @ApiModelProperty(notes = "A list of students the relative is tracking")
+    private List<StudentDto> students;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

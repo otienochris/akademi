@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -96,5 +97,13 @@ public interface StudentService {
      * @return a list of certificates owned by a student
      */
     List<CertificateDto> retrieveCertificates(BigDecimal studentId);
+
+    /**
+     * This method generates a token parents can use to track the student's progress
+     *
+     * @param studentId - the student for which the token is to be assigned
+     * @return a UUID token
+     */
+    UUID generateToken(BigDecimal studentId);
 
 }

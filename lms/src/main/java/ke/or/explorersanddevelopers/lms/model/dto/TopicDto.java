@@ -13,7 +13,6 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,7 +47,7 @@ public class TopicDto implements Serializable {
     private String content;
 
     @ApiModelProperty(notes = "A list of subtopics belonging to this particular topic.")
-    private List<SubTopicDto> subTopics = new ArrayList<>();
+    private List<SubTopicDto> subTopics;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

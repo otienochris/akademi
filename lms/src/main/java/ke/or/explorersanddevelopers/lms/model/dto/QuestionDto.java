@@ -15,7 +15,6 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,7 +57,7 @@ public class QuestionDto implements Serializable {
     private AnswerTypeEnum answerType;
 
     @ApiModelProperty(notes = "A list of answers")
-    private List<AnswerDto> answers = new ArrayList<>();
+    private List<AnswerDto> answers;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

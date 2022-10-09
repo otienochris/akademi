@@ -52,6 +52,9 @@ public class Student {
     @Column(name = "EMAIL_VERIFICATION_CODE")
     private UUID emailVerificationCode;
 
+    @Column(name = "TOKEN")
+    private String token;
+
     @OneToMany
     @ToString.Exclude
     private List<Certificate> certificates = new ArrayList<>();
@@ -63,6 +66,10 @@ public class Student {
     @OneToMany
     @ToString.Exclude
     private List<Review> reviews = new ArrayList<>();
+
+    @ManyToMany
+    @ToString.Exclude
+    private List<Relative> relatives = new ArrayList<>();
 
     @Column(name = "PASSWORD")
     private String password;

@@ -16,7 +16,6 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,7 +47,7 @@ public class CourseDto implements Serializable {
 
     @Min(value = 1, message = "Rating must be between 1 and 5 both included.")
     @Max(value = 5, message = "Rating must be between 1 and 5 both included.")
-    @ApiModelProperty(example = "3", notes = "")
+    @ApiModelProperty(example = "3", notes = "Rating value")
     private Integer rating;
 
     @ApiModelProperty(example = "10", notes = "Course's price.")
@@ -62,13 +61,13 @@ public class CourseDto implements Serializable {
     private String introductionVideoLink;
 
     @ApiModelProperty(notes = "Courses' reviews.")
-    private List<ReviewDto> reviews = new ArrayList<>();
+    private List<ReviewDto> reviews;
 
     @ApiModelProperty(notes = "A list of course enrollments for this course.")
-    private List<CourseEnrollmentDto> courseEnrollments = new ArrayList<>();
+    private List<CourseEnrollmentDto> courseEnrollments;
 
     @ApiModelProperty(notes = "A list of the course's topics")
-    private List<TopicDto> topics = new ArrayList<>();
+    private List<TopicDto> topics;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -172,7 +173,6 @@ public class StudentServiceImpl implements StudentService {
         Student studentByCodeFromDb = getStudentByCodeFromDb(studentId);
 
         Review mappedReview = reviewMapper.toEntity(reviewDto);
-        Review savedReview = reviewRepository.save(mappedReview);
 
         switch (reviewDto.getType()) {
             case USER:
@@ -180,6 +180,7 @@ public class StudentServiceImpl implements StudentService {
                         .ifPresentOrElse(
                                 (instructor) -> {
                                     List<Review> reviews = instructor.getReviews();
+                                    Review savedReview = reviewRepository.save(mappedReview);
                                     if (reviews == null) {
                                         instructor.setReviews(new ArrayList<>());
                                         instructor.getReviews().add(savedReview);
@@ -202,6 +203,7 @@ public class StudentServiceImpl implements StudentService {
                     log.error(message);
                     throw new NoSuchRecordException(message);
                 });
+                Review savedReview = reviewRepository.save(mappedReview);
                 List<Review> reviews = course.getReviews();
                 if (reviews == null) {
                     course.setReviews(new ArrayList<>());
@@ -217,8 +219,8 @@ public class StudentServiceImpl implements StudentService {
             default:
         }
 
+        Review savedReview = reviewRepository.save(mappedReview);
         List<Review> reviews = studentByCodeFromDb.getReviews();
-
         if (reviews != null) {
             studentByCodeFromDb.getReviews().add(savedReview);
         } else {
@@ -261,6 +263,15 @@ public class StudentServiceImpl implements StudentService {
         List<CertificateDto> response = new ArrayList<>();
         studentByCodeFromDb.getCertificates().forEach(certificate -> response.add(certificateMapper.toDto(certificate)));
         return response;
+    }
+
+    @Override
+    public UUID generateToken(BigDecimal studentId) {
+        Student student = getStudentByCodeFromDb(studentId);
+        UUID token = UUID.randomUUID();
+        student.setToken(token.toString());
+        studentRepository.save(student);
+        return token;
     }
 
     private Student getStudentByCodeFromDb(BigDecimal studentId) {

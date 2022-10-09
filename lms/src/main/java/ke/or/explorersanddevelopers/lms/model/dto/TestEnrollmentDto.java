@@ -14,7 +14,6 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,7 +49,7 @@ public class TestEnrollmentDto implements Serializable {
     private Double score;
 
     @ApiModelProperty(notes = "A list of completed topics")
-    private List<QuestionDto> completedQuestions = new ArrayList<>();
+    private List<QuestionDto> completedQuestions;
 
     @ApiModelProperty(notes = "A list of all chosen tests")
     private TestDto test;

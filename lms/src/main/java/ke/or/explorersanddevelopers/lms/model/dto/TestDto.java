@@ -15,7 +15,6 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,11 +32,11 @@ public class TestDto implements Serializable {
 
     private static final long serialVersionUID = -878009969108979322L;
     @Null
-    @ApiModelProperty(example = "", notes = "", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @ApiModelProperty(example = "101", notes = "Test record id", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
     private BigDecimal testId;
 
     @ApiModelProperty(notes = "topics")
-    private List<TopicDto> topics = new ArrayList<>();
+    private List<TopicDto> topics;
 
     @NotNull
     @ApiModelProperty(example = "EXAM", notes = "The type of test.")
@@ -60,7 +59,7 @@ public class TestDto implements Serializable {
     private Date endDateAndTime;
 
     @ApiModelProperty(notes = "Questions within the test.")
-    private List<QuestionDto> questions = new ArrayList<>();
+    private List<QuestionDto> questions;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

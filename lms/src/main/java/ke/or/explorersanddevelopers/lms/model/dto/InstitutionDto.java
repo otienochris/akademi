@@ -16,7 +16,6 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +54,7 @@ public class InstitutionDto implements Serializable {
     private byte[] logo;
 
     @ApiModelProperty(notes = "A list of reviews.")
-    private List<Review> reviews = new ArrayList<>();
+    private List<Review> reviews;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

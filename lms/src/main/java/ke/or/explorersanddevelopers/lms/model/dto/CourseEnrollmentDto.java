@@ -14,7 +14,6 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,10 +52,10 @@ public class CourseEnrollmentDto implements Serializable {
     private CourseDto course;
 
     @ApiModelProperty(notes = "A list of test enrollment details chosen by the student.")
-    private List<TestEnrollmentDto> testEnrollments = new ArrayList<>();
+    private List<TestEnrollmentDto> testEnrollments;
 
     @ApiModelProperty(notes = "A list of completed topics.")
-    private List<TopicDto> completedTopics = new ArrayList<>();
+    private List<TopicDto> completedTopics;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

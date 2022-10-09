@@ -16,7 +16,6 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,10 +68,10 @@ public class InstructorDto implements Serializable {
     private UUID emailVerificationCode;
 
     @ApiModelProperty(notes = "A list of users' addresses")
-    private List<Address> addresses = new ArrayList<>();
+    private List<Address> addresses;
 
     @ApiModelProperty(notes = "A list of reviews")
-    private List<Review> reviews = new ArrayList<>();
+    private List<Review> reviews;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

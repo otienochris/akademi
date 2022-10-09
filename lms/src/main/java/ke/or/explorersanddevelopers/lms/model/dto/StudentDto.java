@@ -12,7 +12,6 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,7 +38,7 @@ public class StudentDto extends RepresentationModel<StudentDto> implements Seria
 
     @Null
     @ApiModelProperty(notes = "Students' certificates", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-    private List<CertificateDto> certificates = new ArrayList<>();
+    private List<CertificateDto> certificates;
 
     @NotNull
     @ApiModelProperty(example = "Christopher", notes = "User's first name.")
@@ -62,11 +61,15 @@ public class StudentDto extends RepresentationModel<StudentDto> implements Seria
 
     @Null
     @ApiModelProperty(notes = "A list of users' addresses", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-    private List<AddressDto> addresses = new ArrayList<>();
+    private List<AddressDto> addresses;
 
     @Null
     @ApiModelProperty(notes = "A list of reviews", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-    private List<ReviewDto> reviews = new ArrayList<>();
+    private List<ReviewDto> reviews;
+
+    @Null
+    @ApiModelProperty(notes = "A list of relatives tracking the student", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    private List<RelativeDto> relatives;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

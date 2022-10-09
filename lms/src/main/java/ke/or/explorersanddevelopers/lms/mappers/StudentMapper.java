@@ -28,7 +28,8 @@ public interface StudentMapper {
     @Mappings(value = {
             @Mapping(target = "reviews", ignore = true),
             @Mapping(target = "addresses", ignore = true),
-            @Mapping(target = "certificates", ignore = true)
+            @Mapping(target = "certificates", ignore = true),
+            @Mapping(target = "relatives", ignore = true)
     })
     StudentDto toDto(Student student);
 
@@ -41,7 +42,8 @@ public interface StudentMapper {
     @Mappings(value = {
             @Mapping(target = "reviews", ignore = true),
             @Mapping(target = "addresses", ignore = true),
-            @Mapping(target = "certificates", ignore = true)
+            @Mapping(target = "certificates", ignore = true),
+            @Mapping(target = "relatives", ignore = true)
     })
     Student toEntity(StudentDto studentDto);
 }

@@ -1,13 +1,7 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
-import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
-import ke.or.explorersanddevelopers.lms.model.dto.CertificateDto;
-import ke.or.explorersanddevelopers.lms.model.dto.ReviewDto;
-import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
-import ke.or.explorersanddevelopers.lms.model.entity.Address;
-import ke.or.explorersanddevelopers.lms.model.entity.Certificate;
-import ke.or.explorersanddevelopers.lms.model.entity.Review;
-import ke.or.explorersanddevelopers.lms.model.entity.Student;
+import ke.or.explorersanddevelopers.lms.model.dto.*;
+import ke.or.explorersanddevelopers.lms.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -29,23 +23,28 @@ public class StudentMapperDecorator implements StudentMapper {
     private ReviewMapper reviewMapper;
 
     @Autowired
-//    @Qualifier("delegate")
     private AddressMapper addressMapper;
 
     @Autowired
     private CertificateMapper certificateMapper;
 
+    @Autowired
+    @Qualifier("delegate")
+    private RelativeMapper relativeMapper;
+
     @Override
     public StudentDto toDto(Student student) {
         StudentDto studentDto = studentMapper.toDto(student);
 
+        // map reviews
         List<Review> reviews = student.getReviews();
-        if (reviews != null && reviews.size() > 0){
+        if (reviews != null && reviews.size() > 0) {
             List<ReviewDto> reviewDtoList = new ArrayList<>();
             reviews.forEach(review -> reviewDtoList.add(reviewMapper.toDto(review)));
             studentDto.setReviews(reviewDtoList);
         }
 
+        // map addresses
         List<Address> addresses = student.getAddresses();
         if (addresses != null && addresses.size() > 0){
             List<AddressDto> addressDtoList = new ArrayList<>();
@@ -53,12 +52,22 @@ public class StudentMapperDecorator implements StudentMapper {
             studentDto.setAddresses(addressDtoList);
         }
 
+        // map certificates
         List<Certificate> certificates = student.getCertificates();
-        if (certificates != null && certificates.size() > 0){
+        if (certificates != null && certificates.size() > 0) {
             List<CertificateDto> certificateDtoList = new ArrayList<>();
             certificates.forEach(certificate -> certificateDtoList.add(certificateMapper.toDto(certificate)));
             studentDto.setCertificates(certificateDtoList);
         }
+
+        // map relatives
+        List<Relative> relatives = student.getRelatives();
+        if (relatives != null && relatives.size() > 0) {
+            List<RelativeDto> relativeDtoList = new ArrayList<>();
+            relatives.forEach(relative -> relativeDtoList.add(relativeMapper.toDto(relative)));
+            studentDto.setRelatives(relativeDtoList);
+        }
+
         return studentDto;
     }
 
@@ -66,6 +75,7 @@ public class StudentMapperDecorator implements StudentMapper {
     public Student toEntity(StudentDto studentDto) {
         Student student = studentMapper.toEntity(studentDto);
 
+        // map reviews
         List<ReviewDto> reviewDtoList = studentDto.getReviews();
         if (reviewDtoList != null && reviewDtoList.size() > 0){
             List<Review> reviews = new ArrayList<>();
@@ -73,6 +83,7 @@ public class StudentMapperDecorator implements StudentMapper {
             student.setReviews(reviews);
         }
 
+        // map addresses
         List<AddressDto> addressDtoList = studentDto.getAddresses();
         if (addressDtoList != null && addressDtoList.size() > 0){
             List<Address> addresses = new ArrayList<>();
@@ -80,11 +91,20 @@ public class StudentMapperDecorator implements StudentMapper {
             student.setAddresses(addresses);
         }
 
+        // map certificates
         List<CertificateDto> certificateDtoList = studentDto.getCertificates();
-        if (certificateDtoList != null && certificateDtoList.size() > 0){
+        if (certificateDtoList != null && certificateDtoList.size() > 0) {
             List<Certificate> certificates = new ArrayList<>();
             certificateDtoList.forEach(certificate -> certificates.add(certificateMapper.toEntity(certificate)));
             student.setCertificates(certificates);
+        }
+
+        // map relatives
+        List<RelativeDto> relatives = studentDto.getRelatives();
+        if (relatives != null && relatives.size() > 0) {
+            List<Relative> relativeList = new ArrayList<>();
+            relatives.forEach(relativeDto -> relativeList.add(relativeMapper.toEntity(relativeDto)));
+            student.setRelatives(relativeList);
         }
         return student;
     }

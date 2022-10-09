@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -89,6 +91,14 @@ public class StudentController {
     @ApiResponse(code = 200, message = "The certificates were retrieved successfully")
     public ResponseEntity<List<CertificateDto>> retrieveCertificates(@PathVariable BigDecimal studentId) {
         return ResponseEntity.ok(studentService.retrieveCertificates(studentId));
+    }
+
+    @GetMapping("/{studentId}/generate-token")
+    @ApiResponse(code = 200, message = "The token was generated successfully")
+    public ResponseEntity<Map<String, UUID>> generateToken(@PathVariable BigDecimal studentId) {
+        UUID uuid = studentService.generateToken(studentId);
+        Map<String, UUID> response = Map.of("Token", uuid);
+        return ResponseEntity.ok(response);
     }
 
     private StudentDto addHateoasLinks(StudentDto savedStudentDto) {
