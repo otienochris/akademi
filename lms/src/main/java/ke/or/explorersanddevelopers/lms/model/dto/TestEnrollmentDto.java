@@ -1,8 +1,7 @@
 package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,45 +25,45 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Test Enrollment Dto", description = "Test Enrollment Dto details")
+@Schema(name = "Test Enrollment Dto", description = "Test Enrollment Dto details")
 public class TestEnrollmentDto implements Serializable {
 
     private static final long serialVersionUID = -5163497779278050798L;
     @Null
-    @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Test Enrollment Record Id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Test Enrollment Record Id.", accessMode = Schema.AccessMode.READ_ONLY)
     private BigDecimal testEnrollmentId;
 
     @NotNull
-    @ApiModelProperty(example = "COMPLETED", notes = "Test enrollment status.")
+    @Schema(example = "COMPLETED", description = "Test enrollment status.")
     private StatusEnum status;
 
-    @ApiModelProperty(example = "2022-01-02", notes = "The date all the tests were completed.")
+    @Schema(example = "2022-01-02", description = "The date all the tests were completed.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date completionDate;
 
-    @ApiModelProperty(example = "20", notes = "The amount the student paid when enrolling for the tests if any.")
+    @Schema(example = "20", description = "The amount the student paid when enrolling for the tests if any.")
     private BigDecimal amount;
 
-    @ApiModelProperty(example = "20", notes = "The overall percentage score of all the courses.")
+    @Schema(example = "20", description = "The overall percentage score of all the courses.")
     private Double score;
 
-    @ApiModelProperty(notes = "A list of completed topics")
+    @Schema(description = "A list of completed topics")
     private List<QuestionDto> completedQuestions;
 
-    @ApiModelProperty(notes = "A list of all chosen tests")
+    @Schema(description = "A list of all chosen tests")
     private TestDto test;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address Record creation date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address Record creation date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date creationDate;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address record modification date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address record modification date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date modificationDate;
 
     @NotNull
-    @ApiModelProperty(example = "0", notes = "Address record version.")
+    @Schema(example = "0", description = "Address record version.")
     private Long version;
 }

@@ -1,8 +1,7 @@
 package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import ke.or.explorersanddevelopers.lms.enums.RelativeRoleEnum;
 import ke.or.explorersanddevelopers.lms.enums.RelativeTypeEnum;
 import lombok.AllArgsConstructor;
@@ -30,69 +29,69 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Relative Dto", description = "Relative Dto details")
+@Schema(name = "Relative Dto", description = "Relative Dto details")
 public class RelativeDto extends RepresentationModel<RelativeDto> implements Serializable {
 
     private static final long serialVersionUID = -9060854159005391677L;
 
     @Null
-    @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Relative record id")
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Relative record id")
     private BigDecimal relativeId;
 
     @NotNull
-    @ApiModelProperty(example = "Christopher", notes = "User's first name.")
+    @Schema(example = "Christopher", description = "User's first name.")
     private String firstName;
 
     @NotNull
-    @ApiModelProperty(example = "Otieno", notes = "User's last name.")
+    @Schema(example = "Otieno", description = "User's last name.")
     private String lastName;
 
     @NotNull
     @Email
-    @ApiModelProperty(example = "xyz@mno.com", notes = "User's email.")
+    @Schema(example = "xyz@mno.com", description = "User's email.")
     private String email;
 
-    @ApiModelProperty(example = "KE", notes = "User's country of origin.")
+    @Schema(example = "KE", description = "User's country of origin.")
     private String countryCode;
 
     @NotNull
-    @ApiModelProperty(example = "PARENT", notes = "How the relative relates to the student.")
+    @Schema(example = "PARENT", description = "How the relative relates to the student.")
     private RelativeTypeEnum relativeType;
 
     @NotNull
-    @ApiModelProperty(example = "ACTIVE", notes = "What role does the relative play?")
+    @Schema(example = "ACTIVE", description = "What role does the relative play?")
     private RelativeRoleEnum role;
 
-    @ApiModelProperty(example = "true", notes = "Is account disabled?")
+    @Schema(example = "true", description = "Is account disabled?")
     private boolean isAccountDisabled;
 
     @Null
-    @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Email verification code.")
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Email verification code.")
     private UUID emailVerificationCode;
 
     @Null
-    @ApiModelProperty(notes = "A list of users' addresses", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(description = "A list of users' addresses", accessMode = Schema.AccessMode.READ_ONLY)
     private List<AddressDto> addresses;
 
     @Null
-    @ApiModelProperty(notes = "A list of reviews")
+    @Schema(description = "A list of reviews")
     private List<ReviewDto> reviews;
 
     @Null
-    @ApiModelProperty(notes = "A list of students the relative is tracking")
+    @Schema(description = "A list of students the relative is tracking")
     private List<StudentDto> students;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address Record creation date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address Record creation date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date creationDate;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address record modification date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address record modification date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date modificationDate;
 
     @NotNull
-    @ApiModelProperty(example = "0", notes = "Address record version.")
+    @Schema(example = "0", description = "Address record version.")
     private Long version;
 }

@@ -1,8 +1,7 @@
 package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import ke.or.explorersanddevelopers.lms.enums.ReviewTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,36 +23,36 @@ import java.sql.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Review Dto", description = "Review Dto details")
+@Schema(name = "Review Dto", description = "Review Dto details")
 public class ReviewDto implements Serializable {
 
     private static final long serialVersionUID = -1748895136346856830L;
     @Null
-    @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "A review record id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "A review record id.", accessMode = Schema.AccessMode.READ_ONLY)
     private BigDecimal reviewId;
 
     @NotNull
-    @ApiModelProperty(example = "COURSE", notes = "The type of review.")
+    @Schema(example = "COURSE", description = "The type of review.")
     private ReviewTypeEnum type;
 
     @NotNull
-    @ApiModelProperty(example = "1", notes = "The provided rating.")
+    @Schema(example = "1", description = "The provided rating.")
     private Integer rating;
 
-    @ApiModelProperty(example = "A good course for beginner.", notes = "The review content.")
+    @Schema(example = "A good course for beginner.", description = "The review content.")
     private String content;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address Record creation date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address Record creation date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date creationDate;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address record modification date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address record modification date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date modificationDate;
 
     @NotNull
-    @ApiModelProperty(example = "0", notes = "Address record version.")
+    @Schema(example = "0", description = "Address record version.")
     private Long version;
 }

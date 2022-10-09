@@ -1,8 +1,7 @@
 package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import ke.or.explorersanddevelopers.lms.enums.TestTypeEnum;
 import ke.or.explorersanddevelopers.lms.enums.YesOrNoEnum;
 import lombok.AllArgsConstructor;
@@ -27,51 +26,51 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Test Dto", description = "Test Dto details")
+@Schema(name = "Test Dto", description = "Test Dto details")
 public class TestDto implements Serializable {
 
     private static final long serialVersionUID = -878009969108979322L;
     @Null
-    @ApiModelProperty(example = "101", notes = "Test record id", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "101", description = "Test record id", accessMode = Schema.AccessMode.READ_ONLY)
     private BigDecimal testId;
 
-    @ApiModelProperty(notes = "topics")
+    @Schema(description = "topics")
     private List<TopicDto> topics;
 
     @NotNull
-    @ApiModelProperty(example = "EXAM", notes = "The type of test.")
+    @Schema(example = "EXAM", description = "The type of test.")
     private TestTypeEnum testType;
 
     @NotNull
-    @ApiModelProperty(example = "N", notes = "Is the test optional.")
+    @Schema(example = "N", description = "Is the test optional.")
     private YesOrNoEnum isOptional;
 
     @NotNull
-    @ApiModelProperty(example = "Y", notes = "Is the test scheduled.")
+    @Schema(example = "Y", description = "Is the test scheduled.")
     private YesOrNoEnum isScheduled;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-01-01", notes = "The date the test starts")
+    @Schema(example = "2022-01-01", description = "The date the test starts")
     private Date startDateAndTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-01", notes = "The date the test ends.")
+    @Schema(example = "2022-02-01", description = "The date the test ends.")
     private Date endDateAndTime;
 
-    @ApiModelProperty(notes = "Questions within the test.")
+    @Schema(description = "Questions within the test.")
     private List<QuestionDto> questions;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address Record creation date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address Record creation date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date creationDate;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address record modification date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address record modification date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date modificationDate;
 
     @NotNull
-    @ApiModelProperty(example = "0", notes = "Address record version.")
+    @Schema(example = "0", description = "Address record version.")
     private Long version;
 }

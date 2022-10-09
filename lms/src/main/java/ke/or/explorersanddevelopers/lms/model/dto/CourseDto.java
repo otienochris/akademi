@@ -1,8 +1,7 @@
 package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import ke.or.explorersanddevelopers.lms.enums.CourseCategoryEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,60 +26,60 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Course Dto", description = "Course Dto details")
+@Schema(name = "Course Dto", description = "Course Dto details")
 public class CourseDto implements Serializable {
 
     private static final long serialVersionUID = 1519602186785582645L;
     @NotNull
-    @ApiModelProperty(example = "You'll learn how to code like a pro!", notes = "A course's verbose description.")
+    @Schema(example = "You'll learn how to code like a pro!", description = "A course's verbose description.")
     public String description;
     @Null
-    @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Course record id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Course record id.", accessMode = Schema.AccessMode.READ_ONLY)
     private BigDecimal courseId;
     @NotNull
-    @ApiModelProperty(example = "Introduction to programming.", notes = "A course's title.")
+    @Schema(example = "Introduction to programming.", description = "A course's title.")
     private String title;
 
     @NotNull
-    @ApiModelProperty(example = "https://xyz.com/image.png", notes = "A course's thumbnail image link.")
+    @Schema(example = "https://xyz.com/image.png", description = "A course's thumbnail image link.")
     private String thumbnailLink;
 
     @Min(value = 1, message = "Rating must be between 1 and 5 both included.")
     @Max(value = 5, message = "Rating must be between 1 and 5 both included.")
-    @ApiModelProperty(example = "3", notes = "Rating value")
+    @Schema(example = "3", description = "Rating value")
     private Integer rating;
 
-    @ApiModelProperty(example = "10", notes = "Course's price.")
+    @Schema(example = "10", description = "Course's price.")
     private BigDecimal price;
 
     @NotNull
-    @ApiModelProperty(example = "TECH_TOOLS", notes = "Course Category.")
+    @Schema(example = "TECH_TOOLS", description = "Course Category.")
     private CourseCategoryEnum category;
 
-    @ApiModelProperty(example = "https://xyz.com/video/sdfsf", notes = "Course's introduction video link.")
+    @Schema(example = "https://xyz.com/video/sdfsf", description = "Course's introduction video link.")
     private String introductionVideoLink;
 
-    @ApiModelProperty(notes = "Courses' reviews.")
+    @Schema(description = "Courses' reviews.")
     private List<ReviewDto> reviews;
 
-    @ApiModelProperty(notes = "A list of course enrollments for this course.")
+    @Schema(description = "A list of course enrollments for this course.")
     private List<CourseEnrollmentDto> courseEnrollments;
 
-    @ApiModelProperty(notes = "A list of the course's topics")
+    @Schema(description = "A list of the course's topics")
     private List<TopicDto> topics;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address Record creation date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address Record creation date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date creationDate;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address record modification date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address record modification date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date modificationDate;
 
     @NotNull
-    @ApiModelProperty(example = "0", notes = "Address record version.")
+    @Schema(example = "0", description = "Address record version.")
     private Long version;
 
 }

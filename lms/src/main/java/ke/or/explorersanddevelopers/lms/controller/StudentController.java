@@ -1,7 +1,8 @@
 package ke.or.explorersanddevelopers.lms.controller;
 
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+//import io.swagger.annotations.ApiResponse;
+//import io.swagger.annotations.ApiResponses;
+
 import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
 import ke.or.explorersanddevelopers.lms.model.dto.CertificateDto;
 import ke.or.explorersanddevelopers.lms.model.dto.ReviewDto;
@@ -33,19 +34,19 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/students")
-@ApiResponses(value = {
-        @ApiResponse(code = 400, message = "BAD REQUEST"),
-        @ApiResponse(code = 401, message = "UNAUTHORIZED"),
-        @ApiResponse(code = 403, message = "FORBIDDEN"),
-        @ApiResponse(code = 404, message = "RESOURCE NOT FOUND"),
-        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR"),
-})
+//@ApiResponses(value = {
+//        @ApiResponse(code = 400, message = "BAD REQUEST"),
+//        @ApiResponse(code = 401, message = "UNAUTHORIZED"),
+//        @ApiResponse(code = 403, message = "FORBIDDEN"),
+//        @ApiResponse(code = 404, message = "RESOURCE NOT FOUND"),
+//        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR"),
+//})
 public class StudentController {
 
     private final StudentService studentService;
 
     @PostMapping
-    @ApiResponse(code = 201, message = "Student Created and Saved Successfully.")
+//    @ApiResponse(code = 201, message = "Student Created and Saved Successfully.")
     public ResponseEntity<StudentDto> saveNewStudent(@RequestBody @Validated StudentDto studentDto){
         System.out.println(studentDto);
         StudentDto savedStudentDto = studentService.saveNewStudent(studentDto);
@@ -53,14 +54,14 @@ public class StudentController {
     }
 
     @GetMapping("/{studentId}")
-    @ApiResponse(code = 200, message = "Student Retrieved Successfully")
+//    @ApiResponse(code = 200, message = "Student Retrieved Successfully")
     public ResponseEntity<StudentDto> getStudentById(@PathVariable BigDecimal studentId) {
         StudentDto studentByCode = studentService.getStudentByCode(studentId);
         return ResponseEntity.ok(addHateoasLinks(studentByCode));
     }
 
     @GetMapping
-    @ApiResponse(code = 200, message = "Students' list Retrieved Successfully")
+//    @ApiResponse(code = 200, message = "Students' list Retrieved Successfully")
     public ResponseEntity<CollectionModel<StudentDto>> getListOfStudents(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
                                                                          @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
         List<StudentDto> response = new ArrayList<>();
@@ -70,31 +71,31 @@ public class StudentController {
     }
 
     @DeleteMapping("/{studentId}")
-    @ApiResponse(code = 200, message = "The student was deleted successfully")
+//    @ApiResponse(code = 200, message = "The student was deleted successfully")
     public ResponseEntity<Boolean> deleteStudentById(@PathVariable BigDecimal studentId) {
         return ResponseEntity.ok(studentService.deleteStudentByCode(studentId));
     }
 
     @PostMapping("/{studentId}/add-review/{targetId}")
-    @ApiResponse(code = 200, message = "The student submitted the review successfully")
+//    @ApiResponse(code = 200, message = "The student submitted the review successfully")
     public ResponseEntity<Boolean> submitReview(@PathVariable BigDecimal studentId, @PathVariable BigDecimal targetId, @RequestBody @Validated ReviewDto reviewDto) {
         return ResponseEntity.ok(studentService.submitReview(studentId, targetId, reviewDto));
     }
 
     @PostMapping("/{studentId}/add-address")
-    @ApiResponse(code = 200, message = "The student add an address successfully")
+//    @ApiResponse(code = 200, message = "The student add an address successfully")
     public ResponseEntity<AddressDto> addAddress(@PathVariable BigDecimal studentId, @RequestBody @Validated AddressDto addressDto) {
         return ResponseEntity.ok(studentService.addAddress(studentId, addressDto));
     }
 
     @GetMapping("/{studentId}/certificates")
-    @ApiResponse(code = 200, message = "The certificates were retrieved successfully")
+//    @ApiResponse(code = 200, message = "The certificates were retrieved successfully")
     public ResponseEntity<List<CertificateDto>> retrieveCertificates(@PathVariable BigDecimal studentId) {
         return ResponseEntity.ok(studentService.retrieveCertificates(studentId));
     }
 
     @GetMapping("/{studentId}/generate-token")
-    @ApiResponse(code = 200, message = "The token was generated successfully")
+//    @ApiResponse(code = 200, message = "The token was generated successfully")
     public ResponseEntity<Map<String, UUID>> generateToken(@PathVariable BigDecimal studentId) {
         UUID uuid = studentService.generateToken(studentId);
         Map<String, UUID> response = Map.of("Token", uuid);

@@ -1,8 +1,7 @@
 package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,42 +23,42 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Topic Dto", description = "Topic Dto details")
+@Schema(name = "Topic Dto", description = "Topic Dto details")
 public class TopicDto implements Serializable {
 
     private static final long serialVersionUID = 6149467891720051118L;
     @Null
-    @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Topic record id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Topic record id.", accessMode = Schema.AccessMode.READ_ONLY)
     private BigDecimal topicId;
 
     @NotNull
-    @ApiModelProperty(example = "The first topic.", notes = "A topic's title.")
+    @Schema(example = "The first topic.", description = "A topic's title.")
     private String title;
 
     @NotNull
-    @ApiModelProperty(example = "A sample topic description.", notes = "A topic's description.")
+    @Schema(example = "A sample topic description.", description = "A topic's description.")
     private String description;
 
-    @ApiModelProperty(example = "https://xyz.com/video/sds", notes = "A link for the the topic's video.")
+    @Schema(example = "https://xyz.com/video/sds", description = "A link for the the topic's video.")
     private String link;
 
-    @ApiModelProperty(example = "<p> Some random content for the topic ... </p>", notes = "A transcribed content of the topic.")
+    @Schema(example = "<p> Some random content for the topic ... </p>", description = "A transcribed content of the topic.")
     private String content;
 
-    @ApiModelProperty(notes = "A list of subtopics belonging to this particular topic.")
+    @Schema(description = "A list of subtopics belonging to this particular topic.")
     private List<SubTopicDto> subTopics;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address Record creation date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address Record creation date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date creationDate;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address record modification date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address record modification date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date modificationDate;
 
     @NotNull
-    @ApiModelProperty(example = "0", notes = "Address record version.")
+    @Schema(example = "0", description = "Address record version.")
     private Long version;
 }

@@ -1,8 +1,7 @@
 package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import ke.or.explorersanddevelopers.lms.enums.InstitutionTypeEnum;
 import ke.or.explorersanddevelopers.lms.model.entity.Address;
 import ke.or.explorersanddevelopers.lms.model.entity.Review;
@@ -28,45 +27,45 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Institution Dto", description = "Institution Dto details")
+@Schema(name = "Institution Dto", description = "Institution Dto details")
 public class InstitutionDto implements Serializable {
 
     private static final long serialVersionUID = -5547803570477057596L;
     @Null
-    @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "An institution record id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "An institution record id.", accessMode = Schema.AccessMode.READ_ONLY)
     private BigDecimal institutionId;
 
     @NotNull
-    @ApiModelProperty(example = "Egerton University", notes = "A title for the institution.")
+    @Schema(example = "Egerton University", description = "A title for the institution.")
     private String title;
 
-    @ApiModelProperty(example = "Transforming lives through quality education.", notes = "Institution's motto or description.")
+    @Schema(example = "Transforming lives through quality education.", description = "Institution's motto or description.")
     private String description;
 
     @NotNull
-    @ApiModelProperty(example = "UNIVERSITY", notes = "Institution type.")
+    @Schema(example = "UNIVERSITY", description = "Institution type.")
     private InstitutionTypeEnum type;
 
-    @ApiModelProperty(notes = "Institution's address.")
+    @Schema(description = "Institution's address.")
     private Address address;
 
-    @ApiModelProperty(notes = "Institution's logo in bytes.")
+    @Schema(description = "Institution's logo in bytes.")
     private byte[] logo;
 
-    @ApiModelProperty(notes = "A list of reviews.")
+    @Schema(description = "A list of reviews.")
     private List<Review> reviews;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address Record creation date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address Record creation date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date creationDate;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address record modification date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address record modification date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date modificationDate;
 
     @NotNull
-    @ApiModelProperty(example = "0", notes = "Address record version.")
+    @Schema(example = "0", description = "Address record version.")
     private Long version;
 }

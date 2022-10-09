@@ -1,8 +1,7 @@
 package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -27,61 +26,61 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Student Dto", description = "Student Dto details")
+@Schema(name = "StudentDto", description = "Student Dto details")
 public class StudentDto extends RepresentationModel<StudentDto> implements Serializable {
 
     private static final long serialVersionUID = 2266645598292072269L;
 
     @Null
-    @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Student record id.")
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Student record id.")
     private BigDecimal studentId;
 
     @Null
-    @ApiModelProperty(notes = "Students' certificates", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(description = "Students' certificates", accessMode = Schema.AccessMode.READ_ONLY)
     private List<CertificateDto> certificates;
 
     @NotNull
-    @ApiModelProperty(example = "Christopher", notes = "User's first name.")
+    @Schema(example = "Christopher", description = "User's first name.")
     private String firstName;
 
     @NotNull
-    @ApiModelProperty(example = "Otieno", notes = "User's last name.")
+    @Schema(example = "Otieno", description = "User's last name.")
     private String lastName;
 
     @NotNull
     @Email
-    @ApiModelProperty(example = "xyz@mno.com", notes = "User's email.")
+    @Schema(example = "xyz@mno.com", description = "User's email.")
     private String email;
 
-    @ApiModelProperty(example = "KE", notes = "User's country of origin.")
+    @Schema(example = "KE", description = "User's country of origin.")
     private String countryCode;
 
-    @ApiModelProperty(example = "true", notes = "Is account disabled?")
+    @Schema(example = "true", description = "Is account disabled?")
     private boolean isAccountDisabled;
 
     @Null
-    @ApiModelProperty(notes = "A list of users' addresses", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(description = "A list of users' addresses", accessMode = Schema.AccessMode.READ_ONLY)
     private List<AddressDto> addresses;
 
     @Null
-    @ApiModelProperty(notes = "A list of reviews", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(description = "A list of reviews", accessMode = Schema.AccessMode.READ_ONLY)
     private List<ReviewDto> reviews;
 
     @Null
-    @ApiModelProperty(notes = "A list of relatives tracking the student", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(description = "A list of relatives tracking the student", accessMode = Schema.AccessMode.READ_ONLY)
     private List<RelativeDto> relatives;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address Record creation date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address Record creation date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date creationDate;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address record modification date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address record modification date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date modificationDate;
 
     @NotNull
-    @ApiModelProperty(example = "0", notes = "Address record version.")
+    @Schema(example = "0", description = "Address record version.")
     private Long version;
 }

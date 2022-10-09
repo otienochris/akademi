@@ -1,8 +1,7 @@
 package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,39 +23,39 @@ import java.sql.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "Subtopic Dto", description = "Subtopic Dto details")
+@Schema(name = "Subtopic Dto", description = "Subtopic Dto details")
 public class SubTopicDto implements Serializable {
 
     private static final long serialVersionUID = -6899713947264547824L;
     @Null
-    @ApiModelProperty(example = "123e4567-e89b-12d3-a456-426614174000", notes = "Subtopic record id.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Subtopic record id.", accessMode = Schema.AccessMode.READ_ONLY)
     private BigDecimal subTopicId;
 
     @NotNull
-    @ApiModelProperty(example = "The first subtopic.", notes = "Subtopic title.")
+    @Schema(example = "The first subtopic.", description = "Subtopic title.")
     private String title;
 
     @NotNull
-    @ApiModelProperty(example = "The introducing subtopic.", notes = "Subtopic description")
+    @Schema(example = "The introducing subtopic.", description = "Subtopic description")
     private String description;
 
-    @ApiModelProperty(example = "https://sfsfs/fsf", notes = "The subtopic video link.")
+    @Schema(example = "https://sfsfs/fsf", description = "The subtopic video link.")
     private String link;
 
-    @ApiModelProperty(example = "<p>some useful content ... </p>", notes = "Subtopic content.")
+    @Schema(example = "<p>some useful content ... </p>", description = "Subtopic content.")
     private String content;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address Record creation date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address Record creation date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date creationDate;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ApiModelProperty(example = "2022-02-03", notes = "Address record modification date.", accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @Schema(example = "2022-02-03", description = "Address record modification date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date modificationDate;
 
     @NotNull
-    @ApiModelProperty(example = "0", notes = "Address record version.")
+    @Schema(example = "0", description = "Address record version.")
     private Long version;
 }
