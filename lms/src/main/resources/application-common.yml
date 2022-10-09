@@ -4,7 +4,11 @@ spring:
   #      matching-strategy: ant_path_matcher
   application:
     name: learning-management-system
-
+  boot:
+    admin:
+      client:
+        enabled: true
+        url: http://localhost:8081
 server:
   servlet:
     context-path: /lms/api/v1
