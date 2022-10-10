@@ -1,7 +1,9 @@
 package ke.or.explorersanddevelopers.lms.service;
 
+import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
 import ke.or.explorersanddevelopers.lms.model.dto.InstructorDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
  * @version 1.0.0
  * @since Monday, 10/10/2022
  */
+@Transactional
 public interface InstructorService {
 
     /**
@@ -44,4 +47,12 @@ public interface InstructorService {
      * @return true if operation was successful
      */
     Boolean deleteInstructorById(BigDecimal studentId);
+
+    /**
+     * This method saves a new address to an instructor
+     *
+     * @param instructorId - the instructor getting the new address
+     * @return the new instructor details
+     */
+    InstructorDto addAddress(BigDecimal instructorId, AddressDto addressDto);
 }

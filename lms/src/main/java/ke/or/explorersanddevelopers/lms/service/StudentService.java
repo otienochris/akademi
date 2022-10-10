@@ -2,6 +2,7 @@ package ke.or.explorersanddevelopers.lms.service;
 
 import ke.or.explorersanddevelopers.lms.model.dto.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.UUID;
  * @since Wednesday, 05/10/2022
  */
 
+@Transactional
 public interface StudentService {
     /**
      * This method saves a new student record.

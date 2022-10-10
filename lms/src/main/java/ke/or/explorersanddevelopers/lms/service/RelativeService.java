@@ -2,6 +2,7 @@ package ke.or.explorersanddevelopers.lms.service;
 
 import ke.or.explorersanddevelopers.lms.model.dto.RelativeDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * @version 1.0.0
  * @since Sunday, 09/10/2022
  */
+@Transactional
 public interface RelativeService {
 
     /**
