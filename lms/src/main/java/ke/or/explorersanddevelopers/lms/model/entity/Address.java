@@ -6,9 +6,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -30,7 +30,7 @@ public class Address {
     @Id
     @GeneratedValue
     @Column(name = "ADDRESS_ID")
-    private UUID addressId;
+    private BigDecimal addressId;
 
     @Column(name = "STREET")
     private String street;

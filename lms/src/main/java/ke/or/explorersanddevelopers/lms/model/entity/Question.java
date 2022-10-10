@@ -8,10 +8,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -30,7 +31,7 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "QUESTION_ID", nullable = false)
-    private UUID questionId;
+    private BigDecimal questionId;
 
     @Column(name = "QUESTION", nullable = false)
     private String question;
@@ -53,7 +54,7 @@ public class Question {
 
     @OneToMany
     @ToString.Exclude
-    private List<Answer> answers;
+    private List<Answer> answers = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")

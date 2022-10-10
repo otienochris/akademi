@@ -6,9 +6,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -25,10 +25,11 @@ import java.util.UUID;
 @Entity
 @Table(name = "ANSWERS")
 public class Answer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ANSWER_ID", nullable = false)
-    private UUID answerId;
+    private BigDecimal answerId;
 
     @Lob
     @Column(name = "CONTENT")

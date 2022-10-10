@@ -2,18 +2,15 @@ package ke.or.explorersanddevelopers.lms.model.entity;
 
 import ke.or.explorersanddevelopers.lms.enums.CertificateStatusEnum;
 import ke.or.explorersanddevelopers.lms.enums.CertificateTypeEnum;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -22,8 +19,11 @@ import java.util.UUID;
  */
 @Getter
 @Setter
+@Builder
 @ToString
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
+
 @Entity
 @Table(name = "CERTIFICATES")
 public class Certificate {
@@ -31,7 +31,7 @@ public class Certificate {
     @Id
     @GeneratedValue
     @Column(name = "CERTIFICATE_ID")
-    private UUID certificateId;
+    private BigDecimal certificateId;
 
     @Column(name = "TYPE", nullable = false)
     private CertificateTypeEnum type;

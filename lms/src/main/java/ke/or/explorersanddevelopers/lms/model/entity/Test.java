@@ -8,7 +8,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.*;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -27,11 +31,11 @@ public class Test {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "TEST_ID", nullable = false)
-    private UUID testId;
+    private BigDecimal testId;
 
     @OneToMany
     @ToString.Exclude
-    private List<Topic> topic;
+    private List<Topic> topics = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TEST_TYPE", nullable = false)

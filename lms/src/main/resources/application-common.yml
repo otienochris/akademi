@@ -1,22 +1,14 @@
 spring:
+#  mvc:
+  #    pathmatch:
+  #      matching-strategy: ant_path_matcher
   application:
     name: learning-management-system
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-  datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-
+  boot:
+    admin:
+      client:
+        enabled: true
+        url: http://localhost:8081
 server:
   servlet:
     context-path: /lms/api/v1

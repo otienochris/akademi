@@ -6,8 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.sql.Date;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -28,7 +28,7 @@ public class Review {
     @Id
     @GeneratedValue
     @Column(name = "REVIEW_ID")
-    private UUID reviewId;
+    private BigDecimal reviewId;
 
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)

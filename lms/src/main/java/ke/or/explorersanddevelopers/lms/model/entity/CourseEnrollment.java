@@ -1,6 +1,6 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
-import ke.or.explorersanddevelopers.lms.enums.Status;
+import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,10 +8,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -30,11 +30,11 @@ public class CourseEnrollment {
     @Id
     @GeneratedValue
     @Column(name = "COURSE_ENROLLMENT_ID", nullable = false)
-    private UUID courseEnrollmentId;
+    private BigDecimal courseEnrollmentId;
 
     @Column(name = "STATUS", nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private Status status;
+    private StatusEnum status;
 
     @Column(name = "AMOUNT")
     private BigDecimal amount;
@@ -42,31 +42,29 @@ public class CourseEnrollment {
     @Column(name = "COMPLETION_DATE")
     private Date completionDate;
 
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "STUDENT_ID", name = "STUDENT_ID", nullable = false)
+    private Student student;
+
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "COURSE_ID", name = "COURSE_ID", nullable = false)
+    private Course course;
+
+    @OneToMany
+    @ToString.Exclude
+    private List<TestEnrollment> testEnrollments = new ArrayList<>();
+
+    @OneToMany
+    @ToString.Exclude
+    private List<Topic> completedTopics = new ArrayList<>();
+
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATION_DATE", nullable = false)
     private Date creationDate;
 
     @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFICATION_DATE")
     private Date modificationDate;
-
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "STUDENT_ID", name = "STUDENT_ID", nullable = false)
-    private Student studentId;
-
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "COURSE_ID", name = "COURSE_ID", nullable = false)
-    private Course courseId;
-
-    @OneToMany
-    @ToString.Exclude
-    private List<TestEnrollment> testEnrollments;
-
-    @OneToMany
-    @ToString.Exclude
-    private List<Topic> completedTopics;
 
     @Version
     @Column(name = "VERSION")

@@ -1,6 +1,6 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
-import ke.or.explorersanddevelopers.lms.enums.Status;
+import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,7 +8,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.*;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -27,11 +30,11 @@ public class TestEnrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "TEST_ENROLLMENT_ID", nullable = false)
-    private UUID testEnrollmentId;
+    private BigDecimal testEnrollmentId;
 
     @Column(name = "STATUS", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private StatusEnum status;
 
     @Column(name = "COMPLETION_DATE")
     private Date completionDate;
@@ -46,9 +49,8 @@ public class TestEnrollment {
     @Column(name = "SCORE", nullable = false)
     private Double score;
 
-    @OneToMany
-    @ToString.Exclude
-    private List<Test> tests;
+    @OneToOne
+    private Test test;
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")
