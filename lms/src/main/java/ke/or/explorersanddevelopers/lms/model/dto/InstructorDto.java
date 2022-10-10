@@ -2,12 +2,11 @@ package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import ke.or.explorersanddevelopers.lms.model.entity.Address;
-import ke.or.explorersanddevelopers.lms.model.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -29,10 +28,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(name = "Instructor Dto", description = "Instructor Dto details")
-public class InstructorDto implements Serializable {
+public class InstructorDto extends RepresentationModel<InstructorDto> implements Serializable {
 
     private static final long serialVersionUID = -3809163225840373366L;
-    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Instructor record id.")
+    @Null
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Instructor record id.", accessMode = Schema.AccessMode.READ_ONLY)
     private BigDecimal instructorId;
 
     @NotNull
@@ -63,14 +63,17 @@ public class InstructorDto implements Serializable {
     @Schema(example = "true", description = "Is account diabled?")
     private boolean isAccountDisabled;
 
+    @Null
     @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Email verification code.")
     private UUID emailVerificationCode;
 
-    @Schema(description = "A list of users' addresses")
-    private List<Address> addresses;
+    @Null
+    @Schema(description = "A list of users' addresses", accessMode = Schema.AccessMode.READ_ONLY)
+    private List<AddressDto> addresses;
 
-    @Schema(description = "A list of reviews")
-    private List<Review> reviews;
+    @Null
+    @Schema(description = "A list of reviews", accessMode = Schema.AccessMode.READ_ONLY)
+    private List<ReviewDto> reviews;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

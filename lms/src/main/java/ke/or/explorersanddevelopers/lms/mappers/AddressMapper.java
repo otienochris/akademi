@@ -15,7 +15,19 @@ public interface AddressMapper {
 
     AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
 
+    /**
+     * This method maps an address entity to its equivalent address dto
+     *
+     * @param address - the address entity to be mapped
+     * @return the mapped address dto
+     */
     AddressDto toDto(Address address);
 
+    /**
+     * This method maps an address dto to its equivalent address entity
+     *
+     * @param addressDto - the address dto to be mapped
+     * @return the mapped address entity
+     */
     Address toEntity(AddressDto addressDto);
 }

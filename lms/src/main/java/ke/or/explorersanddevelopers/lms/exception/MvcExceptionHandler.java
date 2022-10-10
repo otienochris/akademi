@@ -62,6 +62,11 @@ public class MvcExceptionHandler {
         return new ResponseEntity<>(createErrorDetails(e), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ErrorDetails> handleNullPointerException(NullPointerException e) {
+        return new ResponseEntity<>(createErrorDetails(e), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails> handleGeneralException(Exception e) {
 

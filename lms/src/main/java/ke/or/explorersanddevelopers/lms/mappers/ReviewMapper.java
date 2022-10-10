@@ -14,7 +14,19 @@ import org.mapstruct.factory.Mappers;
 public interface ReviewMapper {
     ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
+    /**
+     * This method maps a review entity to its equivalent review dto
+     *
+     * @param review - the review entity to be mapped
+     * @return the mapped review dto
+     */
     ReviewDto toDto(Review review);
 
+    /**
+     * This method maps a review dto to its equivalent review entity
+     *
+     * @param reviewDto - the review dto to be mapped
+     * @return the mapped review entity
+     */
     Review toEntity(ReviewDto reviewDto);
 }

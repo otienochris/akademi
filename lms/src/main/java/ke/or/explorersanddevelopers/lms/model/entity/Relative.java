@@ -42,7 +42,7 @@ public class Relative  {
     @Column(name = "LAST_NAME", nullable = false)
     private String lastName;
 
-    @Column(name = "EMAIL", nullable = false)
+    @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
     @Column(name = "COUNTRY_CODE")

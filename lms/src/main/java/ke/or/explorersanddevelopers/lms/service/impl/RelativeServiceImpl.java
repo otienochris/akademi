@@ -1,4 +1,4 @@
-package ke.or.explorersanddevelopers.lms.service;
+package ke.or.explorersanddevelopers.lms.service.impl;
 
 import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
 import ke.or.explorersanddevelopers.lms.mappers.RelativeMapper;
@@ -7,6 +7,7 @@ import ke.or.explorersanddevelopers.lms.model.entity.Relative;
 import ke.or.explorersanddevelopers.lms.model.entity.Student;
 import ke.or.explorersanddevelopers.lms.repositories.RelativeRepository;
 import ke.or.explorersanddevelopers.lms.repositories.StudentRepository;
+import ke.or.explorersanddevelopers.lms.service.RelativeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
