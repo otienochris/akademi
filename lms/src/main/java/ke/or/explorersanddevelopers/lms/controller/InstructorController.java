@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import ke.or.explorersanddevelopers.lms.exception.ErrorDetails;
+import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
 import ke.or.explorersanddevelopers.lms.model.dto.InstructorDto;
 import ke.or.explorersanddevelopers.lms.service.InstructorService;
 import lombok.RequiredArgsConstructor;
@@ -85,6 +86,14 @@ public class InstructorController {
     @ApiResponse(responseCode = "200", description = "The student was deleted successfully")
     public ResponseEntity<Boolean> deleteInstructorById(@PathVariable BigDecimal instructorId) {
         return ResponseEntity.ok(instructorService.deleteInstructorById(instructorId));
+    }
+
+    @PostMapping("/{instructorId}/add-address")
+    @Operation(summary = "Add a new address to an instructor")
+    @ApiResponse(responseCode = "202", description = "Address was added successfully")
+    public ResponseEntity<InstructorDto> addAddress(@PathVariable BigDecimal instructorId, @RequestBody @Validated AddressDto addressDto) {
+        InstructorDto instructorDto = instructorService.addAddress(instructorId, addressDto);
+        return ResponseEntity.accepted().body(addHateoasLinks(instructorDto));
     }
 
     private InstructorDto addHateoasLinks(InstructorDto instructorDto) {

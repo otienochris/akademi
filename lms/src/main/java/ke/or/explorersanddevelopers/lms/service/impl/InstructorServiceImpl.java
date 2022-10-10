@@ -2,8 +2,12 @@ package ke.or.explorersanddevelopers.lms.service.impl;
 
 import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
 import ke.or.explorersanddevelopers.lms.mapper.InstructorMapper;
+import ke.or.explorersanddevelopers.lms.mappers.AddressMapper;
+import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
 import ke.or.explorersanddevelopers.lms.model.dto.InstructorDto;
+import ke.or.explorersanddevelopers.lms.model.entity.Address;
 import ke.or.explorersanddevelopers.lms.model.entity.Instructor;
+import ke.or.explorersanddevelopers.lms.repositories.AddressRepository;
 import ke.or.explorersanddevelopers.lms.repositories.InstructorRepository;
 import ke.or.explorersanddevelopers.lms.service.InstructorService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,8 @@ public class InstructorServiceImpl implements InstructorService {
 
     private final InstructorRepository instructorRepository;
     private final InstructorMapper instructorMapper;
+    private final AddressMapper addressMapper;
+    private final AddressRepository addressRepository;
 
     @Override
     public InstructorDto saveNewInstructor(InstructorDto instructorDto) {
@@ -63,6 +69,23 @@ public class InstructorServiceImpl implements InstructorService {
         instructorRepository.delete(instructorByIdFromDb);
         log.info("Successfully deleted an instructor");
         return true;
+    }
+
+    @Override
+    public InstructorDto addAddress(BigDecimal instructorId, AddressDto addressDto) {
+        Instructor oldInstructorRecord = getInstructorByIdFromDb(instructorId);
+        Address addressEntity = addressMapper.toEntity(addressDto);
+
+        Address savedAddress = addressRepository.save(addressEntity);
+        List<Address> addresses = oldInstructorRecord.getAddresses();
+        if (addresses == null) {
+            oldInstructorRecord.setAddresses(new ArrayList<>());
+        }
+        oldInstructorRecord.getAddresses().add(savedAddress);
+
+        Instructor newInstructorRecord = instructorRepository.save(oldInstructorRecord);
+
+        return instructorMapper.toDto(newInstructorRecord);
     }
 
     private Instructor getInstructorByIdFromDb(BigDecimal instructorId) {
