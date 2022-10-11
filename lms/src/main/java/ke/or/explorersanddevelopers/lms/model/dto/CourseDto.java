@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -27,7 +28,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(name = "Course Dto", description = "Course Dto details")
-public class CourseDto implements Serializable {
+public class CourseDto extends RepresentationModel<CourseDto> implements Serializable {
 
     private static final long serialVersionUID = 1519602186785582645L;
     @NotNull
@@ -67,6 +68,7 @@ public class CourseDto implements Serializable {
 
     @Schema(description = "A list of the course's topics")
     private List<TopicDto> topics;
+
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

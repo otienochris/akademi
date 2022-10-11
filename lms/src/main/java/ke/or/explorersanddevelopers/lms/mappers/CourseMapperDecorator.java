@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import com.sun.xml.bind.v2.TODO;
 import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Course;
 import ke.or.explorersanddevelopers.lms.model.entity.CourseEnrollment;
@@ -55,5 +56,12 @@ public class CourseMapperDecorator implements CourseMapper {
         }
 
         return mappedCourseDto;
+    }
+
+    @Override
+    public Course toEntity(CourseDto courseDto) {
+        Course mappedCourseEntity = courseMapper.toEntity(courseDto);
+
+        return mappedCourseEntity;
     }
 }
