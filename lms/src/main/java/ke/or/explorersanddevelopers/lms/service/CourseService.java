@@ -1,8 +1,6 @@
 package ke.or.explorersanddevelopers.lms.service;
 
 import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
-import ke.or.explorersanddevelopers.lms.model.entity.Course;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
@@ -15,13 +13,13 @@ import java.util.List;
 public interface CourseService {
 
 /**
- *This method creates a course record
+ * This method creates a course record
  *
  * @param courseDto - the course details required to create a course
- * @return  returns the created course
+ * @return returns the created course
  */
 
-CourseDto createNewCourse(CourseDto courseDto);
+CourseDto createNewCourse(BigDecimal instructorId, CourseDto courseDto);
 
 /**
  * This method retrieves a course by course record id

@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
@@ -23,7 +22,7 @@ import java.util.List;
  */
 
 @Slf4j
-@ControllerAdvice
+//@ControllerAdvice
 public class MvcExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)

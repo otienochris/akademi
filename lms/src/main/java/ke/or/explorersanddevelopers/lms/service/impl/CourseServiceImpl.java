@@ -5,7 +5,9 @@ import ke.or.explorersanddevelopers.lms.exception.ResourceNotFoundException;
 import ke.or.explorersanddevelopers.lms.mappers.CourseMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Course;
+import ke.or.explorersanddevelopers.lms.model.entity.Instructor;
 import ke.or.explorersanddevelopers.lms.repositories.CourseRepository;
+import ke.or.explorersanddevelopers.lms.repositories.InstructorRepository;
 import ke.or.explorersanddevelopers.lms.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -30,22 +31,47 @@ public class CourseServiceImpl implements CourseService {
     private final CourseMapper courseMapper;
 
     private final CourseRepository courseRepository;
+    private final InstructorRepository instructorRepository;
 
     @Override
-    public CourseDto createNewCourse(CourseDto courseDto) {
+    public CourseDto createNewCourse(BigDecimal instructorId, CourseDto courseDto) {
         log.info("Creating  a new course ");
+        // check if instructor exists
+        Instructor instructor = getInstructorByIdFromDb(instructorId);
+
+        // process course
         Course courseEntity = courseMapper.toEntity(courseDto);
         courseEntity.setVersion(null);
+        List<Instructor> instructors = courseEntity.getInstructors();
+        if (instructors == null)
+            courseEntity.setInstructors(new ArrayList<>());
+        courseEntity.getInstructors().add(instructor);
         Course createdCourse = courseRepository.save(courseEntity);
+
+        // assign the course to the instructor
+        List<Course> courses = instructor.getCourses();
+        if (courses == null)
+            instructor.setCourses(new ArrayList<>());
+        instructor.getCourses().add(createdCourse);
+        instructorRepository.save(instructor);
+
         log.info("Successfully created a course");
         return courseMapper.toDto(createdCourse);
+    }
+
+    private Instructor getInstructorByIdFromDb(BigDecimal instructorId) {
+        return instructorRepository.getByInstructorId(instructorId).orElseThrow(() -> {
+            String message = "We could not find an instructor with the provided id [" + instructorId + "]";
+            log.error(message);
+            throw new NoSuchRecordException(message);
+        });
     }
 
     @Override
     public CourseDto getCourseByCode(BigDecimal courseId) {
         log.info("Retrieving a course with the following id: " + courseId);
         Course course = courseRepository.getByCourseId(courseId)
-                .orElseThrow(() -> new NoSuchRecordException("Course with id:" + courseId  + ", not found"));
+                .orElseThrow(() -> new NoSuchRecordException("Course with id:" + courseId + ", not found"));
         log.info("Retrieved course with id: " + courseId);
         return courseMapper.toDto(course);
     }

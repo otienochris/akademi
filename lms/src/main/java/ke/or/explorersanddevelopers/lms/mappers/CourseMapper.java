@@ -2,7 +2,10 @@ package ke.or.explorersanddevelopers.lms.mappers;
 
 import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Course;
-import org.mapstruct.*;
+import org.mapstruct.DecoratedWith;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -16,7 +19,8 @@ public interface CourseMapper {
     @Mappings(value = {
             @Mapping(target = "reviews", ignore = true),
             @Mapping(target = "courseEnrollments", ignore = true),
-            @Mapping(target = "topics", ignore = true)
+            @Mapping(target = "topics", ignore = true),
+            @Mapping(target = "instructors", ignore = true)
     })
         //convert Entity to Dto
     CourseDto toDto(Course course);
@@ -24,7 +28,8 @@ public interface CourseMapper {
     @Mappings(value = {
             @Mapping(target = "reviews", ignore = true),
             @Mapping(target = "courseEnrollments", ignore = true),
-            @Mapping(target = "topics", ignore = true)
+            @Mapping(target = "topics", ignore = true),
+            @Mapping(target = "instructors", ignore = true)
     })
     Course toEntity(CourseDto courseDto);
 }

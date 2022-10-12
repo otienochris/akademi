@@ -23,4 +23,12 @@ public interface SubTopicMapper {
      * @return the mapped subtopic
      */
     SubTopicDto toDto(SubTopic subTopic);
+
+    /**
+     * This method maps a subtopic dto to its equivalent subtopic entity
+     *
+     * @param subTopicDto - the dto to be mapped
+     * @return the mapped subtopic entity
+     */
+    SubTopic toEntity(SubTopicDto subTopicDto);
 }

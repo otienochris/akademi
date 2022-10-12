@@ -32,4 +32,11 @@ public interface CourseEnrollmentMapper {
             @Mapping(target = "testEnrollments", ignore = true),
     })
     CourseEnrollmentDto toDto(CourseEnrollment courseEnrollment);
+
+    @Mappings(value = {
+            @Mapping(target = "course", ignore = true),
+            @Mapping(target = "student", ignore = true),
+            @Mapping(target = "testEnrollments", ignore = true),
+    })
+    CourseEnrollment toEntity(CourseEnrollmentDto courseEnrollmentDto);
 }

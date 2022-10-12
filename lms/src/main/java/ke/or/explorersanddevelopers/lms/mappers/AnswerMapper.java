@@ -23,4 +23,12 @@ public interface AnswerMapper {
      * @return the mapped answer dto
      */
     AnswerDto toDto(Answer answer);
+
+    /**
+     * This method maps an answer dto to its equivalent answer entity
+     *
+     * @param answerDto - the dto to be mapped
+     * @return the mapped answer dto
+     */
+    Answer toEntity(AnswerDto answerDto);
 }

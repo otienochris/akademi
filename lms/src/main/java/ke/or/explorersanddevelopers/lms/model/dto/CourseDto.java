@@ -45,9 +45,10 @@ public class CourseDto extends RepresentationModel<CourseDto> implements Seriali
     @Schema(example = "https://xyz.com/image.png", description = "A course's thumbnail image link.")
     private String thumbnailLink;
 
+    @Null
     @Min(value = 1, message = "Rating must be between 1 and 5 both included.")
     @Max(value = 5, message = "Rating must be between 1 and 5 both included.")
-    @Schema(example = "3", description = "Rating value")
+    @Schema(example = "3", description = "Rating value", accessMode = Schema.AccessMode.READ_ONLY)
     private Integer rating;
 
     @Schema(example = "10", description = "Course's price.")
@@ -60,15 +61,21 @@ public class CourseDto extends RepresentationModel<CourseDto> implements Seriali
     @Schema(example = "https://xyz.com/video/sdfsf", description = "Course's introduction video link.")
     private String introductionVideoLink;
 
-    @Schema(description = "Courses' reviews.")
+    @Null
+    @Schema(description = "Courses' reviews.", accessMode = Schema.AccessMode.READ_ONLY)
     private List<ReviewDto> reviews;
 
-    @Schema(description = "A list of course enrollments for this course.")
+    @Null
+    @Schema(description = "A list of course enrollments for this course.", accessMode = Schema.AccessMode.READ_ONLY)
     private List<CourseEnrollmentDto> courseEnrollments;
 
-    @Schema(description = "A list of the course's topics")
+    @Null
+    @Schema(description = "A list of the course's topics", accessMode = Schema.AccessMode.READ_ONLY)
     private List<TopicDto> topics;
 
+    @Null
+    @Schema(description = "A list of instructors", accessMode = Schema.AccessMode.READ_ONLY)
+    private List<InstructorDto> instructors;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

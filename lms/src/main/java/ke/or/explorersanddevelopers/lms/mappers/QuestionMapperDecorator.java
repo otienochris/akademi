@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.model.dto.AnswerDto;
 import ke.or.explorersanddevelopers.lms.model.dto.QuestionDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Answer;
 import ke.or.explorersanddevelopers.lms.model.entity.Question;
@@ -32,5 +33,18 @@ public class QuestionMapperDecorator implements QuestionMapper {
             answers.forEach(answer -> mappedQuestionDto.getAnswers().add(answerMapper.toDto(answer)));
         }
         return mappedQuestionDto;
+    }
+
+    @Override
+    public Question toEntity(QuestionDto questionDto) {
+        Question mappedQuestion = questionMapper.toEntity(questionDto);
+
+        mappedQuestion.setAnswers(new ArrayList<>());
+        List<AnswerDto> answers = questionDto.getAnswers();
+        if (answers != null && answers.size() > 0) {
+            answers.forEach(answer -> mappedQuestion.getAnswers().add(answerMapper.toEntity(answer)));
+        }
+
+        return mappedQuestion;
     }
 }

@@ -1,11 +1,8 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
-import com.sun.xml.bind.v2.TODO;
-import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
-import ke.or.explorersanddevelopers.lms.model.entity.Course;
-import ke.or.explorersanddevelopers.lms.model.entity.CourseEnrollment;
-import ke.or.explorersanddevelopers.lms.model.entity.Review;
-import ke.or.explorersanddevelopers.lms.model.entity.Topic;
+import ke.or.explorersanddevelopers.lms.mapper.InstructorMapper;
+import ke.or.explorersanddevelopers.lms.model.dto.*;
+import ke.or.explorersanddevelopers.lms.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -33,10 +30,14 @@ public class CourseMapperDecorator implements CourseMapper {
     @Qualifier("delegate")
     private TopicMapper topicMapper;
 
+    @Autowired
+    @Qualifier("delegate")
+    private InstructorMapper instructorMapper;
+
     @Override
     public CourseDto toDto(Course course) {
         CourseDto mappedCourseDto = courseMapper.toDto(course);
-        //TODO: implement course mapper
+
         mappedCourseDto.setReviews(new ArrayList<>());
         List<Review> reviews = course.getReviews();
         if (reviews != null && reviews.size() > 0) {
@@ -55,12 +56,42 @@ public class CourseMapperDecorator implements CourseMapper {
             topics.forEach(topic -> mappedCourseDto.getTopics().add(topicMapper.toDto(topic)));
         }
 
+        mappedCourseDto.setInstructors(new ArrayList<>());
+        List<Instructor> instructors = course.getInstructors();
+        if (instructors != null && instructors.size() > 0) {
+            instructors.forEach(instructor -> mappedCourseDto.getInstructors().add(instructorMapper.toDto(instructor)));
+        }
+
         return mappedCourseDto;
     }
 
     @Override
     public Course toEntity(CourseDto courseDto) {
         Course mappedCourseEntity = courseMapper.toEntity(courseDto);
+
+        mappedCourseEntity.setReviews(new ArrayList<>());
+        List<ReviewDto> reviews = courseDto.getReviews();
+        if (reviews != null && reviews.size() > 0) {
+            reviews.forEach(reviewDto -> mappedCourseEntity.getReviews().add(reviewMapper.toEntity(reviewDto)));
+        }
+
+        mappedCourseEntity.setCourseEnrollments(new ArrayList<>());
+        List<CourseEnrollmentDto> courseEnrollments = courseDto.getCourseEnrollments();
+        if (courseEnrollments != null && courseEnrollments.size() > 0) {
+            courseEnrollments.forEach(courseEnrollmentDto -> mappedCourseEntity.getCourseEnrollments().add(courseEnrollmentMapper.toEntity(courseEnrollmentDto)));
+        }
+
+        mappedCourseEntity.setTopics(new ArrayList<>());
+        List<TopicDto> topics = courseDto.getTopics();
+        if (topics != null && topics.size() > 0) {
+            topics.forEach(topicDto -> mappedCourseEntity.getTopics().add(topicMapper.toEntity(topicDto)));
+        }
+
+        mappedCourseEntity.setInstructors(new ArrayList<>());
+        List<InstructorDto> instructors = courseDto.getInstructors();
+        if (instructors != null && instructors.size() > 0) {
+            instructors.forEach(instructorDto -> mappedCourseEntity.getInstructors().add(instructorMapper.toEntity(instructorDto)));
+        }
 
         return mappedCourseEntity;
     }

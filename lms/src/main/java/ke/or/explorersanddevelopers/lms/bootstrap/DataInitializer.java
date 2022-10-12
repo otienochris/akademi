@@ -1,10 +1,13 @@
 package ke.or.explorersanddevelopers.lms.bootstrap;
 
+import ke.or.explorersanddevelopers.lms.enums.CourseCategoryEnum;
 import ke.or.explorersanddevelopers.lms.enums.RelativeRoleEnum;
 import ke.or.explorersanddevelopers.lms.enums.RelativeTypeEnum;
+import ke.or.explorersanddevelopers.lms.model.entity.Course;
 import ke.or.explorersanddevelopers.lms.model.entity.Instructor;
 import ke.or.explorersanddevelopers.lms.model.entity.Relative;
 import ke.or.explorersanddevelopers.lms.model.entity.Student;
+import ke.or.explorersanddevelopers.lms.repositories.CourseRepository;
 import ke.or.explorersanddevelopers.lms.repositories.InstructorRepository;
 import ke.or.explorersanddevelopers.lms.repositories.RelativeRepository;
 import ke.or.explorersanddevelopers.lms.repositories.StudentRepository;
@@ -12,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,17 +33,40 @@ public class DataInitializer implements CommandLineRunner {
     private final InstructorRepository instructorRepository;
     private final RelativeRepository relativeRepository;
 
+    private final CourseRepository courseRepository;
+
     @Override
     public void run(String... args) throws Exception {
-
+        List<Instructor> instructors = new ArrayList<>();
         if (studentRepository.count() == 0)
             studentRepository.saveAll(getAllStudents());
 
-        if (instructorRepository.count() == 0)
-            instructorRepository.saveAll(getAllInstructors());
+        if (instructorRepository.count() == 0) {
+            instructors = instructorRepository.saveAll(getAllInstructors());
+        }
 
         if (relativeRepository.count() == 0)
             relativeRepository.saveAll(getAllRelatives());
+
+        if (courseRepository.count() == 0 && instructors.size() > 0) {
+            Instructor instructor = instructors.get(0); // instructor saving the course
+            Course course = Course.builder()
+                    .thumbnailLink("https://p0.piqsels.com/preview/724/71/644/flowwer-white-blur-leaves.jpg")
+                    .price(BigDecimal.valueOf(10))
+                    .category(CourseCategoryEnum.AGRICULTURE)
+                    .title("Introduction to some useless course")
+                    .introductionVideoLink("https://youtu.be/Y2rdmKtVss0")
+                    .description("There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words e")
+                    .instructors(new ArrayList<>(List.of(instructor)))
+                    .build();
+            Course savedCourse = courseRepository.save(course);
+
+            if (instructor.getCourses() == null)
+                instructor.setCourses(new ArrayList<>());
+            instructor.getCourses().add(savedCourse);
+            instructorRepository.save(instructor);
+        }
+
 
     }
 
