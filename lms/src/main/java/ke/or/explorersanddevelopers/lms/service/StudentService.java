@@ -108,4 +108,14 @@ public interface StudentService {
      */
     UUID generateToken(BigDecimal studentId);
 
+    /**
+     * This method allows a student to submit a completed topic
+     *
+     * @param studentId - the id of the student submitting the completed topic
+     * @param topicId   - the id of the topic being submitted
+     * @param courseId  - the id of the topic's course
+     * @return the updated course enrollment record
+     */
+    CourseEnrollmentDto completeTopic(BigDecimal studentId, BigDecimal courseId, BigDecimal topicId);
+
 }

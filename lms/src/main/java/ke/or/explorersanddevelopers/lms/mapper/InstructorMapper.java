@@ -26,7 +26,8 @@ public interface InstructorMapper {
      */
     @Mappings(value = {
             @Mapping(target = "addresses", ignore = true),
-            @Mapping(target = "reviews", ignore = true)
+            @Mapping(target = "reviews", ignore = true),
+            @Mapping(target = "courses", ignore = true),
     })
     Instructor toEntity(InstructorDto instructorDto);
 
@@ -38,7 +39,8 @@ public interface InstructorMapper {
      */
     @Mappings(value = {
             @Mapping(target = "addresses", ignore = true),
-            @Mapping(target = "reviews", ignore = true)
+            @Mapping(target = "reviews", ignore = true),
+            @Mapping(target = "courses", ignore = true),
     })
     InstructorDto toDto(Instructor savedInstructor);
 }

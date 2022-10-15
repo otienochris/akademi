@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -26,7 +27,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(name = "Certificate Dto", description = "Certificate Dto details")
-public class CertificateDto implements Serializable {
+public class CertificateDto extends RepresentationModel<CertificateDto> implements Serializable {
 
     private static final long serialVersionUID = -6684621063380419878L;
     @Null
@@ -43,6 +44,10 @@ public class CertificateDto implements Serializable {
     @NotNull
     @Schema(example = "GENERATED", description = "Has the user already generated or downloaded the certificate?")
     private CertificateStatusEnum status;
+
+    @Null
+    @Schema(description = "Student owning this certificate.", accessMode = Schema.AccessMode.READ_ONLY)
+    private StudentDto student;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

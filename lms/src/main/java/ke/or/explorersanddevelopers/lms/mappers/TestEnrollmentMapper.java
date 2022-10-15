@@ -30,4 +30,16 @@ public interface TestEnrollmentMapper {
             @Mapping(target = "completedQuestions", ignore = true)
     })
     TestEnrollmentDto toDto(TestEnrollment testEnrollment);
+
+    /**
+     * This method maps a test enrollment dto to its equivalent test enrollment entity
+     *
+     * @param testEnrollmentDto - the test enrollment dto to be mapped
+     * @return the mapped test enrollment entity
+     */
+    @Mappings(value = {
+            @Mapping(target = "test", ignore = true),
+            @Mapping(target = "completedQuestions", ignore = true)
+    })
+    TestEnrollment toEntity(TestEnrollmentDto testEnrollmentDto);
 }

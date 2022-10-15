@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -27,7 +28,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(name = "Course Dto", description = "Course Dto details")
-public class CourseDto implements Serializable {
+public class CourseDto extends RepresentationModel<CourseDto> implements Serializable {
 
     private static final long serialVersionUID = 1519602186785582645L;
     @NotNull
@@ -44,9 +45,10 @@ public class CourseDto implements Serializable {
     @Schema(example = "https://xyz.com/image.png", description = "A course's thumbnail image link.")
     private String thumbnailLink;
 
+    @Null
     @Min(value = 1, message = "Rating must be between 1 and 5 both included.")
     @Max(value = 5, message = "Rating must be between 1 and 5 both included.")
-    @Schema(example = "3", description = "Rating value")
+    @Schema(example = "3", description = "Rating value", accessMode = Schema.AccessMode.READ_ONLY)
     private Integer rating;
 
     @Schema(example = "10", description = "Course's price.")
@@ -59,14 +61,21 @@ public class CourseDto implements Serializable {
     @Schema(example = "https://xyz.com/video/sdfsf", description = "Course's introduction video link.")
     private String introductionVideoLink;
 
-    @Schema(description = "Courses' reviews.")
+    @Null
+    @Schema(description = "Courses' reviews.", accessMode = Schema.AccessMode.READ_ONLY)
     private List<ReviewDto> reviews;
 
-    @Schema(description = "A list of course enrollments for this course.")
+    @Null
+    @Schema(description = "A list of course enrollments for this course.", accessMode = Schema.AccessMode.READ_ONLY)
     private List<CourseEnrollmentDto> courseEnrollments;
 
-    @Schema(description = "A list of the course's topics")
+    @Null
+    @Schema(description = "A list of the course's topics", accessMode = Schema.AccessMode.READ_ONLY)
     private List<TopicDto> topics;
+
+    @Null
+    @Schema(description = "A list of instructors", accessMode = Schema.AccessMode.READ_ONLY)
+    private List<InstructorDto> instructors;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

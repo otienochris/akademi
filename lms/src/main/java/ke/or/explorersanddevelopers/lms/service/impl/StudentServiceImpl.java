@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -43,6 +45,7 @@ public class StudentServiceImpl implements StudentService {
     private final AddressRepository addressRepository;
     private final CertificateMapper certificateMapper;
     private final InstructorRepository instructorRepository;
+    private final TopicRepository topicRepository;
 
     @Override
     public StudentDto saveNewStudent(StudentDto studentDto) {
@@ -272,6 +275,83 @@ public class StudentServiceImpl implements StudentService {
         student.setToken(token.toString());
         studentRepository.save(student);
         return token;
+    }
+
+    private static List<StatusEnum> getTestStatuses(CourseEnrollment oldCourseEnrollment) {
+        return oldCourseEnrollment.getTestEnrollments().stream().flatMap(testEnrollment -> Stream.of(testEnrollment.getStatus())).collect(Collectors.toList());
+    }
+
+    @Override
+    public CourseEnrollmentDto completeTopic(BigDecimal studentId, BigDecimal courseId, BigDecimal topicId) {
+
+        CourseEnrollment currentCourseEnrollment = null;
+        Topic topic = getTopicByCodeFromDb(topicId);
+        Student student = getStudentByCodeFromDb(studentId);
+        Course course = getCourseByCodeFromDb(courseId);
+        CourseEnrollment oldCourseEnrollment = getCourseEnrollmentByStudentAndCourseFromDb(student, course);
+
+
+        if (oldCourseEnrollment.getCompletedTopics() == null) {
+            oldCourseEnrollment.setCompletedTopics(new ArrayList<>());
+        }
+
+        if (oldCourseEnrollment.getCompletedTopics() != null && oldCourseEnrollment.getCompletedTopics().size() == 0) {
+
+            // add the new completed topic to the empty list
+            oldCourseEnrollment.getCompletedTopics().add(topic);
+
+            // check if that was the last topic and test are done
+            List<StatusEnum> testStatuses = getTestStatuses(oldCourseEnrollment);
+            List<Topic> topics = course.getTopics();
+            if (topics != null && topics.size() == oldCourseEnrollment.getCompletedTopics().size() && !testStatuses.contains(StatusEnum.PENDING)) {
+                oldCourseEnrollment.setStatus(StatusEnum.COMPLETE);
+            }
+
+            // save changes
+            currentCourseEnrollment = courseEnrollmentRepository.save(oldCourseEnrollment);
+
+        } else if (oldCourseEnrollment.getCompletedTopics() != null) {
+
+            // check if topic is already in the list of completed topics
+            boolean[] topicIsPresent = new boolean[]{false};
+            oldCourseEnrollment.getCompletedTopics().parallelStream().forEach(topic1 -> {
+                if (Objects.equals(topic1.getTopicId(), topicId)) {
+                    topicIsPresent[0] = true;
+                }
+            });
+
+            if (topicIsPresent[0]) {
+                return courseEnrollmentMapper.toDto(oldCourseEnrollment);
+            } else {
+                oldCourseEnrollment.getCompletedTopics().add(topic); // add the new completed topic
+
+                // check if that was the last topic and tests are all done
+                List<StatusEnum> testStatuses = getTestStatuses(oldCourseEnrollment);
+                List<Topic> topics = course.getTopics();
+                if (topics != null && topics.size() == oldCourseEnrollment.getCompletedTopics().size() && testStatuses.contains(StatusEnum.PENDING)) {
+                    oldCourseEnrollment.setStatus(StatusEnum.COMPLETE);
+                }
+
+                // save changes
+                currentCourseEnrollment = courseEnrollmentRepository.save(oldCourseEnrollment);
+            }
+        }
+        return courseEnrollmentMapper.toDto(currentCourseEnrollment);
+    }
+
+    private CourseEnrollment getCourseEnrollmentByStudentAndCourseFromDb(Student student, Course course) {
+        return courseEnrollmentRepository.getByCourseAndStudent(course, student).orElseThrow(() -> {
+            String message = "The student of id: " + student.getStudentId() + " is not enrolled in the course of id: " + course.getCourseId();
+            throw new NoSuchRecordException(message);
+        });
+    }
+
+    private Topic getTopicByCodeFromDb(BigDecimal topicId) {
+        return topicRepository.getByTopicId(topicId).orElseThrow(() -> {
+            String message = "We could not find a topic of id: [" + topicId + "]";
+            log.error(message);
+            throw new NoSuchRecordException(message);
+        });
     }
 
     private Student getStudentByCodeFromDb(BigDecimal studentId) {

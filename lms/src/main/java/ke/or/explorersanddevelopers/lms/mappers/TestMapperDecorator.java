@@ -1,6 +1,8 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.model.dto.QuestionDto;
 import ke.or.explorersanddevelopers.lms.model.dto.TestDto;
+import ke.or.explorersanddevelopers.lms.model.dto.TopicDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Question;
 import ke.or.explorersanddevelopers.lms.model.entity.Test;
 import ke.or.explorersanddevelopers.lms.model.entity.Topic;
@@ -48,5 +50,23 @@ public class TestMapperDecorator implements TestMapper {
         }
 
         return mappedTestDto;
+    }
+
+    @Override
+    public Test toEntity(TestDto testDto) {
+        Test mappedTest = testMapper.toEntity(testDto);
+
+        mappedTest.setQuestions(new ArrayList<>()); // initiale
+        List<QuestionDto> questions = testDto.getQuestions();
+        if (questions != null && questions.size() > 0) {
+            questions.forEach(question -> mappedTest.getQuestions().add(questionMapper.toEntity(question)));
+        }
+
+        mappedTest.setTopics(new ArrayList<>());
+        List<TopicDto> topics = testDto.getTopics();
+        if (topics != null && topics.size() > 0) {
+            topics.forEach(topic -> mappedTest.getTopics().add(topicMapper.toEntity(topic)));
+        }
+        return mappedTest;
     }
 }

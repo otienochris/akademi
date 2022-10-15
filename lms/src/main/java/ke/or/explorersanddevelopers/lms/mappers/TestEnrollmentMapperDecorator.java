@@ -1,5 +1,7 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.model.dto.QuestionDto;
+import ke.or.explorersanddevelopers.lms.model.dto.TestDto;
 import ke.or.explorersanddevelopers.lms.model.dto.TestEnrollmentDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Question;
 import ke.or.explorersanddevelopers.lms.model.entity.Test;
@@ -43,5 +45,21 @@ public class TestEnrollmentMapperDecorator implements TestEnrollmentMapper {
         }
 
         return mappedTestEnrollmentDto;
+    }
+
+    @Override
+    public TestEnrollment toEntity(TestEnrollmentDto testEnrollmentDto) {
+        TestEnrollment mappedTestEnrollment = testEnrollmentMapper.toEntity(testEnrollmentDto);
+
+        TestDto testDto = testEnrollmentDto.getTest();
+        if (testDto != null)
+            mappedTestEnrollment.setTest(testMapper.toEntity(testDto));
+
+        mappedTestEnrollment.setCompletedQuestions(new ArrayList<>());
+        List<QuestionDto> completedQuestions = testEnrollmentDto.getCompletedQuestions();
+        if (completedQuestions != null && completedQuestions.size() > 0) {
+            completedQuestions.forEach(question -> mappedTestEnrollment.getCompletedQuestions().add(questionMapper.toEntity(question)));
+        }
+        return mappedTestEnrollment;
     }
 }

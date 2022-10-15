@@ -31,4 +31,15 @@ public interface TestMapper {
             @Mapping(target = "questions", ignore = true)
     })
     TestDto toDto(Test test);
+
+    /**
+     * This method maps a test dto to its equivalent test entity
+     *
+     * @param testDto - the test dto to be mapped
+     * @return the mapped test entity
+     */
+    @Mappings(value = {
+            @Mapping(target = "questions", ignore = true)
+    })
+    Test toEntity(TestDto testDto);
 }

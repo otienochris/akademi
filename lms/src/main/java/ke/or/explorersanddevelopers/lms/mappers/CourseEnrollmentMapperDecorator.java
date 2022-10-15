@@ -3,6 +3,7 @@ package ke.or.explorersanddevelopers.lms.mappers;
 import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
 import ke.or.explorersanddevelopers.lms.model.dto.CourseEnrollmentDto;
 import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
+import ke.or.explorersanddevelopers.lms.model.dto.TestEnrollmentDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Course;
 import ke.or.explorersanddevelopers.lms.model.entity.CourseEnrollment;
 import ke.or.explorersanddevelopers.lms.model.entity.Student;
@@ -60,6 +61,35 @@ public class CourseEnrollmentMapperDecorator implements CourseEnrollmentMapper {
         if (testEnrollments != null && testEnrollments.size() > 0) {
             testEnrollments.forEach(testEnrollment -> mappedCourseEnrollmentDto.getTestEnrollments().add(testEnrollmentMapper.toDto(testEnrollment)));
         }
+
         return mappedCourseEnrollmentDto;
+    }
+
+    @Override
+    public CourseEnrollment toEntity(CourseEnrollmentDto courseEnrollmentDto) {
+        CourseEnrollment mappedCourseEnrollment = courseEnrollmentMapper.toEntity(courseEnrollmentDto);
+
+        // set studentDto
+        StudentDto studentDto = courseEnrollmentDto.getStudent();
+        if (studentDto != null) {
+            Student student = studentMapper.toEntity(studentDto);
+            mappedCourseEnrollment.setStudent(student);
+        }
+
+        // set course
+        CourseDto courseDto = courseEnrollmentDto.getCourse();
+        if (courseDto != null) {
+            Course course = courseMapper.toEntity(courseDto);
+            mappedCourseEnrollment.setCourse(course);
+        }
+
+        // set test enrollments
+        mappedCourseEnrollment.setTestEnrollments(new ArrayList<>());
+        List<TestEnrollmentDto> testEnrollmentDtoList = courseEnrollmentDto.getTestEnrollments();
+        if (testEnrollmentDtoList != null && testEnrollmentDtoList.size() > 0) {
+            testEnrollmentDtoList.forEach(testEnrollment -> mappedCourseEnrollment.getTestEnrollments().add(testEnrollmentMapper.toEntity(testEnrollment)));
+        }
+
+        return mappedCourseEnrollment;
     }
 }

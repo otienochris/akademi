@@ -29,4 +29,15 @@ public interface QuestionMapper {
             @Mapping(target = "answers", ignore = true)
     })
     QuestionDto toDto(Question question);
+
+    /**
+     * This method maps a question dto to its equivalent question entity
+     *
+     * @param questionDto - the dto to be mapped
+     * @return the mapped entity
+     */
+    @Mappings(value = {
+            @Mapping(target = "answers", ignore = true)
+    })
+    Question toEntity(QuestionDto questionDto);
 }

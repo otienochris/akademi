@@ -19,8 +19,17 @@ public interface CourseMapper {
     @Mappings(value = {
             @Mapping(target = "reviews", ignore = true),
             @Mapping(target = "courseEnrollments", ignore = true),
-            @Mapping(target = "topics", ignore = true)
+            @Mapping(target = "topics", ignore = true),
+            @Mapping(target = "instructors", ignore = true)
     })
+        //convert Entity to Dto
     CourseDto toDto(Course course);
-
+    //convert Dto to Entity
+    @Mappings(value = {
+            @Mapping(target = "reviews", ignore = true),
+            @Mapping(target = "courseEnrollments", ignore = true),
+            @Mapping(target = "topics", ignore = true),
+            @Mapping(target = "instructors", ignore = true)
+    })
+    Course toEntity(CourseDto courseDto);
 }

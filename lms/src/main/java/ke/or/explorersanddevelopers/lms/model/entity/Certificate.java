@@ -43,6 +43,9 @@ public class Certificate {
     @Enumerated(EnumType.STRING)
     private CertificateStatusEnum status;
 
+    @ManyToOne
+    private Student student;
+
     @CreationTimestamp
     @Column(name = "CREATION_DATE")
     private Date creationDate;

@@ -1,11 +1,14 @@
 package ke.or.explorersanddevelopers.lms.mapper;
 
 import ke.or.explorersanddevelopers.lms.mappers.AddressMapper;
+import ke.or.explorersanddevelopers.lms.mappers.CourseMapper;
 import ke.or.explorersanddevelopers.lms.mappers.ReviewMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
+import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
 import ke.or.explorersanddevelopers.lms.model.dto.InstructorDto;
 import ke.or.explorersanddevelopers.lms.model.dto.ReviewDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Address;
+import ke.or.explorersanddevelopers.lms.model.entity.Course;
 import ke.or.explorersanddevelopers.lms.model.entity.Instructor;
 import ke.or.explorersanddevelopers.lms.model.entity.Review;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +33,16 @@ public class InstructorMapperDecorator implements InstructorMapper {
 
     @Autowired
     private AddressMapper addressMapper;
+    @Autowired
+    @Qualifier("delegate")
+    private CourseMapper courseMapper;
 
     @Override
     public Instructor toEntity(InstructorDto instructorDto) {
         Instructor mappedInstructor = instructorMapper.toEntity(instructorDto);
         mappedInstructor.setReviews(new ArrayList<>());
         mappedInstructor.setAddresses(new ArrayList<>());
+        mappedInstructor.setCourses(new ArrayList<>());
 
         List<ReviewDto> reviewDtoList = instructorDto.getReviews();
         if (reviewDtoList != null && reviewDtoList.size() > 0) {
@@ -46,24 +53,34 @@ public class InstructorMapperDecorator implements InstructorMapper {
         if (addressDtoList != null && addressDtoList.size() > 0) {
             addressDtoList.forEach(addressDto -> mappedInstructor.getAddresses().add(addressMapper.toEntity(addressDto)));
         }
+
+        List<CourseDto> courseDtoList = instructorDto.getCourses();
+        if (courseDtoList != null && courseDtoList.size() > 0)
+            courseDtoList.forEach(courseDto -> mappedInstructor.getCourses().add(courseMapper.toEntity(courseDto)));
+
         return mappedInstructor;
     }
 
     @Override
-    public InstructorDto toDto(Instructor savedInstructor) {
-        InstructorDto mappedInstructorDto = instructorMapper.toDto(savedInstructor);
+    public InstructorDto toDto(Instructor instructor) {
+        InstructorDto mappedInstructorDto = instructorMapper.toDto(instructor);
         mappedInstructorDto.setReviews(new ArrayList<>());
         mappedInstructorDto.setAddresses(new ArrayList<>());
+        mappedInstructorDto.setCourses(new ArrayList<>());
 
-        List<Review> reviews = savedInstructor.getReviews();
+        List<Review> reviews = instructor.getReviews();
         if (reviews != null && reviews.size() > 0) {
             reviews.forEach(review -> mappedInstructorDto.getReviews().add(reviewMapper.toDto(review)));
         }
 
-        List<Address> addresses = savedInstructor.getAddresses();
+        List<Address> addresses = instructor.getAddresses();
         if (addresses != null && addresses.size() > 0) {
             addresses.forEach(address -> mappedInstructorDto.getAddresses().add(addressMapper.toDto(address)));
         }
+
+        List<Course> courses = instructor.getCourses();
+        if (courses != null && courses.size() > 0)
+            courses.forEach(course -> mappedInstructorDto.getCourses().add(courseMapper.toDto(course)));
 
         return mappedInstructorDto;
     }

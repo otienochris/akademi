@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.model.dto.SubTopicDto;
 import ke.or.explorersanddevelopers.lms.model.dto.TopicDto;
 import ke.or.explorersanddevelopers.lms.model.entity.SubTopic;
 import ke.or.explorersanddevelopers.lms.model.entity.Topic;
@@ -34,5 +35,17 @@ public class TopicMapperDecorator implements TopicMapper {
             subTopics.forEach(subTopic -> mappedTopicDto.getSubTopics().add(subTopicMapper.toDto(subTopic)));
         }
         return mappedTopicDto;
+    }
+
+    @Override
+    public Topic toEntity(TopicDto topicDto) {
+        Topic mappedTopic = topicMapper.toEntity(topicDto);
+
+        mappedTopic.setSubTopics(new ArrayList<>());
+        List<SubTopicDto> subTopicDtoList = topicDto.getSubTopics();
+        if (subTopicDtoList != null && subTopicDtoList.size() > 0) {
+            subTopicDtoList.forEach(subTopic -> mappedTopic.getSubTopics().add(subTopicMapper.toEntity(subTopic)));
+        }
+        return mappedTopic;
     }
 }

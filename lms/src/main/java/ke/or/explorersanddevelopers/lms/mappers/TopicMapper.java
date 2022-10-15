@@ -28,4 +28,9 @@ public interface TopicMapper {
             @Mapping(target = "subTopics", ignore = true)
     })
     TopicDto toDto(Topic topic);
+
+    @Mappings(value = {
+            @Mapping(target = "subTopics", ignore = true)
+    })
+    Topic toEntity(TopicDto topicDto);
 }
