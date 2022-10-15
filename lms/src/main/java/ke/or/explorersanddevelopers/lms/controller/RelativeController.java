@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import ke.or.explorersanddevelopers.lms.exception.ErrorDetails;
 import ke.or.explorersanddevelopers.lms.model.dto.RelativeDto;
 import ke.or.explorersanddevelopers.lms.service.RelativeService;
@@ -47,6 +48,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))
         }),
 })
+@Tag(name = "Relative Controller", description = "A Controller to manage relative operations")
 public class RelativeController {
 
     private final RelativeService relativeService;

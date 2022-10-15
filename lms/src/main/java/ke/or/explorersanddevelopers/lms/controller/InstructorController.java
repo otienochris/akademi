@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import ke.or.explorersanddevelopers.lms.exception.ErrorDetails;
 import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
 import ke.or.explorersanddevelopers.lms.model.dto.InstructorDto;
@@ -51,6 +52,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))
         }),
 })
+@Tag(name = "Instructor Controller", description = "A Controller to manage instructor operations")
 public class InstructorController {
     private final InstructorService instructorService;
 
@@ -64,7 +66,7 @@ public class InstructorController {
 
     @GetMapping("/{instructorId}")
     @Operation(summary = "Get an instructor by id")
-    @ApiResponse(responseCode = "200", description = "The student was saved successfully")
+    @ApiResponse(responseCode = "200", description = "The student was retrieved successfully")
     public ResponseEntity<InstructorDto> getInstructorById(@PathVariable BigDecimal instructorId) {
         InstructorDto newInstructor = instructorService.getInstructorById(instructorId);
         return ResponseEntity.ok(addHateoasLinks(newInstructor));
