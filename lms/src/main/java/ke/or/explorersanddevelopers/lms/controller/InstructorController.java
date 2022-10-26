@@ -56,6 +56,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class InstructorController {
     private final InstructorService instructorService;
 
+
     @PostMapping
     @Operation(summary = "Save a new instructor")
     @ApiResponse(responseCode = "201", description = "The student was saved successfully")
@@ -89,7 +90,6 @@ public class InstructorController {
     public ResponseEntity<Boolean> deleteInstructorById(@PathVariable BigDecimal instructorId) {
         return ResponseEntity.ok(instructorService.deleteInstructorById(instructorId));
     }
-
     @PostMapping("/{instructorId}/add-address")
     @Operation(summary = "Add a new address to an instructor")
     @ApiResponse(responseCode = "202", description = "Address was added successfully")

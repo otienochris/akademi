@@ -60,6 +60,10 @@ public class Topic {
     @Column(name = "VERSION")
     private Long version;
 
+    @ManyToOne
+    @ToString.Exclude
+    private Course course;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

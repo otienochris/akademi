@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -24,7 +25,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(name = "Subtopic Dto", description = "Subtopic Dto details")
-public class SubTopicDto implements Serializable {
+public class SubTopicDto extends RepresentationModel<SubTopicDto> implements Serializable {
 
     private static final long serialVersionUID = -6899713947264547824L;
     @Null
