@@ -35,7 +35,7 @@ public class SubTopicServiceImpl  implements SubTopicService {
 
     @Override
     public SubTopicDto createNewSubTopic(BigDecimal topicId, SubTopicDto subTopicDto) {
-        log.info("Creating a nre subtopic");
+        log.info("Creating a  subtopic");
 
         //check if the topic to be mapped to the subtopic exist
         Topic topic = getTopicById(topicId);
@@ -63,9 +63,9 @@ public class SubTopicServiceImpl  implements SubTopicService {
     }
 
     // Retrieve topic to be mapped to the subtopic
-    private Topic getTopicById(BigDecimal subTopicId) {
-        return topicRepository.getTopicById(subTopicId)
-                .orElseThrow(() -> new NoSuchRecordException("Topic with id: " + subTopicId + " does not exist"));
+    private Topic getTopicById(BigDecimal topicId) {
+        return  topicRepository.getByTopicId(topicId)
+                .orElseThrow(() -> new NoSuchRecordException("Topic with id: " + topicId + " does not exist"));
 
     }
 
@@ -73,7 +73,7 @@ public class SubTopicServiceImpl  implements SubTopicService {
     public SubTopicDto getSubTopicById(BigDecimal subTopicId) {
         log.info("Retrieving a sub topic with id: " + subTopicId);
 
-        SubTopic subTopic = subTopicRepository.findById(subTopicId)
+        SubTopic subTopic = subTopicRepository.getBySubTopicId(subTopicId)
                 .orElseThrow(() -> new NoSuchRecordException("Sub topic with id: " + subTopicId + "does not exist"));
 
         log.info("Successfully retrieved sub topic with id: " + subTopicId);

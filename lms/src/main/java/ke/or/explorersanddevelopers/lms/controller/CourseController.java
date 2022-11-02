@@ -83,9 +83,10 @@ public class CourseController {
             defaultValue = "0") Integer pageNo,
                                                                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
 
-        List<CourseDto> listOfCourses = courseService.getListOfCourses(PageRequest.of(pageNo, pageSize));
+        List<CourseDto> listOfCourses = new  ArrayList<>();
+        courseService.getListOfCourses(PageRequest.of(pageNo, pageSize))
+                        .forEach(courseDto -> listOfCourses.add(addHateoasLinks(courseDto)));
         System.out.println("Found the following courses: " + listOfCourses);
-        listOfCourses.forEach(courseDto -> listOfCourses.add(addHateoasLinks(courseDto)));
 
         CollectionModel<CourseDto> courseDtoCollectionModel = CollectionModel.of(listOfCourses);
         return ResponseEntity.ok(courseDtoCollectionModel);

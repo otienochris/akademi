@@ -120,7 +120,8 @@ public class SubTopicController {
     @Operation(summary = "Update a sub topic using its id ", description = "An endpoint to update a " +
             "sub topics", tags = "SubTopic")
     @ApiResponse(responseCode = "200", description = "Sub Topic successfully updated ")
-    public ResponseEntity<SubTopicDto> editSubTopicById(BigDecimal subTopicId, SubTopicDto subTopicDto){
+    public ResponseEntity<SubTopicDto> editSubTopicById(@PathVariable(name = "subTopicId") BigDecimal subTopicId,
+                                                        @RequestBody @Validated SubTopicDto subTopicDto){
 
         SubTopicDto updatedSubTopic = subTopicService.editSubTopicById(subTopicId, subTopicDto);
 

@@ -13,5 +13,6 @@ import java.util.Optional;
  **/
 public interface SubTopicRepository extends JpaRepository<SubTopic, BigDecimal> {
 
-    Optional<SubTopicDto>  getSubTopicById(BigDecimal subTopicId);
+    Optional<SubTopic>  getBySubTopicId(BigDecimal subTopicId);
+
 }
