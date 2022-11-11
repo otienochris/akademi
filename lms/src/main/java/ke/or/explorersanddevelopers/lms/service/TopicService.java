@@ -1,8 +1,8 @@
 package ke.or.explorersanddevelopers.lms.service;
 
 import ke.or.explorersanddevelopers.lms.model.dto.TopicDto;
+import org.springframework.data.domain.Pageable;
 
-import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.List;
 

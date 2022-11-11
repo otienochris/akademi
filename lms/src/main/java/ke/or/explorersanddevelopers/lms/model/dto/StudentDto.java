@@ -23,6 +23,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -69,6 +70,10 @@ public class StudentDto extends RepresentationModel<StudentDto> implements Seria
     @Null
     @Schema(description = "A list of relatives tracking the student", accessMode = Schema.AccessMode.READ_ONLY)
     private List<RelativeDto> relatives;
+
+    @Null
+    @Schema(description = "A list of organizations", accessMode = Schema.AccessMode.READ_ONLY)
+    private List<OrganizationDto> organizations;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,13 +76,13 @@ public class SubTopicController {
     @Operation(summary = "Retrieve a sub topic by id", description = "An endpoint to retrieve a sub topic by its id",
             tags = "SubTopic")
     @ApiResponse(responseCode = "200", description = "Sub Topic successfully retrieved")
-     public ResponseEntity<SubTopicDto> getSubTopicById(@PathVariable(name = "subTopicId") BigDecimal subTopicId){
+    public ResponseEntity<SubTopicDto> getSubTopicById(@PathVariable(name = "topicId") BigDecimal subTopicId) {
 
         SubTopicDto getSubTopicsId = subTopicService.getSubTopicById(subTopicId);
 
         return ResponseEntity.ok(addHateoasLinks(getSubTopicsId));
 
-     }
+    }
 
      @DeleteMapping("/{subTopicId}")
      @Operation(summary = "Delete a sub topic by id", description = "An endpoint to delete a sub topic by its id",
@@ -107,7 +106,7 @@ public class SubTopicController {
                                                                            @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize){
 
         List<SubTopicDto> subTopicDtoList = new ArrayList<>();
-        subTopicService.getListOfSubTopics((Pageable) PageRequest.of(pageNo, pageSize))
+        subTopicService.getListOfSubTopics(PageRequest.of(pageNo, pageSize))
                 .forEach(subTopicDto -> subTopicDtoList.add(addHateoasLinks(subTopicDto)));
 
         CollectionModel<SubTopicDto> subTopicDtoCollectionModel = CollectionModel.of(subTopicDtoList);

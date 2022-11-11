@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.mappers.decorators.TopicMapperDecorator;
 import ke.or.explorersanddevelopers.lms.model.dto.SubTopicDto;
 import ke.or.explorersanddevelopers.lms.model.dto.TopicDto;
 import ke.or.explorersanddevelopers.lms.model.entity.SubTopic;

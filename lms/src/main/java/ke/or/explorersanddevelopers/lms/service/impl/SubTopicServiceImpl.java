@@ -10,10 +10,10 @@ import ke.or.explorersanddevelopers.lms.repositories.TopicRepository;
 import ke.or.explorersanddevelopers.lms.service.SubTopicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SubTopicServiceImpl  implements SubTopicService {
+public class SubTopicServiceImpl implements SubTopicService {
 
     private final SubTopicRepository subTopicRepository;
 
@@ -43,7 +43,7 @@ public class SubTopicServiceImpl  implements SubTopicService {
         //bind the subtopic to the topic
         SubTopic subTopicEntity = subTopicMapper.toEntity(subTopicDto);
         Topic associatedTopic = subTopicEntity.getTopic();
-        if(associatedTopic == null)
+        if (associatedTopic == null)
             subTopicEntity.setTopic(new Topic());
         subTopicEntity.getTopic().setTopicId(topicId);
 
@@ -64,7 +64,7 @@ public class SubTopicServiceImpl  implements SubTopicService {
 
     // Retrieve topic to be mapped to the subtopic
     private Topic getTopicById(BigDecimal topicId) {
-        return  topicRepository.getByTopicId(topicId)
+        return topicRepository.getByTopicId(topicId)
                 .orElseThrow(() -> new NoSuchRecordException("Topic with id: " + topicId + " does not exist"));
 
     }
@@ -86,8 +86,8 @@ public class SubTopicServiceImpl  implements SubTopicService {
         log.info("Deleting a subtopic with id: " + subTopicId);
 
         SubTopic subTopic = subTopicRepository.findById(subTopicId)
-                        .orElseThrow(() -> new NoSuchRecordException("Sub topic with id: " + subTopicId + " does not " +
-                                "exist"));
+                .orElseThrow(() -> new NoSuchRecordException("Sub topic with id: " + subTopicId + " does not " +
+                        "exist"));
 
         subTopicRepository.delete(subTopic);
         log.info("Successfully deleted the subtopic");
@@ -103,10 +103,10 @@ public class SubTopicServiceImpl  implements SubTopicService {
 
         subTopicRepository.findAll((Sort) pageable).forEach(subTopic -> subTopicDtoList.add(subTopicMapper.toDto(subTopic)));
 
-    if(subTopicDtoList.size() == 0)
-        log.warn("Retrieved n empty list");
-    else
-        log.info("Successfully retrieved a list of sub topics");
+        if (subTopicDtoList.isEmpty())
+            log.warn("Retrieved n empty list");
+        else
+            log.info("Successfully retrieved a list of sub topics");
 
         return subTopicDtoList;
     }

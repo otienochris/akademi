@@ -1,5 +1,7 @@
-package ke.or.explorersanddevelopers.lms.mappers;
+package ke.or.explorersanddevelopers.lms.mappers.decorators;
 
+import ke.or.explorersanddevelopers.lms.mappers.CertificateMapper;
+import ke.or.explorersanddevelopers.lms.mappers.StudentMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.CertificateDto;
 import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Certificate;

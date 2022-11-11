@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +91,7 @@ public class TopicController {
                                                                       @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize){
 
         List<TopicDto> listOfTopics = new ArrayList<>();
-                topicService.getListOfTopics((Pageable) PageRequest.of(pageNo, pageSize)).
+                topicService.getListOfTopics(PageRequest.of(pageNo, pageSize)).
                         forEach(topicDto -> listOfTopics.add(addHateoasLinks(topicDto)));
 
         CollectionModel<TopicDto> topicDtoCollectionModel = CollectionModel.of(listOfTopics);

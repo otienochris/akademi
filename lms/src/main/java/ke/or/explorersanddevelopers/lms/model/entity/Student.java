@@ -71,6 +71,10 @@ public class Student {
     @ToString.Exclude
     private List<Relative> relatives = new ArrayList<>();
 
+    @ManyToMany
+    @ToString.Exclude
+    private List<Organization> organizations = new ArrayList<>();
+
     @Column(name = "PASSWORD")
     private String password;
 

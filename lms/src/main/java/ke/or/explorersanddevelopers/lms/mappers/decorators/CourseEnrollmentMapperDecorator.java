@@ -1,5 +1,9 @@
-package ke.or.explorersanddevelopers.lms.mappers;
+package ke.or.explorersanddevelopers.lms.mappers.decorators;
 
+import ke.or.explorersanddevelopers.lms.mappers.CourseEnrollmentMapper;
+import ke.or.explorersanddevelopers.lms.mappers.CourseMapper;
+import ke.or.explorersanddevelopers.lms.mappers.StudentMapper;
+import ke.or.explorersanddevelopers.lms.mappers.TestEnrollmentMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
 import ke.or.explorersanddevelopers.lms.model.dto.CourseEnrollmentDto;
 import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
@@ -58,7 +62,7 @@ public class CourseEnrollmentMapperDecorator implements CourseEnrollmentMapper {
         // set test enrollments
         mappedCourseEnrollmentDto.setTestEnrollments(new ArrayList<>());
         List<TestEnrollment> testEnrollments = courseEnrollment.getTestEnrollments();
-        if (testEnrollments != null && testEnrollments.size() > 0) {
+        if (testEnrollments != null && !testEnrollments.isEmpty()) {
             testEnrollments.forEach(testEnrollment -> mappedCourseEnrollmentDto.getTestEnrollments().add(testEnrollmentMapper.toDto(testEnrollment)));
         }
 
@@ -86,7 +90,7 @@ public class CourseEnrollmentMapperDecorator implements CourseEnrollmentMapper {
         // set test enrollments
         mappedCourseEnrollment.setTestEnrollments(new ArrayList<>());
         List<TestEnrollmentDto> testEnrollmentDtoList = courseEnrollmentDto.getTestEnrollments();
-        if (testEnrollmentDtoList != null && testEnrollmentDtoList.size() > 0) {
+        if (testEnrollmentDtoList != null && !testEnrollmentDtoList.isEmpty()) {
             testEnrollmentDtoList.forEach(testEnrollment -> mappedCourseEnrollment.getTestEnrollments().add(testEnrollmentMapper.toEntity(testEnrollment)));
         }
 

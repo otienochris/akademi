@@ -1,5 +1,7 @@
-package ke.or.explorersanddevelopers.lms.mappers;
+package ke.or.explorersanddevelopers.lms.mappers.decorators;
 
+import ke.or.explorersanddevelopers.lms.mappers.AnswerMapper;
+import ke.or.explorersanddevelopers.lms.mappers.QuestionMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.AnswerDto;
 import ke.or.explorersanddevelopers.lms.model.dto.QuestionDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Answer;
@@ -29,7 +31,7 @@ public class QuestionMapperDecorator implements QuestionMapper {
 
         mappedQuestionDto.setAnswers(new ArrayList<>());
         List<Answer> answers = question.getAnswers();
-        if (answers != null && answers.size() > 0) {
+        if (answers != null && !answers.isEmpty()) {
             answers.forEach(answer -> mappedQuestionDto.getAnswers().add(answerMapper.toDto(answer)));
         }
         return mappedQuestionDto;
@@ -41,7 +43,7 @@ public class QuestionMapperDecorator implements QuestionMapper {
 
         mappedQuestion.setAnswers(new ArrayList<>());
         List<AnswerDto> answers = questionDto.getAnswers();
-        if (answers != null && answers.size() > 0) {
+        if (answers != null && !answers.isEmpty()) {
             answers.forEach(answer -> mappedQuestion.getAnswers().add(answerMapper.toEntity(answer)));
         }
 

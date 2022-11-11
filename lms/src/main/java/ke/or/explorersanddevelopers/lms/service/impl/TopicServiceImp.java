@@ -10,10 +10,10 @@ import ke.or.explorersanddevelopers.lms.repositories.TopicRepository;
 import ke.or.explorersanddevelopers.lms.service.TopicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class TopicServiceImp implements TopicService {
+    public static final String TOPIC_WITH_ID = "Topic with id: ";
+    public static final String NOT_FOUND = " not found";
     private final CourseRepository courseRepository;
     private final TopicMapper topicMapper;
 
@@ -74,7 +76,7 @@ public class TopicServiceImp implements TopicService {
         log.info("Retrieving topic with the following id :" + topicId);
 
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchRecordException("Topic with id: " + topicId + " not found"));
+                .orElseThrow(() -> new NoSuchRecordException(TOPIC_WITH_ID + topicId + NOT_FOUND));
 
         log.info("Successfully retrieved the topic with id: " + topicId);
         return topicMapper.toDto(topic);
@@ -86,7 +88,7 @@ public class TopicServiceImp implements TopicService {
         log.info("Deleting the topic with id: " + topicId);
 
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchRecordException("Topic with id: " + topicId + " not found"));
+                .orElseThrow(() -> new NoSuchRecordException(TOPIC_WITH_ID + topicId + NOT_FOUND));
 
         topicRepository.delete(topic);
 
@@ -101,7 +103,7 @@ public class TopicServiceImp implements TopicService {
         List<TopicDto> listOfTopics = new ArrayList<>();
         topicRepository.findAll((Sort) pageable).forEach(topic -> listOfTopics.add(topicMapper.toDto(topic)));
 
-        if (listOfTopics.size() == 0)
+        if (listOfTopics.isEmpty())
             log.warn("Retrieved an empty list of topics");
         else
             log.info("Successfully retrieved a list of topics");
@@ -114,7 +116,7 @@ public class TopicServiceImp implements TopicService {
         log.info("Editing a topic with the following id: " + topicId);
 
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchRecordException("Topic with id: " + topicId + " not found"));
+                .orElseThrow(() -> new NoSuchRecordException(TOPIC_WITH_ID + topicId + NOT_FOUND));
 
         topic.setCourse(topicDto.getCourse());
         topic.setDescription(topicDto.getDescription());

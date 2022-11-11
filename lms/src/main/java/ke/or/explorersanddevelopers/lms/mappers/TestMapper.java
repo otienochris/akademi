@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.mappers.decorators.TestMapperDecorator;
 import ke.or.explorersanddevelopers.lms.model.dto.TestDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Test;
 import org.mapstruct.DecoratedWith;
