@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -27,7 +28,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(name = "Question Dto", description = "Question Dto details")
-public class QuestionDto implements Serializable {
+public class QuestionDto extends RepresentationModel<QuestionDto> implements Serializable {
 
     private static final long serialVersionUID = 3487725639797483723L;
     @Null
