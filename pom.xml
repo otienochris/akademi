@@ -13,6 +13,10 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>akademi</name>
     <description>A learning management system</description>
+    <modules>
+        <module>lms</module>
+        <module>monitoring-service</module>
+    </modules>
     <properties>
         <java.version>11</java.version>
         <lombok.version>1.18.22</lombok.version>
