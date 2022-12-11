@@ -33,7 +33,7 @@ public class Test {
     @Column(name = "TEST_ID", nullable = false)
     private BigDecimal testId;
 
-    @OneToMany
+    @ManyToMany
     @ToString.Exclude
     private List<Topic> topics = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.mappers.decorators.StudentMapperDecorator;
 import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Student;
 import org.mapstruct.DecoratedWith;
@@ -29,7 +30,8 @@ public interface StudentMapper {
             @Mapping(target = "reviews", ignore = true),
             @Mapping(target = "addresses", ignore = true),
             @Mapping(target = "certificates", ignore = true),
-            @Mapping(target = "relatives", ignore = true)
+            @Mapping(target = "relatives", ignore = true),
+            @Mapping(target = "organizations", ignore = true),
     })
     StudentDto toDto(Student student);
 
@@ -43,7 +45,8 @@ public interface StudentMapper {
             @Mapping(target = "reviews", ignore = true),
             @Mapping(target = "addresses", ignore = true),
             @Mapping(target = "certificates", ignore = true),
-            @Mapping(target = "relatives", ignore = true)
+            @Mapping(target = "relatives", ignore = true),
+            @Mapping(target = "organizations", ignore = true),
     })
     Student toEntity(StudentDto studentDto);
 }

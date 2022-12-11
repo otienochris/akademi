@@ -1,7 +1,8 @@
-package ke.or.explorersanddevelopers.lms.mapper;
+package ke.or.explorersanddevelopers.lms.mappers.decorators;
 
 import ke.or.explorersanddevelopers.lms.mappers.AddressMapper;
 import ke.or.explorersanddevelopers.lms.mappers.CourseMapper;
+import ke.or.explorersanddevelopers.lms.mappers.InstructorMapper;
 import ke.or.explorersanddevelopers.lms.mappers.ReviewMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
 import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
@@ -45,17 +46,17 @@ public class InstructorMapperDecorator implements InstructorMapper {
         mappedInstructor.setCourses(new ArrayList<>());
 
         List<ReviewDto> reviewDtoList = instructorDto.getReviews();
-        if (reviewDtoList != null && reviewDtoList.size() > 0) {
+        if (reviewDtoList != null && !reviewDtoList.isEmpty()) {
             reviewDtoList.forEach(reviewDto -> mappedInstructor.getReviews().add(reviewMapper.toEntity(reviewDto)));
         }
 
         List<AddressDto> addressDtoList = instructorDto.getAddresses();
-        if (addressDtoList != null && addressDtoList.size() > 0) {
+        if (addressDtoList != null && !addressDtoList.isEmpty()) {
             addressDtoList.forEach(addressDto -> mappedInstructor.getAddresses().add(addressMapper.toEntity(addressDto)));
         }
 
         List<CourseDto> courseDtoList = instructorDto.getCourses();
-        if (courseDtoList != null && courseDtoList.size() > 0)
+        if (courseDtoList != null && !courseDtoList.isEmpty())
             courseDtoList.forEach(courseDto -> mappedInstructor.getCourses().add(courseMapper.toEntity(courseDto)));
 
         return mappedInstructor;
@@ -69,17 +70,17 @@ public class InstructorMapperDecorator implements InstructorMapper {
         mappedInstructorDto.setCourses(new ArrayList<>());
 
         List<Review> reviews = instructor.getReviews();
-        if (reviews != null && reviews.size() > 0) {
+        if (reviews != null && !reviews.isEmpty()) {
             reviews.forEach(review -> mappedInstructorDto.getReviews().add(reviewMapper.toDto(review)));
         }
 
         List<Address> addresses = instructor.getAddresses();
-        if (addresses != null && addresses.size() > 0) {
+        if (addresses != null && !addresses.isEmpty()) {
             addresses.forEach(address -> mappedInstructorDto.getAddresses().add(addressMapper.toDto(address)));
         }
 
         List<Course> courses = instructor.getCourses();
-        if (courses != null && courses.size() > 0)
+        if (courses != null && !courses.isEmpty())
             courses.forEach(course -> mappedInstructorDto.getCourses().add(courseMapper.toDto(course)));
 
         return mappedInstructorDto;

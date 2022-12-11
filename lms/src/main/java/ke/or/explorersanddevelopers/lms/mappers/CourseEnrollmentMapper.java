@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.mappers.decorators.CourseEnrollmentMapperDecorator;
 import ke.or.explorersanddevelopers.lms.model.dto.CourseEnrollmentDto;
 import ke.or.explorersanddevelopers.lms.model.entity.CourseEnrollment;
 import org.mapstruct.DecoratedWith;

@@ -1,5 +1,6 @@
-package ke.or.explorersanddevelopers.lms.mapper;
+package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.mappers.decorators.InstructorMapperDecorator;
 import ke.or.explorersanddevelopers.lms.model.dto.InstructorDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Instructor;
 import org.mapstruct.DecoratedWith;

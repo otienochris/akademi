@@ -1,6 +1,7 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
 import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
+import ke.or.explorersanddevelopers.lms.mappers.decorators.CourseEnrollmentMapperDecorator;
 import ke.or.explorersanddevelopers.lms.model.dto.*;
 import ke.or.explorersanddevelopers.lms.model.entity.*;
 import org.junit.jupiter.api.BeforeEach;

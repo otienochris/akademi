@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -67,11 +68,15 @@ public class Instructor {
 
     @OneToMany
     @ToString.Exclude
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
     @ManyToMany
     @ToString.Exclude
-    private List<Course> courses;
+    private List<Course> courses = new ArrayList<>();
+
+    @ManyToMany
+    @ToString.Exclude
+    private List<Organization> organizations = new ArrayList<>();
 
     @Column(name = "PASSWORD")
     private String password;

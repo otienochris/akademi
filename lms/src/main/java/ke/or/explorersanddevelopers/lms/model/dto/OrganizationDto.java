@@ -2,12 +2,10 @@ package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import ke.or.explorersanddevelopers.lms.model.entity.Topic;
+import ke.or.explorersanddevelopers.lms.enums.OrganizationTypeEnum;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -16,36 +14,41 @@ import java.math.BigDecimal;
 import java.sql.Date;
 
 /**
+ * Organization details
+ *
  * @author christopherochiengotieno@gmail.com
  * @version 1.0.0
- * @since Tuesday, 04/10/2022
+ * @since Saturday, 15/10/2022
  */
-
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(name = "Subtopic Dto", description = "Subtopic Dto details")
-public class SubTopicDto extends RepresentationModel<SubTopicDto> implements Serializable {
+@Schema(name = "Organization", description = "Organization Details")
+public class OrganizationDto implements Serializable {
 
-    private static final long serialVersionUID = -6899713947264547824L;
+    private static final long serialVersionUID = -8065681046125763404L;
+
     @Null
-    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Subtopic record id.", accessMode = Schema.AccessMode.READ_ONLY)
-    private BigDecimal subTopicId;
+    @Schema(example = "101", description = "Id of an organization record.", accessMode = Schema.AccessMode.READ_ONLY)
+    private BigDecimal organizationId;
 
     @NotNull
-    @Schema(example = "The first subtopic.", description = "Subtopic title.")
+    @Schema(example = "Egerton University", description = "The organization's title or name.")
     private String title;
 
     @NotNull
-    @Schema(example = "The introducing subtopic.", description = "Subtopic description")
+    @Schema(example = "Transforming lives through quality educations.", description = "A verbose description of the institution")
     private String description;
 
-    @Schema(example = "https://sfsfs/fsf", description = "The subtopic video link.")
-    private String link;
+    @NotNull
+    @Schema(example = "UNIVERSITY", description = "Organization's type or category")
+    private OrganizationTypeEnum type;
 
-    @Schema(example = "<p>some useful content ... </p>", description = "Subtopic content.")
-    private String content;
+    @Schema(example = "KE", description = "The code for the country the organization is located, or registered.")
+    private String countryCode;
+
+    @Schema(description = "The organization's log")
+    private byte[] logo;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -60,7 +63,4 @@ public class SubTopicDto extends RepresentationModel<SubTopicDto> implements Ser
     @NotNull
     @Schema(example = "0", description = "Address record version.")
     private Long version;
-
-    @Schema(description = "Topic associated  with the sub topic", accessMode = Schema.AccessMode.READ_ONLY)
-    private Topic topic;
 }

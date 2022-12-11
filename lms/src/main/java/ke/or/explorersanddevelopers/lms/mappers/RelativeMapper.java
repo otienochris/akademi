@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.mappers.decorators.RelativeMapperDecorator;
 import ke.or.explorersanddevelopers.lms.model.dto.RelativeDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Relative;
 import org.mapstruct.DecoratedWith;

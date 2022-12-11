@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -78,14 +79,16 @@ public class CourseController {
     @Operation(summary = "Get a List of courses", description = "An end point to get a list of courses", tags =
             "Course")
     @ApiResponse(responseCode = "200", description = "List of Courses retrieved successfully")
-    private ResponseEntity<CollectionModel<CourseDto>> getListOfCourses(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+    public ResponseEntity<CollectionModel<CourseDto>> getListOfCourses(@RequestParam(name = "pageNo",
+            defaultValue = "0") Integer pageNo,
                                                                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-        List<CourseDto> courseDtoList = new ArrayList<>();
-        List<CourseDto> listOfCourses = courseService.getListOfCourses(PageRequest.of(pageNo, pageSize));
-        System.out.println("Found the following courses: " + listOfCourses);
-        listOfCourses.forEach(courseDto -> courseDtoList.add(addHateoasLinks(courseDto)));
 
-        CollectionModel<CourseDto> courseDtoCollectionModel = CollectionModel.of(courseDtoList);
+        List<CourseDto> listOfCourses = new  ArrayList<>();
+        courseService.getListOfCourses(PageRequest.of(pageNo, pageSize))
+                        .forEach(courseDto -> listOfCourses.add(addHateoasLinks(courseDto)));
+        System.out.println("Found the following courses: " + listOfCourses);
+
+        CollectionModel<CourseDto> courseDtoCollectionModel = CollectionModel.of(listOfCourses);
         return ResponseEntity.ok(courseDtoCollectionModel);
     }
 
@@ -116,7 +119,7 @@ public class CourseController {
     private CourseDto addHateoasLinks(CourseDto courseByCode) {
         courseByCode.add(linkTo(methodOn(CourseController.class).getCourseByCode(courseByCode.getCourseId())).withSelfRel());
         courseByCode.add(linkTo(methodOn(CourseController.class).deleteCourseByCode(courseByCode.getCourseId())).withRel("delete"));
-//        courseByCode.add(linkTo(methodOn(CourseController.class).getListOfCourses(0,10)).withRel(IanaLinkRelations.COLLECTION));
+        courseByCode.add(linkTo(methodOn(CourseController.class).getListOfCourses(0,10)).withRel(IanaLinkRelations.COLLECTION));
 
         return courseByCode;
     }

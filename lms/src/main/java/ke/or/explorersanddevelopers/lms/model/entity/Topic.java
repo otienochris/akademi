@@ -60,6 +60,14 @@ public class Topic {
     @Column(name = "VERSION")
     private Long version;
 
+    @ManyToOne
+    @ToString.Exclude
+    private Course course;
+
+    @ManyToMany
+    @ToString.Exclude
+    private List<Test> tests = new ArrayList<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

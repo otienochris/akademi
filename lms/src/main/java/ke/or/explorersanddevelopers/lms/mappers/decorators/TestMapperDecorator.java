@@ -1,5 +1,8 @@
-package ke.or.explorersanddevelopers.lms.mappers;
+package ke.or.explorersanddevelopers.lms.mappers.decorators;
 
+import ke.or.explorersanddevelopers.lms.mappers.QuestionMapper;
+import ke.or.explorersanddevelopers.lms.mappers.TestMapper;
+import ke.or.explorersanddevelopers.lms.mappers.TopicMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.QuestionDto;
 import ke.or.explorersanddevelopers.lms.model.dto.TestDto;
 import ke.or.explorersanddevelopers.lms.model.dto.TopicDto;
@@ -39,13 +42,13 @@ public class TestMapperDecorator implements TestMapper {
 
         mappedTestDto.setQuestions(new ArrayList<>()); // initiale
         List<Question> questions = test.getQuestions();
-        if (questions != null && questions.size() > 0) {
+        if (questions != null && !questions.isEmpty()) {
             questions.forEach(question -> mappedTestDto.getQuestions().add(questionMapper.toDto(question)));
         }
 
         mappedTestDto.setTopics(new ArrayList<>());
         List<Topic> topics = test.getTopics();
-        if (topics != null && topics.size() > 0) {
+        if (topics != null && !topics.isEmpty()) {
             topics.forEach(topic -> mappedTestDto.getTopics().add(topicMapper.toDto(topic)));
         }
 
@@ -58,13 +61,13 @@ public class TestMapperDecorator implements TestMapper {
 
         mappedTest.setQuestions(new ArrayList<>()); // initiale
         List<QuestionDto> questions = testDto.getQuestions();
-        if (questions != null && questions.size() > 0) {
+        if (questions != null && !questions.isEmpty()) {
             questions.forEach(question -> mappedTest.getQuestions().add(questionMapper.toEntity(question)));
         }
 
         mappedTest.setTopics(new ArrayList<>());
         List<TopicDto> topics = testDto.getTopics();
-        if (topics != null && topics.size() > 0) {
+        if (topics != null && !topics.isEmpty()) {
             topics.forEach(topic -> mappedTest.getTopics().add(topicMapper.toEntity(topic)));
         }
         return mappedTest;

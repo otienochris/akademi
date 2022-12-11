@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.mappers.decorators.CertificateMapperDecorator;
 import ke.or.explorersanddevelopers.lms.model.dto.CertificateDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Certificate;
 import org.mapstruct.DecoratedWith;

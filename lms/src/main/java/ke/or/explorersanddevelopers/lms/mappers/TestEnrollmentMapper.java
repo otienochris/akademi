@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.mappers;
 
+import ke.or.explorersanddevelopers.lms.mappers.decorators.TestEnrollmentMapperDecorator;
 import ke.or.explorersanddevelopers.lms.model.dto.TestEnrollmentDto;
 import ke.or.explorersanddevelopers.lms.model.entity.TestEnrollment;
 import org.mapstruct.DecoratedWith;

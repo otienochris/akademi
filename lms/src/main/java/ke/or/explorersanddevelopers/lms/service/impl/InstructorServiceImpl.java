@@ -1,8 +1,8 @@
 package ke.or.explorersanddevelopers.lms.service.impl;
 
 import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
-import ke.or.explorersanddevelopers.lms.mapper.InstructorMapper;
 import ke.or.explorersanddevelopers.lms.mappers.AddressMapper;
+import ke.or.explorersanddevelopers.lms.mappers.InstructorMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
 import ke.or.explorersanddevelopers.lms.model.dto.InstructorDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Address;
@@ -55,7 +55,7 @@ public class InstructorServiceImpl implements InstructorService {
         log.info("Retrieving a list of instructors");
         List<InstructorDto> response = new ArrayList<>();
         instructorRepository.findAll(pageable).forEach(instructor -> response.add(instructorMapper.toDto(instructor)));
-        if (response.size() == 0)
+        if (response.isEmpty())
             log.warn("Retrieved an empty list of instructors");
         else
             log.info("Successfully retrieved a list of instructors");

@@ -80,6 +80,10 @@ public class InstructorDto extends RepresentationModel<InstructorDto> implements
     private List<CourseDto> courses;
 
     @Null
+    @Schema(description = "A list of organizations", accessMode = Schema.AccessMode.READ_ONLY)
+    private List<OrganizationDto> organizations;
+
+    @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Schema(example = "2022-02-03", description = "Address Record creation date.", accessMode = Schema.AccessMode.READ_ONLY)
     private Date creationDate;

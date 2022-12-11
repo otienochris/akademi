@@ -1,5 +1,8 @@
-package ke.or.explorersanddevelopers.lms.mappers;
+package ke.or.explorersanddevelopers.lms.mappers.decorators;
 
+import ke.or.explorersanddevelopers.lms.mappers.QuestionMapper;
+import ke.or.explorersanddevelopers.lms.mappers.TestEnrollmentMapper;
+import ke.or.explorersanddevelopers.lms.mappers.TestMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.QuestionDto;
 import ke.or.explorersanddevelopers.lms.model.dto.TestDto;
 import ke.or.explorersanddevelopers.lms.model.dto.TestEnrollmentDto;
@@ -40,7 +43,7 @@ public class TestEnrollmentMapperDecorator implements TestEnrollmentMapper {
 
         mappedTestEnrollmentDto.setCompletedQuestions(new ArrayList<>());
         List<Question> completedQuestions = testEnrollment.getCompletedQuestions();
-        if (completedQuestions != null && completedQuestions.size() > 0) {
+        if (completedQuestions != null && !completedQuestions.isEmpty()) {
             completedQuestions.forEach(question -> mappedTestEnrollmentDto.getCompletedQuestions().add(questionMapper.toDto(question)));
         }
 
@@ -57,7 +60,7 @@ public class TestEnrollmentMapperDecorator implements TestEnrollmentMapper {
 
         mappedTestEnrollment.setCompletedQuestions(new ArrayList<>());
         List<QuestionDto> completedQuestions = testEnrollmentDto.getCompletedQuestions();
-        if (completedQuestions != null && completedQuestions.size() > 0) {
+        if (completedQuestions != null && !completedQuestions.isEmpty()) {
             completedQuestions.forEach(question -> mappedTestEnrollment.getCompletedQuestions().add(questionMapper.toEntity(question)));
         }
         return mappedTestEnrollment;
