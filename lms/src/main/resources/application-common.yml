@@ -1,17 +1,15 @@
 spring:
-#  mvc:
-  #    pathmatch:
-  #      matching-strategy: ant_path_matcher
   application:
     name: learning-management-system
   boot:
     admin:
       client:
         enabled: true
-        url: http://localhost:8081
+        url: http://localhost:8080/monitoring-service
 server:
+  port: 8083
   servlet:
-    context-path: /lms/api/v1
+    context-path: /lms
 
 #logging:
 #  level:
