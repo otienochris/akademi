@@ -31,7 +31,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * @since Saturday 15/10/2022
  **/
 @RestController
-@RequestMapping("/topics")
+@RequestMapping("/api/v1/topics")
 @RequiredArgsConstructor
 @ApiResponses(value = {
         @ApiResponse(responseCode = "400", description = "BAD REQUEST", content = {

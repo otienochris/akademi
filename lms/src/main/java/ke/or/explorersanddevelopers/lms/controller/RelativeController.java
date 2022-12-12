@@ -30,7 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/relatives")
+@RequestMapping("/api/v1/relatives")
 @ApiResponses(value = {
         @ApiResponse(responseCode = "400", description = "BAD REQUEST", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))
