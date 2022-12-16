@@ -1,21 +1,27 @@
 package ke.or.explorersanddevelopers.lms.service.impl;
 
+import ke.or.explorersanddevelopers.lms.enums.RolesEnum;
 import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
 import ke.or.explorersanddevelopers.lms.mappers.RelativeMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.RelativeDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Relative;
 import ke.or.explorersanddevelopers.lms.model.entity.Student;
+import ke.or.explorersanddevelopers.lms.model.security.AppUser;
+import ke.or.explorersanddevelopers.lms.repositories.AppUserRepository;
 import ke.or.explorersanddevelopers.lms.repositories.RelativeRepository;
 import ke.or.explorersanddevelopers.lms.repositories.StudentRepository;
 import ke.or.explorersanddevelopers.lms.service.RelativeService;
+import ke.or.explorersanddevelopers.lms.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -27,16 +33,34 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RelativeServiceImpl implements RelativeService {
+    private final AppUserRepository appUserRepository;
 
     private final RelativeRepository relativeRepository;
     private final RelativeMapper relativeMapper;
     private final StudentRepository studentRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @Override
     public RelativeDto saveNewRelative(RelativeDto relativeDto) {
         log.info("Saving a new relative");
         Relative mappedRelative = relativeMapper.toEntity(relativeDto);
+
+        log.info("Saving an app user associated with the relative");
+        String username = relativeDto.getEmail();
+        AppUser savedAppUser = appUserRepository.save(AppUser.builder()
+                .username(username)
+                .password(passwordEncoder.encode(relativeDto.getNewPassword()))
+                .emailVerificationCode(UUID.randomUUID().toString())
+                .build());
+
+        log.info("Assigning role to the relative");
+        userService.addRoleToUser(username, RolesEnum.ROLE_RELATIVE.name());
+
+        log.info("Associating the app user details with the relative details ");
+        mappedRelative.setAppUser(savedAppUser);
         Relative savedRelative = relativeRepository.save(mappedRelative);
+
         log.info("Saved a new relative");
         return relativeMapper.toDto(savedRelative);
     }
@@ -66,25 +90,31 @@ public class RelativeServiceImpl implements RelativeService {
     public RelativeDto trackStudent(BigDecimal relativeId, String studentToken) {
         Relative relativeByIdFromDb = getRelativeByIdFromDb(relativeId);
 
-        Student student = studentRepository.getByToken(studentToken).orElseThrow(() -> {
-            String message = "We could not find a student with the provided token [" + studentToken + "]";
-            log.error(message);
-            throw new NoSuchRecordException(message);
+        appUserRepository.getByToken(studentToken).ifPresentOrElse(appUser -> {
+            Student student = studentRepository.getByEmail(appUser.getUsername()).orElseThrow(() -> {
+                String message = "We could not find a student with the provided token [" + studentToken + "]";
+                log.error(message);
+                throw new NoSuchRecordException(message);
+            });
+
+            // save student to relative
+            if (relativeByIdFromDb.getStudents() == null)
+                relativeByIdFromDb.setStudents(new ArrayList<>());
+
+            relativeByIdFromDb.getStudents().add(student);
+            Relative savedRelative = relativeRepository.save(relativeByIdFromDb); // save the updates
+
+            // save relative to student
+            if (student.getRelatives() == null)
+                student.setRelatives(new ArrayList<>());
+            student.getRelatives().add(savedRelative);
+            studentRepository.save(student);
+
+        }, () -> {
+
         });
 
-        // save student to relative
-        if (relativeByIdFromDb.getStudents() == null)
-            relativeByIdFromDb.setStudents(new ArrayList<>());
-        relativeByIdFromDb.getStudents().add(student);
-        Relative savedRelative = relativeRepository.save(relativeByIdFromDb); // save the updates
-
-        // save relative to student
-        if (student.getRelatives() == null)
-            student.setRelatives(new ArrayList<>());
-        student.getRelatives().add(savedRelative);
-        studentRepository.save(student);
-
-        return relativeMapper.toDto(savedRelative);
+        return relativeMapper.toDto(relativeRepository.getByRelativeId(relativeId).orElseThrow());
     }
 
     @Override

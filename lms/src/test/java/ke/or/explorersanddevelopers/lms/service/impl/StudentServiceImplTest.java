@@ -8,10 +8,8 @@ import ke.or.explorersanddevelopers.lms.mappers.StudentMapper;
 import ke.or.explorersanddevelopers.lms.mappers.TestEnrollmentMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.*;
 import ke.or.explorersanddevelopers.lms.model.entity.*;
-import ke.or.explorersanddevelopers.lms.repositories.CourseEnrollmentRepository;
-import ke.or.explorersanddevelopers.lms.repositories.CourseRepository;
-import ke.or.explorersanddevelopers.lms.repositories.StudentRepository;
-import ke.or.explorersanddevelopers.lms.repositories.TestRepository;
+import ke.or.explorersanddevelopers.lms.repositories.*;
+import ke.or.explorersanddevelopers.lms.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -22,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
@@ -64,6 +63,13 @@ class StudentServiceImplTest {
     private TestEnrollmentMapper testEnrollmentMapper;
     @Mock
     private TestRepository testRepository;
+    @Mock
+    private AppUserRepository appUserRepository;
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
+    @Mock
+    private UserService userService;
+
     private CourseEnrollmentDto courseEnrollmentResponse;
     private CourseEnrollment courseEnrollmentEntity;
     private TestEnrollmentDto testEnrollmentResponseDto;
@@ -119,14 +125,12 @@ class StudentServiceImplTest {
                 .countryCode(countryCode)
                 .creationDate(creationDate)
                 .email(email)
-                .emailVerificationCode(emailVerificationCode)
                 .firstName(firstName)
                 .lastName(lastName)
                 .modificationDate(modificationDate)
                 .version(version)
                 .addresses(new ArrayList<>())
                 .reviews(new ArrayList<>())
-                .isAccountDisabled(isAccountDisabled)
                 .build();
 
         // course enrollment

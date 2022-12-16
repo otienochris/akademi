@@ -10,7 +10,8 @@ server:
   port: 8083
   servlet:
     context-path: /lms
-
+jwt:
+  secret_key: secret
 #logging:
 #  level:
 #    root: debug

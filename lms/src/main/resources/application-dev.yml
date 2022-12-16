@@ -5,9 +5,9 @@ spring:
     password: Coo2022*
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect

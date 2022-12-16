@@ -1,5 +1,6 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
+import ke.or.explorersanddevelopers.lms.model.security.AppUser;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,7 +12,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -56,12 +56,6 @@ public class Instructor {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "IS_ACCOUNT_DISABLED")
-    private boolean isAccountDisabled;
-
-    @Column(name = "EMAIL_VERIFICATION_CODE")
-    private UUID emailVerificationCode;
-
     @OneToMany
     @ToString.Exclude
     private List<Address> addresses;
@@ -78,9 +72,6 @@ public class Instructor {
     @ToString.Exclude
     private List<Organization> organizations = new ArrayList<>();
 
-    @Column(name = "PASSWORD")
-    private String password;
-
     @CreationTimestamp
     @Column(name = "CREATION_DATE", nullable = false)
     private Date creationDate;
@@ -93,7 +84,9 @@ public class Instructor {
     @Column(name = "VERSION")
     private Long version;
 
-
+    @OneToOne
+    @JoinColumn(referencedColumnName = "id", name = "user_id")
+    private AppUser appUser;
 
 
     @Override

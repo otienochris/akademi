@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
@@ -94,4 +95,8 @@ public class RelativeDto extends RepresentationModel<RelativeDto> implements Ser
     @NotNull
     @Schema(example = "0", description = "Address record version.")
     private Long version;
+
+    @Min(8)
+    @Schema(description = "User password", accessMode = Schema.AccessMode.WRITE_ONLY)
+    private String newPassword;
 }

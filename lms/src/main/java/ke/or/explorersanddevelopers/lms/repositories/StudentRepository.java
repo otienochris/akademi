@@ -14,5 +14,5 @@ import java.util.Optional;
 public interface StudentRepository extends JpaRepository<Student, BigDecimal> {
     Optional<Student> getByStudentId(BigDecimal studentId);
 
-    Optional<Student> getByToken(String studentToken);
+    Optional<Student> getByEmail(String email);
 }

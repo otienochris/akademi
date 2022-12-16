@@ -1,16 +1,20 @@
 package ke.or.explorersanddevelopers.lms.service.impl;
 
+import ke.or.explorersanddevelopers.lms.enums.RolesEnum;
 import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
 import ke.or.explorersanddevelopers.lms.exception.DuplicateRecordException;
 import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
 import ke.or.explorersanddevelopers.lms.mappers.*;
 import ke.or.explorersanddevelopers.lms.model.dto.*;
 import ke.or.explorersanddevelopers.lms.model.entity.*;
+import ke.or.explorersanddevelopers.lms.model.security.AppUser;
 import ke.or.explorersanddevelopers.lms.repositories.*;
 import ke.or.explorersanddevelopers.lms.service.StudentService;
+import ke.or.explorersanddevelopers.lms.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -46,13 +50,32 @@ public class StudentServiceImpl implements StudentService {
     private final CertificateMapper certificateMapper;
     private final InstructorRepository instructorRepository;
     private final TopicRepository topicRepository;
+    private final AppUserRepository appUserRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @Override
     public StudentDto saveNewStudent(StudentDto studentDto) {
         log.info("Saving a new student");
         Student studentEntity = studentMapper.toEntity(studentDto);
         studentEntity.setVersion(null);
+
+        String username = studentDto.getEmail();
+
+        log.info("Saving app user details associated with the new student");
+        AppUser savedAppUser = appUserRepository.save(AppUser.builder()
+                .emailVerificationCode(UUID.randomUUID().toString())
+                .password(passwordEncoder.encode(studentDto.getNewPassword()))
+                .username(username)
+                .build());
+
+        log.info("Adding role to student");
+        userService.addRoleToUser(username, RolesEnum.ROLE_STUDENT.name());
+
+        log.info("Associating the app user details with the new student details");
+        studentEntity.setAppUser(savedAppUser);
         Student savedStudent = studentRepository.save(studentEntity);
+
         log.info("Student saved successfully");
         return studentMapper.toDto(savedStudent);
     }
@@ -271,9 +294,13 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public UUID generateToken(BigDecimal studentId) {
         Student student = getStudentByCodeFromDb(studentId);
-        UUID token = UUID.randomUUID();
-        student.setToken(token.toString());
-        studentRepository.save(student);
+        AppUser appUser = student.getAppUser();
+        UUID token = null;
+        if (appUser != null) {
+            token = UUID.randomUUID();
+            appUser.setToken(token.toString());
+            appUserRepository.save(appUser);
+        }
         return token;
     }
 

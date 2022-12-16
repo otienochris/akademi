@@ -92,15 +92,12 @@ class StudentMapperDecoratorTest {
                 .creationDate(creationDate)
                 .email(email)
                 .version(version)
-                .emailVerificationCode(emailVerificationCode)
                 .firstName(firstName)
                 .lastName(lastName)
                 .modificationDate(modificationDate)
                 .addresses(new ArrayList<>())
                 .certificates(new ArrayList<>())
                 .reviews(new ArrayList<>())
-                .isAccountDisabled(isAccountDisabled)
-                .password(password)
                 .build();
         studentEntity = Student.builder()
                 .studentId(studentId)
@@ -108,15 +105,12 @@ class StudentMapperDecoratorTest {
                 .creationDate(creationDate)
                 .email(email)
                 .version(version)
-                .emailVerificationCode(emailVerificationCode)
                 .firstName(firstName)
                 .lastName(lastName)
                 .modificationDate(modificationDate)
                 .addresses(addresses)
                 .certificates(certificates)
                 .reviews(reviews)
-                .isAccountDisabled(isAccountDisabled)
-                .password(password)
                 .build();
 
 

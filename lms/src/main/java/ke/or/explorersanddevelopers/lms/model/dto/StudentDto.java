@@ -5,9 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -88,4 +86,9 @@ public class StudentDto extends RepresentationModel<StudentDto> implements Seria
     @NotNull
     @Schema(example = "0", description = "Address record version.")
     private Long version;
+
+    @Min(8)
+    @Max(12)
+    @Schema(description = "User password", accessMode = Schema.AccessMode.WRITE_ONLY)
+    private String newPassword;
 }
