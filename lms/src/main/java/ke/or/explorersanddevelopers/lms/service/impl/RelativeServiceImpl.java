@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static ke.or.explorersanddevelopers.lms.service.impl.StudentServiceImpl.sendEmailVerificationCode;
+
 /**
  * @author christopherochiengotieno@gmail.com
  * @version 1.0.0
@@ -48,10 +50,12 @@ public class RelativeServiceImpl implements RelativeService {
 
         log.info("Saving an app user associated with the relative");
         String username = relativeDto.getEmail();
+        String emailVerificationCode = UUID.randomUUID().toString();
         AppUser savedAppUser = appUserRepository.save(AppUser.builder()
                 .username(username)
                 .password(passwordEncoder.encode(relativeDto.getNewPassword()))
-                .emailVerificationCode(UUID.randomUUID().toString())
+                .emailVerificationCode(emailVerificationCode)
+                .isAccountDisabled(true)
                 .build());
 
         log.info("Assigning role to the relative");
@@ -60,6 +64,13 @@ public class RelativeServiceImpl implements RelativeService {
         log.info("Associating the app user details with the relative details ");
         mappedRelative.setAppUser(savedAppUser);
         Relative savedRelative = relativeRepository.save(mappedRelative);
+
+        boolean emailSent = sendEmailVerificationCode(relativeDto.getEmail(), emailVerificationCode, relativeDto.getLastName());
+        if (emailSent) {
+            log.info("Email Verification Code send successfully");
+        } else {
+            log.error("Error occurred while sending email verification code");
+        }
 
         log.info("Saved a new relative");
         return relativeMapper.toDto(savedRelative);
@@ -122,6 +133,22 @@ public class RelativeServiceImpl implements RelativeService {
         Relative relativeByIdFromDb = getRelativeByIdFromDb(relativeId);
         relativeRepository.delete(relativeByIdFromDb);
         return true;
+    }
+
+    @Override
+    public RelativeDto getRelativeByEmail(String email) {
+        log.info("Retrieving a relative by email [" + email + "]");
+        Relative relative = getRelativeByEmailFromDb(email);
+        log.info("Retrieved a relative by email [" + email + "]");
+        return relativeMapper.toDto(relative);
+    }
+
+    private Relative getRelativeByEmailFromDb(String email) {
+        return relativeRepository.findByEmail(email).orElseThrow(() -> {
+            String message = "We could not find a relative with the provided email [" + email + "]";
+            log.error(message);
+            throw new NoSuchRecordException(message);
+        });
     }
 
     private Relative getRelativeByIdFromDb(BigDecimal relativeId) {

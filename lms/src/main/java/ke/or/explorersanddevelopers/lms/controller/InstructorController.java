@@ -57,7 +57,7 @@ public class InstructorController {
     private final InstructorService instructorService;
 
 
-    @PostMapping
+    @PostMapping("/signup")
     @Operation(summary = "Save a new instructor")
     @ApiResponse(responseCode = "201", description = "The student was saved successfully")
     public ResponseEntity<InstructorDto> saveNewInstructor(@RequestBody @Validated InstructorDto instructorDto) {
@@ -82,6 +82,14 @@ public class InstructorController {
         instructorService.getListOfInstructors(PageRequest.of(pageNo, pageSize)).forEach(instructorDto -> response.add(addHateoasLinks(instructorDto)));
         CollectionModel<InstructorDto> collectionModel = CollectionModel.of(response);
         return ResponseEntity.ok(collectionModel);
+    }
+
+    @GetMapping("/username/{email}")
+    @Operation(summary = "Get an instructor by email")
+    @ApiResponse(responseCode = "200", description = "The student was retrieved successfully")
+    public ResponseEntity<InstructorDto> getInstructorByEmail(@PathVariable String email) {
+        InstructorDto newInstructor = instructorService.getInstructorByEmail(email);
+        return ResponseEntity.ok(addHateoasLinks(newInstructor));
     }
 
     @DeleteMapping("/{instructorId}")

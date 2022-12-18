@@ -3,6 +3,7 @@ package ke.or.explorersanddevelopers.lms.bootstrap;
 import ke.or.explorersanddevelopers.lms.enums.CourseCategoryEnum;
 import ke.or.explorersanddevelopers.lms.enums.RelativeRoleEnum;
 import ke.or.explorersanddevelopers.lms.enums.RelativeTypeEnum;
+import ke.or.explorersanddevelopers.lms.enums.RolesEnum;
 import ke.or.explorersanddevelopers.lms.model.entity.Course;
 import ke.or.explorersanddevelopers.lms.model.entity.Instructor;
 import ke.or.explorersanddevelopers.lms.model.entity.Relative;
@@ -12,6 +13,7 @@ import ke.or.explorersanddevelopers.lms.model.security.Role;
 import ke.or.explorersanddevelopers.lms.repositories.*;
 import ke.or.explorersanddevelopers.lms.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -46,30 +48,38 @@ public class DataInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    @Value("${admin.email}")
+    String email;
+
     @Override
-    public void run(String... args) throws Exception {
-        List<Instructor> instructors = new ArrayList<>();
+    public void run(String... args) {
 
         if (roleRepository.count() == 0)
             roleRepository.saveAll(getRoles());
 
+        if(userRepository.count() == 0 ){
+            userRepository.save(AppUser.builder()
+                            .username(email)
+                            .password(passwordEncoder.encode("admin1234"))
+                            .isAccountDisabled(false)
+                    .build());
+            userService.addRoleToUser(email, RolesEnum.ROLE_SUPER_ADMIN.name());
+        }
+
+    }
+
+    private void initUsers() {
+        List<Instructor> instructors = new ArrayList<>();
+
         // save student and user
         if (studentRepository.count() == 0) {
             studentRepository.saveAll(getAllStudents()).forEach(student -> {
-                AppUser user = AppUser.builder()
-                        .id(null)
-                        .isAccountDisabled(true)
-                        .emailVerificationCode(UUID.randomUUID().toString())
-                        .password(passwordEncoder.encode("pass"))
-                        .username(student.getEmail())
-                        .build();
-                AppUser appUser = userService.saveUser(user);
+                AppUser appUser = userService.saveUser(getAppUser(student.getEmail()));
                 if (appUser != null) {
                     userService.addRoleToUser(student.getEmail(), ROLE_STUDENT);
                 }
-
                 // update the student
-                student.setAppUser(user);
+                student.setAppUser(appUser);
                 studentRepository.save(student);
             });
         }
@@ -77,22 +87,14 @@ public class DataInitializer implements CommandLineRunner {
         if (instructorRepository.count() == 0) {
             instructors = instructorRepository.saveAll(getAllInstructors());
             instructors.forEach(instructor -> {
-                AppUser user = AppUser.builder()
-                        .id(null)
-                        .isAccountDisabled(true)
-                        .emailVerificationCode(UUID.randomUUID().toString())
-                        .password(passwordEncoder.encode("pass"))
-                        .username(instructor.getEmail())
-                        .build();
-                AppUser appUser = userService.saveUser(user);
+                AppUser appUser = userService.saveUser(getAppUser(instructor.getEmail()));
                 if (appUser != null) {
                     userService.addRoleToUser(instructor.getEmail(), ROLE_INSTRUCTOR);
                 }
 
                 // update the instructor
-                instructor.setAppUser(user);
+                instructor.setAppUser(appUser);
                 System.out.println(instructor);
-//                instructorRepository.save(instructor);
 
             });
         }
@@ -100,14 +102,8 @@ public class DataInitializer implements CommandLineRunner {
         if (relativeRepository.count() == 0) {
 
             relativeRepository.saveAll(getAllRelatives()).forEach(relative -> {
-                AppUser user = AppUser.builder()
-                        .id(null)
-                        .isAccountDisabled(true)
-                        .emailVerificationCode(UUID.randomUUID().toString())
-                        .password(passwordEncoder.encode("pass"))
-                        .username(relative.getEmail())
-                        .build();
-                AppUser appUser = userService.saveUser(user);
+
+                AppUser appUser = userService.saveUser(getAppUser(relative.getEmail()));
                 if (appUser != null) {
                     userService.addRoleToUser(relative.getEmail(), ROLE_RELATIVE);
                 }
@@ -137,14 +133,22 @@ public class DataInitializer implements CommandLineRunner {
             instructor.getCourses().add(savedCourse);
             instructorRepository.save(instructor);
         }
+    }
 
-
+    private AppUser getAppUser(String instructor) {
+        return AppUser.builder()
+                .id(null)
+                .isAccountDisabled(true)
+                .emailVerificationCode(UUID.randomUUID().toString())
+                .password(passwordEncoder.encode("pass"))
+                .username(instructor)
+                .build();
     }
 
     private List<Role> getRoles() {
         return Arrays.asList(
                 Role.builder().name(ROLE_USER).build(),
-                Role.builder().name(ROLE_MANAGER).build(),
+//                Role.builder().name().build(),
                 Role.builder().name(ROLE_ADMIN).build(),
                 Role.builder().name(ROLE_STUDENT).build(),
                 Role.builder().name(ROLE_INSTRUCTOR).build(),

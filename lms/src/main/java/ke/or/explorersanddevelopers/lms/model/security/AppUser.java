@@ -30,10 +30,10 @@ public class AppUser implements UserDetails {
     @GeneratedValue
     private BigDecimal id;
 
-    @Column(name = "USERNAME")
+    @Column(name = "USERNAME", unique = true)
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "IS_ACCOUNT_DISABLED")

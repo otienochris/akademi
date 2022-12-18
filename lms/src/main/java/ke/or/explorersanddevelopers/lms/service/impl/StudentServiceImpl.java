@@ -13,15 +13,20 @@ import ke.or.explorersanddevelopers.lms.service.StudentService;
 import ke.or.explorersanddevelopers.lms.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +41,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
+    public static String EMAIL_VERIFICATION_URL = "http://localhost:3000/verify-email/";
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
     private final CourseRepository courseRepository;
@@ -54,6 +60,10 @@ public class StudentServiceImpl implements StudentService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserService userService;
 
+    private static final RestTemplate restTemplate = new RestTemplate();
+
+    private static final String NOTIFICATION_ENDPOINT = "http://localhost:8081/notification-service/mail/send-simple-message";
+
     @Override
     public StudentDto saveNewStudent(StudentDto studentDto) {
         log.info("Saving a new student");
@@ -63,10 +73,12 @@ public class StudentServiceImpl implements StudentService {
         String username = studentDto.getEmail();
 
         log.info("Saving app user details associated with the new student");
+        String emailVerificationCode = UUID.randomUUID().toString();
         AppUser savedAppUser = appUserRepository.save(AppUser.builder()
-                .emailVerificationCode(UUID.randomUUID().toString())
+                .emailVerificationCode(emailVerificationCode)
                 .password(passwordEncoder.encode(studentDto.getNewPassword()))
                 .username(username)
+                .isAccountDisabled(true)
                 .build());
 
         log.info("Adding role to student");
@@ -76,8 +88,48 @@ public class StudentServiceImpl implements StudentService {
         studentEntity.setAppUser(savedAppUser);
         Student savedStudent = studentRepository.save(studentEntity);
 
+        sendEmailVerificationCode(username, emailVerificationCode,studentDto.getLastName());
+
         log.info("Student saved successfully");
         return studentMapper.toDto(savedStudent);
+    }
+
+    public static boolean sendEmailVerificationCode(String email, String emailVerificationCode, String lastName) {
+        //TODO send email verification code
+        // https://www.springcloud.io/post/2022-03/resttemplate-multipart/#gsc.tab=0
+        log.info("Sending email verification code");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        multipartBodyBuilder.part("to", email);
+        multipartBodyBuilder.part("subject", "EMAIL VERIFICATION CODE");
+        String template = "<section style=\"background-color: #33475b; color: white; margin: 0; padding: 20px; min-height: 200px;\">\n" +
+                "        <h2>Dear "+lastName+",</h2>\n" +
+                "        <p style=\"margin-bottom: 50px; color: white; font-weight: bold;\">Welcome to Akademi. Click the following button to verify your email:</p>\n" +
+                "        <div style=\"margin: 10px 2px;\">\n" +
+                "            <a href=\"" +
+                "" + EMAIL_VERIFICATION_URL + emailVerificationCode +
+                "\" style=\"text-decoration: none; color: black; font-weight: bolder; background-color: orange; padding: 10px; margin: 2px; border-radius: 5px;\">verify email</a>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <div></div>\n" +
+                "    </section>";
+//        String link  = "<a href=\"" + EMAIL_VERIFICATION_URL + emailVerificationCode +"\">Verify email</a>";
+        multipartBodyBuilder.part("text", template);
+
+        MultiValueMap<String, HttpEntity<?>> multipartBody = multipartBodyBuilder.build();
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> httpEntity = new HttpEntity<>(multipartBody, headers);
+
+        ResponseEntity<Object> responseEntity = restTemplate.postForEntity(NOTIFICATION_ENDPOINT, httpEntity, Object.class);
+        int status = responseEntity.getStatusCodeValue();
+        Object body = responseEntity.getBody();
+        if (status >= 200 && status < 300) {
+            log.info("Successfully sent the email verification code");
+            return true;
+        } else {
+            log.error("Error sending email verification code");
+            return false;
+        }
     }
 
     @Override
@@ -364,6 +416,20 @@ public class StudentServiceImpl implements StudentService {
             }
         }
         return courseEnrollmentMapper.toDto(currentCourseEnrollment);
+    }
+
+    @Override
+    public StudentDto getStudentByEmail(String email) {
+        log.info("Retrieving a student with email: " + email);
+        Student student = getStudentByEmailFromDb(email);
+        log.info("Successfully retrieved a student with email: " + email);
+        return studentMapper.toDto(student);
+    }
+
+    private Student getStudentByEmailFromDb(String email) {
+        return studentRepository.findByEmail(email).orElseThrow(() -> {
+            throw new NoSuchRecordException("Student not found");
+        });
     }
 
     private CourseEnrollment getCourseEnrollmentByStudentAndCourseFromDb(Student student, Course course) {

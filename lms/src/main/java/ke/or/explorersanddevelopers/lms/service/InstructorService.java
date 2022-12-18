@@ -55,4 +55,12 @@ public interface InstructorService {
      * @return the new instructor details
      */
     InstructorDto addAddress(BigDecimal instructorId, AddressDto addressDto);
+
+    /**
+     * This method retrieves an instructor by the record's email
+     *
+     * @param email - the email of the instructor to be retrieved
+     * @return the retrieved instructor.
+     */
+    InstructorDto getInstructorByEmail(String email);
 }

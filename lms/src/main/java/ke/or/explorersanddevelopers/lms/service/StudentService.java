@@ -118,4 +118,11 @@ public interface StudentService {
      */
     CourseEnrollmentDto completeTopic(BigDecimal studentId, BigDecimal courseId, BigDecimal topicId);
 
+    /**
+     * This method retrieves a student by student email.
+     *
+     * @param email - the student email of the record to be retrieved.
+     * @return the retrieved student record
+     */
+    StudentDto getStudentByEmail(String email);
 }

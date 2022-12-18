@@ -24,7 +24,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtils;
 
-    @Qualifier("customUserDetailsService")
     private final UserDetailsService userService;
 
     @Override

@@ -1,7 +1,9 @@
 package ke.or.explorersanddevelopers.lms.controller;
 
+import ke.or.explorersanddevelopers.lms.enums.RolesEnum;
 import ke.or.explorersanddevelopers.lms.model.security.AuthenticationRequestDto;
 import ke.or.explorersanddevelopers.lms.model.security.AuthenticationResponse;
+import ke.or.explorersanddevelopers.lms.repositories.AppUserRepository;
 import ke.or.explorersanddevelopers.lms.service.UserService;
 import ke.or.explorersanddevelopers.lms.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -10,14 +12,20 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,29 +37,57 @@ public class AuthController {
     private final UserService userService;
 
     private final JwtUtil jwtUtil;
+    private final AppUserRepository appUserRepository;
 
     @PostMapping
     public ResponseEntity<?> authenticateUser(@Validated @RequestBody AuthenticationRequestDto user) {
-        HashMap<String, Object> error = new HashMap<>();
-
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         } catch (BadCredentialsException e) {
             throw new UsernameNotFoundException("Incorrect username and password");
         } catch (DisabledException e) {
-            error.put("message: ", e.getMessage());
-            error.put("possible_solution: ", new String[]{"Ensure your email is verified", "Contact your Admin for help"});
-            error.put("Time: ", LocalTime.now().toString());
-            error.put("Token: ", getJwtToken(user));
-            return ResponseEntity.badRequest().body(error);
+            throw new UsernameNotFoundException("User is disabled");
+        } catch (Exception e){
+            e.printStackTrace();
         }
 
-        return ResponseEntity.ok(AuthenticationResponse.builder()
-                .token(getJwtToken(user)).build());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+        String token = getJwtToken(userDetails);
+        Date date = jwtUtil.extractExpiration(token);
+        String authority = userDetails.getAuthorities().stream().findFirst().orElseThrow(() -> {
+            throw new IllegalStateException("User cannot exist without at least one role");
+        }).getAuthority();
+
+        AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
+                .token(token)
+                .expiry(date)
+                .role(getRole(authority))
+                .build();
+
+        return ResponseEntity.ok(authenticationResponse);
     }
 
-    private String getJwtToken(AuthenticationRequestDto user) {
-        return jwtUtil.generateToken(userDetailsService.loadUserByUsername(user.getUsername()));
+    private RolesEnum getRole(String s) {
+        switch (s){
+            case "ROLE_INSTRUCTOR":
+                return RolesEnum.ROLE_INSTRUCTOR;
+            case "ROLE_STUDENT":
+                return RolesEnum.ROLE_STUDENT;
+            case "ROLE_USER":
+                return RolesEnum.ROLE_USER;
+            case "ROLE_ADMIN":
+                return RolesEnum.ROLE_ADMIN;
+            case "ROLE_SUPER_ADMIN":
+                return RolesEnum.ROLE_SUPER_ADMIN;
+            case "ROLE_RELATIVE":
+                return RolesEnum.ROLE_RELATIVE;
+            default:
+                throw new IllegalStateException("Unknown role");
+        }
+    }
+
+    private String getJwtToken(UserDetails user) {
+        return jwtUtil.generateToken(user);
     }
 
     @GetMapping("/verifyEmail/{emailVerificationToken}")

@@ -73,7 +73,7 @@ public class Instructor {
     private List<Organization> organizations = new ArrayList<>();
 
     @CreationTimestamp
-    @Column(name = "CREATION_DATE", nullable = false)
+    @Column(name = "CREATION_DATE")
     private Date creationDate;
 
     @UpdateTimestamp

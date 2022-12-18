@@ -12,6 +12,18 @@ server:
     context-path: /lms
 jwt:
   secret_key: secret
+admin:
+  email: explorersanddevelopers@gmail.com
+service:
+  notification:
+    url: http://localhost:8081/notification-service/mail/send-simple-message
+  front-end:
+    email-verification:
+      url: http://localhost:3000/verify-email/
+#      url: http://localhost:8083/lms/api/v1/authentication/verifyEmail/
+  payment:
+    url:
+
 #logging:
 #  level:
 #    root: debug

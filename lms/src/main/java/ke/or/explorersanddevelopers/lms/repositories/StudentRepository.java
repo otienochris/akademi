@@ -15,4 +15,6 @@ public interface StudentRepository extends JpaRepository<Student, BigDecimal> {
     Optional<Student> getByStudentId(BigDecimal studentId);
 
     Optional<Student> getByEmail(String email);
+
+    Optional<Student> findByEmail(String email);
 }

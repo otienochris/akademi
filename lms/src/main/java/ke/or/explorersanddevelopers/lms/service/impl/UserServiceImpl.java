@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -42,8 +44,15 @@ public class UserServiceImpl implements UserService {
         log.info("Adding role {} to user {}", roleName, username);
         userRepository.findByUsername(username).ifPresentOrElse(user ->
                 roleRepository.findByName(roleName).ifPresentOrElse(role -> {
-                    user.getRoles().add(role);
-                    userRepository.save(user);
+                    Collection<Role> roles = user.getRoles();
+                    if (roles == null) {
+                        roles = new ArrayList<>();
+                    }
+                    roles.add(role);
+                    user.setRoles(roles);
+                    AppUser updatedUser = userRepository.save(user);
+                    log.info("Successfully added role {} to user {}", roleName, username);
+                    updatedUser.getRoles().forEach(System.out::println);
                 }, () -> {
                     throw new RecordNotFoundException("Role does not exists");
                 }), () -> {

@@ -87,8 +87,6 @@ public class StudentDto extends RepresentationModel<StudentDto> implements Seria
     @Schema(example = "0", description = "Address record version.")
     private Long version;
 
-    @Min(8)
-    @Max(12)
     @Schema(description = "User password", accessMode = Schema.AccessMode.WRITE_ONLY)
     private String newPassword;
 }

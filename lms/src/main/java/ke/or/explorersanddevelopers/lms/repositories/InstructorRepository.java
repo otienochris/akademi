@@ -13,4 +13,6 @@ import java.util.Optional;
  */
 public interface InstructorRepository extends JpaRepository<Instructor, BigDecimal> {
     Optional<Instructor> getByInstructorId(BigDecimal instructorId);
+
+    Optional<Instructor> findByEmail(String email);
 }

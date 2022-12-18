@@ -53,7 +53,7 @@ public class RelativeController {
 
     private final RelativeService relativeService;
 
-    @PostMapping
+    @PostMapping("/signup")
     @Operation(summary = "Save a new relative")
     @ApiResponse(responseCode = "201", description = "New Relative Saved Successfully")
     public ResponseEntity<RelativeDto> saveNewRelative(@RequestBody @Validated RelativeDto relativeDto) {
@@ -78,6 +78,14 @@ public class RelativeController {
     public ResponseEntity<RelativeDto> getRelativeById(@PathVariable BigDecimal relativeId) {
         RelativeDto relativeById = relativeService.getRelativeById(relativeId);
         return ResponseEntity.ok(addHateoasLinks(relativeById));
+    }
+
+    @GetMapping("/username/{email}")
+    @Operation(summary = "Get a relative using their email.")
+    @ApiResponse(responseCode = "200", description = "Relative Successfully retrieved")
+    public ResponseEntity<RelativeDto> getRelativeById(@PathVariable String email) {
+        RelativeDto relativeByEmail = relativeService.getRelativeByEmail(email);
+        return ResponseEntity.ok(addHateoasLinks(relativeByEmail));
     }
 
     @GetMapping("/{relativeId}/track-student/{token}")

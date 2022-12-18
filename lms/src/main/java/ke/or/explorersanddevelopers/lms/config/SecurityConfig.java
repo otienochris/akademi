@@ -27,7 +27,6 @@ import java.util.Collections;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Qualifier("customUserDetailsService")
     private final UserDetailsService userService;
     private final JwtRequestFilter jwtRequestFilter;
     private final String[] AUTH_WHITELIST = {
@@ -37,19 +36,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/h2-console**",
             "/api/v1/users/authenticate",
             "/api/v1/hello",
-            "/api/v1/authentication"
-//            "/authentication/**",
-//            "/api/v1/employees/signup",
-//            "/api/v1/suppliers/signup",
-//            "/api/v1/department-heads/signup",
-//            "/api/v1/users/verifyEmail/**",
-//            "/api/v1/users/verifyEmail/sendCode/",
-//            "/api/v1/users/changePassword",
-//            "/api/v1/users/submitNewPassword",
-//            "/api/v1/documents/download/**"
+            "/api/v1/authentication",
+            "/api/v1/instructors/signup",
+            "/api/v1/students/signup",
+            "/api/v1/relatives/signup",
+            "/api/v1/authentication/verifyEmail/**"
     };
-    @Value("${server.servlet.context-path}")
-    private String APP_CONTEXT;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

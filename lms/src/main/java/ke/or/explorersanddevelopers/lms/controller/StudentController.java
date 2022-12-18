@@ -57,7 +57,7 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    @PostMapping
+    @PostMapping("/signup")
     @Operation(summary = "Save a new student")
     @ApiResponse(responseCode = "201", description = "Student Created and Saved Successfully.")
     public ResponseEntity<StudentDto> saveNewStudent(@RequestBody @Validated StudentDto studentDto){
@@ -71,6 +71,14 @@ public class StudentController {
     public ResponseEntity<StudentDto> getStudentById(@PathVariable BigDecimal studentId) {
         StudentDto studentByCode = studentService.getStudentByCode(studentId);
         return ResponseEntity.ok(addHateoasLinks(studentByCode));
+    }
+
+    @GetMapping("/username/{email}")
+    @Operation(summary = "Get a student by their username/email.")
+    @ApiResponse(responseCode = "200", description = "Student Retrieved Successfully")
+    public ResponseEntity<StudentDto> getStudentByEmail(@PathVariable String email) {
+        StudentDto studentByEmail = studentService.getStudentByEmail(email);
+        return ResponseEntity.ok(addHateoasLinks(studentByEmail));
     }
 
     @GetMapping

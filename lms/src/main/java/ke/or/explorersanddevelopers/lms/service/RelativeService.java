@@ -54,4 +54,12 @@ public interface RelativeService {
      * @return true if operation was successful
      */
     Boolean deleteRelativeById(BigDecimal relativeId);
+
+    /**
+     * This method retrieves a relative by email
+     *
+     * @param email - the email of the student to be retrieved
+     * @return the retrieved relative
+     */
+    RelativeDto getRelativeByEmail(String email);
 }
