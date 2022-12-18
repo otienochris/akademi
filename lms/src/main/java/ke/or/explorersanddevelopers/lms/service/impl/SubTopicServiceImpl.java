@@ -42,10 +42,6 @@ public class SubTopicServiceImpl implements SubTopicService {
 
         //bind the subtopic to the topic
         SubTopic subTopicEntity = subTopicMapper.toEntity(subTopicDto);
-        Topic associatedTopic = subTopicEntity.getTopic();
-        if (associatedTopic == null)
-            subTopicEntity.setTopic(new Topic());
-        subTopicEntity.getTopic().setTopicId(topicId);
 
         SubTopic createdSubTopic = subTopicRepository.save(subTopicEntity);
 

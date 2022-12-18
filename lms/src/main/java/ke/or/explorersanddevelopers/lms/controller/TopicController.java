@@ -61,8 +61,8 @@ public class TopicController {
             " course", tags = "Topic")
     @ApiResponse(responseCode = "201", description = "Topic successfully created, mapped to the course, and saved to" +
             " the database")
-    public ResponseEntity<TopicDto> createNewTopic(@RequestParam(name = "topicId")BigDecimal courseId,
-                                                   @RequestBody @Validated TopicDto topicDto){
+    public ResponseEntity<TopicDto> createNewTopic(@RequestParam(name = "courseId") BigDecimal courseId,
+                                                   @RequestBody @Validated TopicDto topicDto) {
 
         TopicDto createdTopic = topicService.createNewTopic(courseId, topicDto);
 

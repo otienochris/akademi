@@ -43,10 +43,6 @@ public class SubTopic {
     @Column(name = "CONTENT")
     private String content;
 
-    @ManyToOne
-    @ToString.Exclude
-    private Topic topic;
-
     @CreationTimestamp
     @Column(name = "CREATION_DATE")
     private Date creationDate;

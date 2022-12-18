@@ -60,10 +60,6 @@ public class Topic {
     @Column(name = "VERSION")
     private Long version;
 
-    @ManyToOne
-    @ToString.Exclude
-    private Course course;
-
     @ManyToMany
     @ToString.Exclude
     private List<Test> tests = new ArrayList<>();

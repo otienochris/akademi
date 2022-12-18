@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,19 +59,19 @@ public class Course {
 
     @OneToMany
     @ToString.Exclude
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany
     @ToString.Exclude
-    private List<CourseEnrollment> courseEnrollments;
+    private List<CourseEnrollment> courseEnrollments = new ArrayList<>();
 
     @OneToMany
     @ToString.Exclude
-    private List<Topic> topics;
+    private List<Topic> topics = new ArrayList<>();
 
     @ManyToMany
     @ToString.Exclude
-    private List<Instructor> instructors;
+    private List<Instructor> instructors = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE", nullable = false)
