@@ -34,6 +34,7 @@ public class Topic {
     @Column(name = "TITLE", nullable = false)
     private String title;
 
+    @Lob
     @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
