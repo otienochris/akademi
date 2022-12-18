@@ -3,7 +3,9 @@ package ke.or.explorersanddevelopers.lms.service.impl;
 import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
 import ke.or.explorersanddevelopers.lms.exception.ResourceNotFoundException;
 import ke.or.explorersanddevelopers.lms.mappers.CourseMapper;
+import ke.or.explorersanddevelopers.lms.mappers.TopicMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
+import ke.or.explorersanddevelopers.lms.model.dto.TopicDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Course;
 import ke.or.explorersanddevelopers.lms.model.entity.Instructor;
 import ke.or.explorersanddevelopers.lms.repositories.CourseRepository;
@@ -32,6 +34,8 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final InstructorRepository instructorRepository;
+
+    private final TopicMapper topicMapper;
 
     @Override
     public CourseDto createNewCourse(BigDecimal instructorId, CourseDto courseDto) {
@@ -120,5 +124,13 @@ public class CourseServiceImpl implements CourseService {
 
         return courseMapper.toDto(updatedCourse);
 
+    }
+
+    @Override
+    public List<TopicDto> getCourseTopicsByCourseCode(BigDecimal courseId) {
+        Course course = courseRepository.getByCourseId(courseId).orElseThrow(() -> new NoSuchRecordException("Course with id: " + courseId + ", not found"));
+        List<TopicDto> topicDtos = new ArrayList<>();
+        course.getTopics().forEach(topic -> topicDtos.add(topicMapper.toDto(topic)));
+        return topicDtos;
     }
 }

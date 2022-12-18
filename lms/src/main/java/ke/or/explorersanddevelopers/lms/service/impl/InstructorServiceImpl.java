@@ -9,11 +9,7 @@ import ke.or.explorersanddevelopers.lms.model.dto.InstructorDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Address;
 import ke.or.explorersanddevelopers.lms.model.entity.Instructor;
 import ke.or.explorersanddevelopers.lms.model.security.AppUser;
-import ke.or.explorersanddevelopers.lms.model.security.Role;
-import ke.or.explorersanddevelopers.lms.repositories.AddressRepository;
-import ke.or.explorersanddevelopers.lms.repositories.AppUserRepository;
-import ke.or.explorersanddevelopers.lms.repositories.InstructorRepository;
-import ke.or.explorersanddevelopers.lms.repositories.RoleRepository;
+import ke.or.explorersanddevelopers.lms.repositories.*;
 import ke.or.explorersanddevelopers.lms.service.InstructorService;
 import ke.or.explorersanddevelopers.lms.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static ke.or.explorersanddevelopers.lms.service.impl.StudentServiceImpl.sendEmailVerificationCode;
@@ -40,6 +34,7 @@ import static ke.or.explorersanddevelopers.lms.service.impl.StudentServiceImpl.s
 @Service
 @RequiredArgsConstructor
 public class InstructorServiceImpl implements InstructorService {
+    private final StudentRepository studentRepository;
     private final RoleRepository roleRepository;
     private final AppUserRepository appUserRepository;
 
@@ -136,6 +131,21 @@ public class InstructorServiceImpl implements InstructorService {
         Instructor instructorByIdFromDb = getInstructorByEmailFromDb(email);
         log.info("Successfully retrieved an instructor");
         return instructorMapper.toDto(instructorByIdFromDb);
+    }
+
+    @Override
+    public InstructorDto updateInstructor(BigDecimal studentId, InstructorDto instructorDto) {
+
+        Instructor instructor = getInstructorByIdFromDb(studentId);
+        instructor.setFirstName(instructorDto.getFirstName());
+        instructor.setLastName(instructorDto.getLastName());
+        instructor.setTitle(instructorDto.getTitle());
+        instructor.setDescription(instructorDto.getDescription());
+        instructor.setVersion(instructorDto.getVersion());
+
+        Instructor updatedInstructor = instructorRepository.save(instructor);
+
+        return instructorMapper.toDto(updatedInstructor);
     }
 
     private Instructor getInstructorByEmailFromDb(String email) {

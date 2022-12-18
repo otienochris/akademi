@@ -63,4 +63,13 @@ public interface InstructorService {
      * @return the retrieved instructor.
      */
     InstructorDto getInstructorByEmail(String email);
+
+    /**
+     * This method update an instructor record
+     *
+     * @param studentId     - the student id
+     * @param instructorDto - the instructor to be saved
+     * @return the saved instructor record
+     */
+    InstructorDto updateInstructor(BigDecimal studentId, InstructorDto instructorDto);
 }

@@ -13,7 +13,6 @@ import ke.or.explorersanddevelopers.lms.service.StudentService;
 import ke.or.explorersanddevelopers.lms.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +25,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -145,10 +147,9 @@ public class StudentServiceImpl implements StudentService {
         log.info("Updating a student of id: " + studentId);
         Student student = getStudentByCodeFromDb(studentId);
 
-        student.setEmail(studentDto.getEmail());
         student.setCountryCode(studentDto.getCountryCode());
-        student.setFirstName(student.getFirstName());
-        student.setLastName(student.getLastName());
+        student.setFirstName(studentDto.getFirstName());
+        student.setLastName(studentDto.getLastName());
 
         Student savedStudent = studentRepository.save(student);
 

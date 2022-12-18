@@ -14,6 +14,7 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,19 +65,19 @@ public class InstructorDto extends RepresentationModel<InstructorDto> implements
 
     @Null
     @Schema(description = "A list of users' addresses", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<AddressDto> addresses;
+    private List<AddressDto> addresses = new ArrayList<>();
 
     @Null
     @Schema(description = "A list of reviews", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<ReviewDto> reviews;
+    private List<ReviewDto> reviews = new ArrayList<>();
 
     @Null
     @Schema(description = "A list of courses", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<CourseDto> courses;
+    private List<CourseDto> courses = new ArrayList<>();
 
     @Null
     @Schema(description = "A list of organizations", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<OrganizationDto> organizations;
+    private List<OrganizationDto> organizations = new ArrayList<>();
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

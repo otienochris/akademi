@@ -12,20 +12,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalTime;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
@@ -67,8 +62,8 @@ public class AuthController {
         return ResponseEntity.ok(authenticationResponse);
     }
 
-    private RolesEnum getRole(String s) {
-        switch (s){
+    public static RolesEnum getRole(String s) {
+        switch (s) {
             case "ROLE_INSTRUCTOR":
                 return RolesEnum.ROLE_INSTRUCTOR;
             case "ROLE_STUDENT":

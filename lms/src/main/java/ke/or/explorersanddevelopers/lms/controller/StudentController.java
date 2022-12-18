@@ -60,8 +60,17 @@ public class StudentController {
     @PostMapping("/signup")
     @Operation(summary = "Save a new student")
     @ApiResponse(responseCode = "201", description = "Student Created and Saved Successfully.")
-    public ResponseEntity<StudentDto> saveNewStudent(@RequestBody @Validated StudentDto studentDto){
+    public ResponseEntity<StudentDto> saveNewStudent(@RequestBody @Validated StudentDto studentDto) {
         StudentDto savedStudentDto = studentService.saveNewStudent(studentDto);
+        return ResponseEntity.created(linkTo(methodOn(StudentController.class).getStudentById(savedStudentDto.getStudentId())).toUri()).body(addHateoasLinks(savedStudentDto));
+    }
+
+    @PutMapping("/{studentId}")
+    @Operation(summary = "Update a student")
+    @ApiResponse(responseCode = "202", description = "Student updated Successfully.")
+    public ResponseEntity<StudentDto> updateStudent(@PathVariable BigDecimal studentId,
+                                                    @RequestBody @Validated StudentDto studentDto) {
+        StudentDto savedStudentDto = studentService.updateStudent(studentId, studentDto);
         return ResponseEntity.created(linkTo(methodOn(StudentController.class).getStudentById(savedStudentDto.getStudentId())).toUri()).body(addHateoasLinks(savedStudentDto));
     }
 

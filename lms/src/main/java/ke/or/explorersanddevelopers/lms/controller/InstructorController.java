@@ -65,6 +65,15 @@ public class InstructorController {
         return ResponseEntity.created(linkTo(methodOn(InstructorController.class).getInstructorById(newInstructor.getInstructorId())).toUri()).body(addHateoasLinks(newInstructor));
     }
 
+    @PutMapping("/{studentId}")
+    @Operation(summary = "Update an instructor")
+    @ApiResponse(responseCode = "202", description = "The student was updated successfully")
+    public ResponseEntity<InstructorDto> updateInstructor(@PathVariable BigDecimal studentId,
+                                                          @RequestBody @Validated InstructorDto instructorDto) {
+        InstructorDto newInstructor = instructorService.updateInstructor(studentId, instructorDto);
+        return ResponseEntity.accepted().body(addHateoasLinks(newInstructor));
+    }
+
     @GetMapping("/{instructorId}")
     @Operation(summary = "Get an instructor by id")
     @ApiResponse(responseCode = "200", description = "The student was retrieved successfully")
