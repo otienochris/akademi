@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author oduorfrancis134@gmail.com;
@@ -46,7 +47,7 @@ public interface CourseService {
      * @return - returns  list of courses
      */
 
-    List<CourseDto> getListOfCourses(Pageable pageable);
+    Set<CourseDto> getListOfCourses(Pageable pageable);
 
     /**
      * This method allows a user to edit course details using record course id

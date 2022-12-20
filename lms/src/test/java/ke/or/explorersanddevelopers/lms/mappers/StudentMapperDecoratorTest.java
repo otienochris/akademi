@@ -20,9 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -71,19 +69,19 @@ class StudentMapperDecoratorTest {
         boolean isAccountDisabled = false;
         String password = "pass";
 
-        List<CertificateDto> certificateDtoList = new ArrayList<>();
+        Set<CertificateDto> certificateDtoList = new HashSet<>();
         certificateDtoList.add(certificateDto);
-        List<ReviewDto> reviewDtoList = new ArrayList<>();
+        Set<ReviewDto> reviewDtoList = new HashSet<>();
         reviewDtoList.add(reviewDto);
-        List<AddressDto> addressDtoList = new ArrayList<>();
+        Set<AddressDto> addressDtoList = new HashSet<>();
         addressDtoList.add(addressDto);
 
-        ArrayList<Address> addresses = new ArrayList<>();
+        Set<Address> addresses = new HashSet<>();
 
         addresses.add(address);
-        ArrayList<Certificate> certificates = new ArrayList<>();
+        Set<Certificate> certificates = new HashSet<>();
         certificates.add(certificate);
-        ArrayList<Review> reviews = new ArrayList<>();
+        Set<Review> reviews = new HashSet<>();
         reviews.add(review);
 
         partialStudentEntity = Student.builder()
@@ -95,9 +93,9 @@ class StudentMapperDecoratorTest {
                 .firstName(firstName)
                 .lastName(lastName)
                 .modificationDate(modificationDate)
-                .addresses(new ArrayList<>())
-                .certificates(new ArrayList<>())
-                .reviews(new ArrayList<>())
+                .addresses(new HashSet<>())
+                .certificates(new HashSet<>())
+                .reviews(new HashSet<>())
                 .build();
         studentEntity = Student.builder()
                 .studentId(studentId)
@@ -123,9 +121,9 @@ class StudentMapperDecoratorTest {
                 .firstName(firstName)
                 .lastName(lastName)
                 .modificationDate(modificationDate)
-                .addresses(new ArrayList<>())
-                .certificates(new ArrayList<>())
-                .reviews(new ArrayList<>())
+                .addresses(new HashSet<>())
+                .certificates(new HashSet<>())
+                .reviews(new HashSet<>())
                 .isAccountDisabled(isAccountDisabled)
                 .build();
         studentDto =  StudentDto.builder()

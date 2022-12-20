@@ -62,10 +62,6 @@ public class Relative  {
     @ToString.Exclude
     private List<Review> reviews = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "relatives")
-    @ToString.Exclude
-    private List<Student> students = new ArrayList<>();
-
     @CreationTimestamp
     @Column(name = "CREATION_DATE")
     private Date creationDate;

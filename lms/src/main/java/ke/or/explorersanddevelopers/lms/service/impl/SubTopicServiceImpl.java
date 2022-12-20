@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author oduorfrancis134@gmail.com;
@@ -46,9 +48,9 @@ public class SubTopicServiceImpl implements SubTopicService {
         SubTopic createdSubTopic = subTopicRepository.save(subTopicEntity);
 
         //bind the topic to the subtopic
-        List<SubTopic> subTopicList = topic.getSubTopics();
+        Set<SubTopic> subTopicList = topic.getSubTopics();
         if (subTopicList == null)
-            topic.setSubTopics(new ArrayList<>());
+            topic.setSubTopics(new HashSet<>());
         topic.getSubTopics().add(createdSubTopic);
         topicRepository.save(topic);
 

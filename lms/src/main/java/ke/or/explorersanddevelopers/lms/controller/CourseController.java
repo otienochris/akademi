@@ -100,7 +100,6 @@ public class CourseController {
         List<CourseDto> listOfCourses = new ArrayList<>();
         courseService.getListOfCourses(PageRequest.of(pageNo, pageSize))
                         .forEach(courseDto -> listOfCourses.add(addHateoasLinks(courseDto)));
-        System.out.println("Found the following courses: " + listOfCourses);
 
         CollectionModel<CourseDto> courseDtoCollectionModel = CollectionModel.of(listOfCourses);
         return ResponseEntity.ok(courseDtoCollectionModel);

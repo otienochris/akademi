@@ -16,7 +16,9 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author oduorfrancis134@gmail.com;
@@ -63,19 +65,19 @@ public class CourseDto extends RepresentationModel<CourseDto> implements Seriali
 
     @Null
     @Schema(description = "Courses' reviews.", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<ReviewDto> reviews;
+    private Set<ReviewDto> reviews = new HashSet<>();
 
     @Null
     @Schema(description = "A list of course enrollments for this course.", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<CourseEnrollmentDto> courseEnrollments;
+    private Set<CourseEnrollmentDto> courseEnrollments = new HashSet<>();
 
     @Null
     @Schema(description = "A list of the course's topics", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<TopicDto> topics;
+    private Set<TopicDto> topics = new HashSet<>();
 
     @Null
     @Schema(description = "A list of instructors", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<InstructorDto> instructors;
+    private Set<InstructorDto> instructors = new HashSet<>();
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -18,10 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -95,7 +92,7 @@ public class StudentController {
     @ApiResponse(responseCode = "200", description = "Students' list Retrieved Successfully")
     public ResponseEntity<CollectionModel<StudentDto>> getListOfStudents(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
                                                                          @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-        List<StudentDto> response = new ArrayList<>();
+        Set<StudentDto> response = new HashSet<>();
         studentService.getListOfStudents(PageRequest.of(pageNo, pageSize)).forEach(studentDto -> response.add(addHateoasLinks(studentDto)));
         CollectionModel<StudentDto> collectionModel = CollectionModel.of(response);
         return ResponseEntity.ok(collectionModel);
@@ -125,7 +122,7 @@ public class StudentController {
     @GetMapping("/{studentId}/certificates")
     @Operation(summary = "Retrieves a list of certificates owned by a student.")
     @ApiResponse(responseCode = "200", description = "The certificates were retrieved successfully")
-    public ResponseEntity<List<CertificateDto>> retrieveCertificates(@PathVariable BigDecimal studentId) {
+    public ResponseEntity<Set<CertificateDto>> retrieveCertificates(@PathVariable BigDecimal studentId) {
         return ResponseEntity.ok(studentService.retrieveCertificates(studentId));
     }
 

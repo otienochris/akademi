@@ -19,9 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static ke.or.explorersanddevelopers.lms.service.impl.StudentServiceImpl.sendEmailVerificationCode;
 
@@ -85,9 +83,9 @@ public class RelativeServiceImpl implements RelativeService {
     }
 
     @Override
-    public List<RelativeDto> getListOfRelatives(Pageable pageable) {
+    public Set<RelativeDto> getListOfRelatives(Pageable pageable) {
         log.info("Retrieving a list of relatives");
-        List<RelativeDto> response = new ArrayList<>();
+        Set<RelativeDto> response = new HashSet<>();
         relativeRepository.findAll(pageable).forEach(relative -> response.add(relativeMapper.toDto(relative)));
 
         if (response.size() == 0)
@@ -109,15 +107,11 @@ public class RelativeServiceImpl implements RelativeService {
             });
 
             // save student to relative
-            if (relativeByIdFromDb.getStudents() == null)
-                relativeByIdFromDb.setStudents(new ArrayList<>());
-
-            relativeByIdFromDb.getStudents().add(student);
             Relative savedRelative = relativeRepository.save(relativeByIdFromDb); // save the updates
 
             // save relative to student
             if (student.getRelatives() == null)
-                student.setRelatives(new ArrayList<>());
+                student.setRelatives(new HashSet<>());
             student.getRelatives().add(savedRelative);
             studentRepository.save(student);
 

@@ -14,7 +14,9 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -48,7 +50,7 @@ public class TopicDto extends RepresentationModel<TopicDto> implements Serializa
     private String content;
 
     @Schema(description = "A list of subtopics belonging to this particular topic.")
-    private List<SubTopicDto> subTopics;
+    private Set<SubTopicDto> subTopics = new HashSet<>();
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -65,5 +67,5 @@ public class TopicDto extends RepresentationModel<TopicDto> implements Serializa
     private Long version;
 
     @Schema(description = "A list of tests belonging to this particular topic.")
-    private List<Test> tests;
+    private Set<Test> tests = new HashSet<>();
 }

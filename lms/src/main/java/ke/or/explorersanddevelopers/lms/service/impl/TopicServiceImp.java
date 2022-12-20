@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author oduorfrancis134@gmail.com;
@@ -46,9 +48,9 @@ public class TopicServiceImp implements TopicService {
         Topic savedTopic = topicRepository.save(topicEntity);
 
         // Associate a course to the created topic
-        List<Topic> topics = course.getTopics();
+        Set<Topic> topics = course.getTopics();
         if (topics == null)
-            course.setTopics(new ArrayList<>());
+            course.setTopics(new HashSet<>());
         course.getTopics().add(savedTopic);
         courseRepository.save(course);
 

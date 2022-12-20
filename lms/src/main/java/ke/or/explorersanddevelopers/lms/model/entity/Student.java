@@ -9,9 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -46,25 +44,21 @@ public class Student {
     @Column(name = "COUNTRY_CODE")
     private String countryCode;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<Certificate> certificates = new ArrayList<>();
+    private Set<Certificate> certificates = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<Address> addresses = new ArrayList<>();
+    private Set<Address> addresses = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Review> reviews = new ArrayList<>();
+    private Set<Review> reviews = new HashSet<>();
 
-    @ManyToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<Relative> relatives = new ArrayList<>();
-
-    @ManyToMany
-    @ToString.Exclude
-    private List<Organization> organizations = new ArrayList<>();
+    private Set<Relative> relatives = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE", nullable = false)
@@ -78,7 +72,7 @@ public class Student {
     @Column(name = "VERSION")
     private Long version;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(referencedColumnName = "id", name = "user_id")
     private AppUser appUser;
 

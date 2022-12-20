@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -60,8 +62,8 @@ public class CourseEnrollmentMapperDecorator implements CourseEnrollmentMapper {
         }
 
         // set test enrollments
-        mappedCourseEnrollmentDto.setTestEnrollments(new ArrayList<>());
-        List<TestEnrollment> testEnrollments = courseEnrollment.getTestEnrollments();
+        mappedCourseEnrollmentDto.setTestEnrollments(new HashSet<>());
+        Set<TestEnrollment> testEnrollments = courseEnrollment.getTestEnrollments();
         if (testEnrollments != null && !testEnrollments.isEmpty()) {
             testEnrollments.forEach(testEnrollment -> mappedCourseEnrollmentDto.getTestEnrollments().add(testEnrollmentMapper.toDto(testEnrollment)));
         }
@@ -88,8 +90,8 @@ public class CourseEnrollmentMapperDecorator implements CourseEnrollmentMapper {
         }
 
         // set test enrollments
-        mappedCourseEnrollment.setTestEnrollments(new ArrayList<>());
-        List<TestEnrollmentDto> testEnrollmentDtoList = courseEnrollmentDto.getTestEnrollments();
+        mappedCourseEnrollment.setTestEnrollments(new HashSet<>());
+        Set<TestEnrollmentDto> testEnrollmentDtoList = courseEnrollmentDto.getTestEnrollments();
         if (testEnrollmentDtoList != null && !testEnrollmentDtoList.isEmpty()) {
             testEnrollmentDtoList.forEach(testEnrollment -> mappedCourseEnrollment.getTestEnrollments().add(testEnrollmentMapper.toEntity(testEnrollment)));
         }

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -72,7 +73,7 @@ public interface StudentService {
      * @param pageable - a pagination objection with details like page number and page size
      * @return a list of students
      */
-    List<StudentDto> getListOfStudents(Pageable pageable);
+    Set<StudentDto> getListOfStudents(Pageable pageable);
 
     /**
      * This method submits a review
@@ -98,7 +99,7 @@ public interface StudentService {
      * @param studentId - a student record Id
      * @return a list of certificates owned by a student
      */
-    List<CertificateDto> retrieveCertificates(BigDecimal studentId);
+    Set<CertificateDto> retrieveCertificates(BigDecimal studentId);
 
     /**
      * This method generates a token parents can use to track the student's progress

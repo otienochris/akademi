@@ -9,7 +9,10 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -36,7 +39,7 @@ public class StudentDto extends RepresentationModel<StudentDto> implements Seria
 
     @Null
     @Schema(description = "Students' certificates", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<CertificateDto> certificates;
+    private Set<CertificateDto> certificates = new HashSet<>();
 
     @NotNull
     @Schema(example = "Christopher", description = "User's first name.")
@@ -59,19 +62,19 @@ public class StudentDto extends RepresentationModel<StudentDto> implements Seria
 
     @Null
     @Schema(description = "A list of users' addresses", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<AddressDto> addresses;
+    private Set<AddressDto> addresses = new HashSet<>();
 
     @Null
     @Schema(description = "A list of reviews", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<ReviewDto> reviews;
+    private Set<ReviewDto> reviews = new HashSet<>();
 
     @Null
     @Schema(description = "A list of relatives tracking the student", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<RelativeDto> relatives;
+    private Set<RelativeDto> relatives = new HashSet<>();
 
     @Null
     @Schema(description = "A list of organizations", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<OrganizationDto> organizations;
+    private Set<OrganizationDto> organizations = new HashSet<>();
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

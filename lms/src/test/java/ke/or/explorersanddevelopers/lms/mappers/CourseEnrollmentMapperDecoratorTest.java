@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,8 +29,8 @@ class CourseEnrollmentMapperDecoratorTest {
     private final StudentDto studentDto = StudentDto.builder().studentId(BigDecimal.ONE).build();
     private final Course courseEntity = Course.builder().courseId(BigDecimal.ONE).build();
     private final CourseDto courseDto = CourseDto.builder().courseId(BigDecimal.ONE).build();
-    private final List<TestEnrollment> testEnrollmentEntities = List.of(TestEnrollment.builder().testEnrollmentId(BigDecimal.valueOf(101)).build());
-    private final List<TestEnrollmentDto> testEnrollmentDtos = List.of(TestEnrollmentDto.builder().testEnrollmentId(BigDecimal.valueOf(101)).build());
+    private final Set<TestEnrollment> testEnrollmentEntities = Set.of(TestEnrollment.builder().testEnrollmentId(BigDecimal.valueOf(101)).build());
+    private final Set<TestEnrollmentDto> testEnrollmentDtos = Set.of(TestEnrollmentDto.builder().testEnrollmentId(BigDecimal.valueOf(101)).build());
     @Mock
     private CourseEnrollmentMapper courseEnrollmentMapper;
     @Mock
@@ -50,8 +51,8 @@ class CourseEnrollmentMapperDecoratorTest {
         long version = 0L;
         BigDecimal amount = BigDecimal.valueOf(100);
         BigDecimal courseEnrollmentId = BigDecimal.ONE;
-        List<Topic> completedTopics = List.of(Topic.builder().topicId(BigDecimal.ONE).build());
-        List<TopicDto> completedTopicsDtos = List.of(TopicDto.builder().topicId(BigDecimal.ONE).build());
+        Set<Topic> completedTopics = Set.of(Topic.builder().topicId(BigDecimal.ONE).build());
+        Set<TopicDto> completedTopicsDtos = Set.of(TopicDto.builder().topicId(BigDecimal.ONE).build());
         LocalDate now = LocalDate.now();
         Date creationDate = Date.valueOf(now);
         Date modificationDate = Date.valueOf(now.plusDays(2));

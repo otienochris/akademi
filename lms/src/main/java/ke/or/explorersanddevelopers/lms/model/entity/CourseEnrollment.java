@@ -9,9 +9,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -52,11 +53,11 @@ public class CourseEnrollment {
 
     @OneToMany
     @ToString.Exclude
-    private List<TestEnrollment> testEnrollments = new ArrayList<>();
+    private Set<TestEnrollment> testEnrollments = new HashSet<>();
 
     @OneToMany
     @ToString.Exclude
-    private List<Topic> completedTopics = new ArrayList<>();
+    private Set<Topic> completedTopics = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE", nullable = false)

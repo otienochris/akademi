@@ -19,9 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static ke.or.explorersanddevelopers.lms.service.impl.StudentServiceImpl.sendEmailVerificationCode;
 
@@ -89,9 +87,9 @@ public class InstructorServiceImpl implements InstructorService {
     }
 
     @Override
-    public List<InstructorDto> getListOfInstructors(Pageable pageable) {
+    public Set<InstructorDto> getListOfInstructors(Pageable pageable) {
         log.info("Retrieving a list of instructors");
-        List<InstructorDto> response = new ArrayList<>();
+        Set<InstructorDto> response = new HashSet<>();
         instructorRepository.findAll(pageable).forEach(instructor -> response.add(instructorMapper.toDto(instructor)));
         if (response.isEmpty())
             log.warn("Retrieved an empty list of instructors");
@@ -115,9 +113,9 @@ public class InstructorServiceImpl implements InstructorService {
         Address addressEntity = addressMapper.toEntity(addressDto);
 
         Address savedAddress = addressRepository.save(addressEntity);
-        List<Address> addresses = oldInstructorRecord.getAddresses();
+        Set<Address> addresses = oldInstructorRecord.getAddresses();
         if (addresses == null) {
-            oldInstructorRecord.setAddresses(new ArrayList<>());
+            oldInstructorRecord.setAddresses(new HashSet<>());
         }
         oldInstructorRecord.getAddresses().add(savedAddress);
 

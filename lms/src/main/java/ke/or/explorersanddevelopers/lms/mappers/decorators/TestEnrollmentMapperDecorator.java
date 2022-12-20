@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -41,8 +43,8 @@ public class TestEnrollmentMapperDecorator implements TestEnrollmentMapper {
         if (test != null)
             mappedTestEnrollmentDto.setTest(testMapper.toDto(test));
 
-        mappedTestEnrollmentDto.setCompletedQuestions(new ArrayList<>());
-        List<Question> completedQuestions = testEnrollment.getCompletedQuestions();
+        mappedTestEnrollmentDto.setCompletedQuestions(new HashSet<>());
+        Set<Question> completedQuestions = testEnrollment.getCompletedQuestions();
         if (completedQuestions != null && !completedQuestions.isEmpty()) {
             completedQuestions.forEach(question -> mappedTestEnrollmentDto.getCompletedQuestions().add(questionMapper.toDto(question)));
         }
@@ -58,8 +60,8 @@ public class TestEnrollmentMapperDecorator implements TestEnrollmentMapper {
         if (testDto != null)
             mappedTestEnrollment.setTest(testMapper.toEntity(testDto));
 
-        mappedTestEnrollment.setCompletedQuestions(new ArrayList<>());
-        List<QuestionDto> completedQuestions = testEnrollmentDto.getCompletedQuestions();
+        mappedTestEnrollment.setCompletedQuestions(new HashSet<>());
+        Set<QuestionDto> completedQuestions = testEnrollmentDto.getCompletedQuestions();
         if (completedQuestions != null && !completedQuestions.isEmpty()) {
             completedQuestions.forEach(question -> mappedTestEnrollment.getCompletedQuestions().add(questionMapper.toEntity(question)));
         }

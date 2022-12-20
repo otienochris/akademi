@@ -26,10 +26,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -91,7 +88,7 @@ class StudentServiceImplTest {
 
         newStudentDto = StudentDto.builder()
                 .studentId(null)
-                .certificates(new ArrayList<>())
+                .certificates(new HashSet<>())
                 .countryCode(countryCode)
                 .creationDate(null)
                 .email(email)
@@ -99,14 +96,14 @@ class StudentServiceImplTest {
                 .lastName(lastName)
                 .modificationDate(null)
                 .version(version)
-                .addresses(new ArrayList<>())
-                .reviews(new ArrayList<>())
+                .addresses(new HashSet<>())
+                .reviews(new HashSet<>())
                 .isAccountDisabled(isAccountDisabled)
                 .build();
 
         expectedResponse = StudentDto.builder()
                 .studentId(studentId)
-                .certificates(new ArrayList<>())
+                .certificates(new HashSet<>())
                 .countryCode(countryCode)
                 .creationDate(creationDate)
                 .email(email)
@@ -114,14 +111,14 @@ class StudentServiceImplTest {
                 .lastName(lastName)
                 .modificationDate(modificationDate)
                 .version(version)
-                .addresses(new ArrayList<>())
-                .reviews(new ArrayList<>())
+                .addresses(new HashSet<>())
+                .reviews(new HashSet<>())
                 .isAccountDisabled(isAccountDisabled)
                 .build();
 
         studentEntity = Student.builder()
                 .studentId(studentId)
-                .certificates(new ArrayList<>())
+                .certificates(new HashSet<>())
                 .countryCode(countryCode)
                 .creationDate(creationDate)
                 .email(email)
@@ -129,14 +126,14 @@ class StudentServiceImplTest {
                 .lastName(lastName)
                 .modificationDate(modificationDate)
                 .version(version)
-                .addresses(new ArrayList<>())
-                .reviews(new ArrayList<>())
+                .addresses(new HashSet<>())
+                .reviews(new HashSet<>())
                 .build();
 
         // course enrollment
 
-        List<TopicDto> completedTopics = List.of();
-        List<TestEnrollmentDto> testEnrollments = List.of();
+        Set<TopicDto> completedTopics = Set.of();
+        Set<TestEnrollmentDto> testEnrollments = Set.of();
         StatusEnum status = StatusEnum.PENDING;
         courseEnrollmentResponse = CourseEnrollmentDto.builder()
                 .courseEnrollmentId(BigDecimal.valueOf(1))
@@ -160,9 +157,9 @@ class StudentServiceImplTest {
                 .student(studentEntity)
                 .course(courseEntity)
                 .amount(BigDecimal.valueOf(100))
-                .completedTopics(List.of(topicDto))
+                .completedTopics(Set.of(topicDto))
                 .completionDate(null)
-                .testEnrollments(List.of(testEnrollmentEntity))
+                .testEnrollments(Set.of(testEnrollmentEntity))
                 .status(status)
                 .creationDate(creationDate)
                 .modificationDate(modificationDate)
@@ -180,7 +177,7 @@ class StudentServiceImplTest {
         testEnrollmentResponseDto = TestEnrollmentDto.builder()
                 .testEnrollmentId(testEnrollmentId)
                 .amount(amount)
-                .completedQuestions(List.of(questionEntity))
+                .completedQuestions(Set.of(questionEntity))
                 .completionDate(null)
                 .test(test)
                 .status(StatusEnum.PENDING)
@@ -287,8 +284,8 @@ class StudentServiceImplTest {
         given(studentRepository.findAll(any(Pageable.class))).willReturn(new PageImpl<>(List.of(studentEntity)));
         given(studentMapper.toDto(any())).willReturn(expectedResponse);
 
-        List<StudentDto> actualResponse = studentService.getListOfStudents(PageRequest.of(0, 10));
+        Set<StudentDto> actualResponse = studentService.getListOfStudents(PageRequest.of(0, 10));
 
-        assertThat(actualResponse).isEqualTo(List.of(expectedResponse));
+        assertThat(actualResponse).isEqualTo(Set.of(expectedResponse));
     }
 }

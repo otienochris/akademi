@@ -10,9 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -52,9 +50,9 @@ public class Question {
     @Column(name = "ANSWER_TYPE", nullable = false)
     private AnswerTypeEnum answerType;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<Answer> answers = new ArrayList<>();
+    private Set<Answer> answers = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")

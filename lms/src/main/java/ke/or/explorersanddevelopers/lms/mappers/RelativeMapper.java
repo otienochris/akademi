@@ -36,7 +36,6 @@ public interface RelativeMapper {
     @Mappings(value = {
             @Mapping(target = "addresses", ignore = true),
             @Mapping(target = "reviews", ignore = true),
-            @Mapping(target = "students", ignore = true)
     })
     Relative toEntity(RelativeDto relativeDto);
 }

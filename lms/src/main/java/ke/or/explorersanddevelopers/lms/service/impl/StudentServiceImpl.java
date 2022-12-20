@@ -25,10 +25,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -182,10 +179,10 @@ public class StudentServiceImpl implements StudentService {
         } else {
             courseEnrollment = CourseEnrollment.builder()
                     .course(course)
-                    .testEnrollments(new ArrayList<>())
+                    .testEnrollments(new HashSet<>())
                     .student(student)
                     .status(StatusEnum.PENDING)
-                    .completedTopics(new ArrayList<>())
+                    .completedTopics(new HashSet<>())
                     .build();
             courseEnrollmentRepository.save(courseEnrollment);
         }
@@ -205,7 +202,7 @@ public class StudentServiceImpl implements StudentService {
             throw new NoSuchRecordException(message);
         });
 
-        List<TestEnrollment> oldTestEnrollments = courseEnrollment.getTestEnrollments();
+        Set<TestEnrollment> oldTestEnrollments = courseEnrollment.getTestEnrollments();
         if (oldTestEnrollments != null && oldTestEnrollments.size() > 0) {
             oldTestEnrollments.forEach(testEnrollment -> {
                 Test test = testEnrollment.getTest();
@@ -226,7 +223,7 @@ public class StudentServiceImpl implements StudentService {
                 .build();
 
         if (oldTestEnrollments == null || oldTestEnrollments.size() == 0) {
-            oldTestEnrollments = new ArrayList<>();
+            oldTestEnrollments = new HashSet<>();
         }
         oldTestEnrollments.add(newTestEnrollment);
         courseEnrollment.setTestEnrollments(oldTestEnrollments);
@@ -236,9 +233,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDto> getListOfStudents(Pageable pageable) {
+    public Set<StudentDto> getListOfStudents(Pageable pageable) {
         log.info("Retrieving a list of students");
-        List<StudentDto> response = new ArrayList<>();
+        Set<StudentDto> response = new HashSet<>();
         studentRepository.findAll(pageable).forEach(student -> response.add(studentMapper.toDto(student)));
         if (response.size() == 0)
             log.warn("Retrieve an empty list of students");
@@ -258,10 +255,10 @@ public class StudentServiceImpl implements StudentService {
                 instructorRepository.getByInstructorId(targetID)
                         .ifPresentOrElse(
                                 (instructor) -> {
-                                    List<Review> reviews = instructor.getReviews();
+                                    Set<Review> reviews = instructor.getReviews();
                                     Review savedReview = reviewRepository.save(mappedReview);
                                     if (reviews == null) {
-                                        instructor.setReviews(new ArrayList<>());
+                                        instructor.setReviews(new HashSet<>());
                                         instructor.getReviews().add(savedReview);
                                     } else {
                                         instructor.getReviews().add(savedReview);
@@ -283,9 +280,9 @@ public class StudentServiceImpl implements StudentService {
                     throw new NoSuchRecordException(message);
                 });
                 Review savedReview = reviewRepository.save(mappedReview);
-                List<Review> reviews = course.getReviews();
+                Set<Review> reviews = course.getReviews();
                 if (reviews == null) {
-                    course.setReviews(new ArrayList<>());
+                    course.setReviews(new HashSet<>());
                     course.getReviews().add(savedReview);
                 } else {
                     course.getReviews().add(savedReview);
@@ -299,11 +296,11 @@ public class StudentServiceImpl implements StudentService {
         }
 
         Review savedReview = reviewRepository.save(mappedReview);
-        List<Review> reviews = studentByCodeFromDb.getReviews();
+        Set<Review> reviews = studentByCodeFromDb.getReviews();
         if (reviews != null) {
             studentByCodeFromDb.getReviews().add(savedReview);
         } else {
-            studentByCodeFromDb.setReviews(new ArrayList<>());
+            studentByCodeFromDb.setReviews(new HashSet<>());
             studentByCodeFromDb.getReviews().add(savedReview);
         }
 
@@ -316,7 +313,7 @@ public class StudentServiceImpl implements StudentService {
 
         Student student = getStudentByCodeFromDb(studentId);
 
-        List<Address> addresses = student.getAddresses();
+        Set<Address> addresses = student.getAddresses();
         // map the address from dto to entity
         Address mappedAddress = addressMapper.toEntity(addressDto);
 
@@ -325,7 +322,7 @@ public class StudentServiceImpl implements StudentService {
 
         // set eh address
         if (addresses == null) {
-            student.setAddresses(new ArrayList<>());
+            student.setAddresses(new HashSet<>());
             student.getAddresses().add(savedAddress);
         } else {
             student.getAddresses().add(savedAddress);
@@ -337,9 +334,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<CertificateDto> retrieveCertificates(BigDecimal studentId) {
+    public Set<CertificateDto> retrieveCertificates(BigDecimal studentId) {
         Student studentByCodeFromDb = getStudentByCodeFromDb(studentId);
-        List<CertificateDto> response = new ArrayList<>();
+        Set<CertificateDto> response = new HashSet<>();
         studentByCodeFromDb.getCertificates().forEach(certificate -> response.add(certificateMapper.toDto(certificate)));
         return response;
     }
@@ -357,8 +354,8 @@ public class StudentServiceImpl implements StudentService {
         return token;
     }
 
-    private static List<StatusEnum> getTestStatuses(CourseEnrollment oldCourseEnrollment) {
-        return oldCourseEnrollment.getTestEnrollments().stream().flatMap(testEnrollment -> Stream.of(testEnrollment.getStatus())).collect(Collectors.toList());
+    private static Set<StatusEnum> getTestStatuses(CourseEnrollment oldCourseEnrollment) {
+        return oldCourseEnrollment.getTestEnrollments().stream().flatMap(testEnrollment -> Stream.of(testEnrollment.getStatus())).collect(Collectors.toSet());
     }
 
     @Override
@@ -372,7 +369,7 @@ public class StudentServiceImpl implements StudentService {
 
 
         if (oldCourseEnrollment.getCompletedTopics() == null) {
-            oldCourseEnrollment.setCompletedTopics(new ArrayList<>());
+            oldCourseEnrollment.setCompletedTopics(new HashSet<>());
         }
 
         if (oldCourseEnrollment.getCompletedTopics() != null && oldCourseEnrollment.getCompletedTopics().size() == 0) {
@@ -381,8 +378,8 @@ public class StudentServiceImpl implements StudentService {
             oldCourseEnrollment.getCompletedTopics().add(topic);
 
             // check if that was the last topic and test are done
-            List<StatusEnum> testStatuses = getTestStatuses(oldCourseEnrollment);
-            List<Topic> topics = course.getTopics();
+            Set<StatusEnum> testStatuses = getTestStatuses(oldCourseEnrollment);
+            Set<Topic> topics = course.getTopics();
             if (topics != null && topics.size() == oldCourseEnrollment.getCompletedTopics().size() && !testStatuses.contains(StatusEnum.PENDING)) {
                 oldCourseEnrollment.setStatus(StatusEnum.COMPLETE);
             }
@@ -406,8 +403,8 @@ public class StudentServiceImpl implements StudentService {
                 oldCourseEnrollment.getCompletedTopics().add(topic); // add the new completed topic
 
                 // check if that was the last topic and tests are all done
-                List<StatusEnum> testStatuses = getTestStatuses(oldCourseEnrollment);
-                List<Topic> topics = course.getTopics();
+                Set<StatusEnum> testStatuses = getTestStatuses(oldCourseEnrollment);
+                Set<Topic> topics = course.getTopics();
                 if (topics != null && topics.size() == oldCourseEnrollment.getCompletedTopics().size() && testStatuses.contains(StatusEnum.PENDING)) {
                     oldCourseEnrollment.setStatus(StatusEnum.COMPLETE);
                 }

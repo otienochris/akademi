@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -29,8 +31,8 @@ public class QuestionMapperDecorator implements QuestionMapper {
     public QuestionDto toDto(Question question) {
         QuestionDto mappedQuestionDto = questionMapper.toDto(question);
 
-        mappedQuestionDto.setAnswers(new ArrayList<>());
-        List<Answer> answers = question.getAnswers();
+        mappedQuestionDto.setAnswers(new HashSet<>());
+        Set<Answer> answers = question.getAnswers();
         if (answers != null && !answers.isEmpty()) {
             answers.forEach(answer -> mappedQuestionDto.getAnswers().add(answerMapper.toDto(answer)));
         }
@@ -41,8 +43,8 @@ public class QuestionMapperDecorator implements QuestionMapper {
     public Question toEntity(QuestionDto questionDto) {
         Question mappedQuestion = questionMapper.toEntity(questionDto);
 
-        mappedQuestion.setAnswers(new ArrayList<>());
-        List<AnswerDto> answers = questionDto.getAnswers();
+        mappedQuestion.setAnswers(new HashSet<>());
+        Set<AnswerDto> answers = questionDto.getAnswers();
         if (answers != null && !answers.isEmpty()) {
             answers.forEach(answer -> mappedQuestion.getAnswers().add(answerMapper.toEntity(answer)));
         }
