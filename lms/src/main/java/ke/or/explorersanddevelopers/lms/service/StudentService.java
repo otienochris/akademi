@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -108,16 +107,6 @@ public interface StudentService {
      * @return a UUID token
      */
     UUID generateToken(BigDecimal studentId);
-
-    /**
-     * This method allows a student to submit a completed topic
-     *
-     * @param studentId - the id of the student submitting the completed topic
-     * @param topicId   - the id of the topic being submitted
-     * @param courseId  - the id of the topic's course
-     * @return the updated course enrollment record
-     */
-    CourseEnrollmentDto completeTopic(BigDecimal studentId, BigDecimal courseId, BigDecimal topicId);
 
     /**
      * This method retrieves a student by student email.

@@ -7,7 +7,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import ke.or.explorersanddevelopers.lms.exception.ErrorDetails;
-import ke.or.explorersanddevelopers.lms.model.dto.*;
+import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
+import ke.or.explorersanddevelopers.lms.model.dto.CertificateDto;
+import ke.or.explorersanddevelopers.lms.model.dto.ReviewDto;
+import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
 import ke.or.explorersanddevelopers.lms.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +21,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -133,17 +139,6 @@ public class StudentController {
         UUID uuid = studentService.generateToken(studentId);
         Map<String, UUID> response = Map.of("Token", uuid);
         return ResponseEntity.ok(response);
-    }
-
-
-    @PostMapping("/{studentId}/complete-topic")
-    @Operation(summary = "This endpoint allows a student to submit completed topic for persistence")
-    @ApiResponse(responseCode = "202", description = "The completed topic was persisted successfully")
-    public ResponseEntity<CourseEnrollmentDto> completeTopic(@PathVariable BigDecimal studentId,
-                                                             @RequestParam(name = "courseId") BigDecimal courseId,
-                                                             @RequestParam(name = "topicId") BigDecimal topicId) {
-        CourseEnrollmentDto courseEnrollmentDto = studentService.completeTopic(studentId, courseId, topicId);
-        return ResponseEntity.accepted().body(courseEnrollmentDto);
     }
 
     private StudentDto addHateoasLinks(StudentDto savedStudentDto) {

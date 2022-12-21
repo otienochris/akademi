@@ -1,5 +1,6 @@
 spring:
   datasource:
+#    url: jdbc:mysql://192.168.0.102:3306/AKADEMI
     url: jdbc:mysql://localhost:3306/AKADEMI
     username: akademi
     password: Coo2022*

@@ -20,4 +20,6 @@ public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollme
     Optional<CourseEnrollment> getByCourseAndStudent(Course course, Student student);
 
     List<CourseEnrollment> findByStudent(Student student);
+
+    CourseEnrollment findByCourseEnrollmentId(BigDecimal courseEnrollmentId);
 }
