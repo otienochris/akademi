@@ -25,7 +25,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -182,7 +185,6 @@ public class StudentServiceImpl implements StudentService {
                     .testEnrollments(new HashSet<>())
                     .student(student)
                     .status(StatusEnum.PENDING)
-                    .completedTopics(new HashSet<>())
                     .build();
             courseEnrollmentRepository.save(courseEnrollment);
         }
@@ -356,64 +358,6 @@ public class StudentServiceImpl implements StudentService {
 
     private static Set<StatusEnum> getTestStatuses(CourseEnrollment oldCourseEnrollment) {
         return oldCourseEnrollment.getTestEnrollments().stream().flatMap(testEnrollment -> Stream.of(testEnrollment.getStatus())).collect(Collectors.toSet());
-    }
-
-    @Override
-    public CourseEnrollmentDto completeTopic(BigDecimal studentId, BigDecimal courseId, BigDecimal topicId) {
-
-        CourseEnrollment currentCourseEnrollment = null;
-        Topic topic = getTopicByCodeFromDb(topicId);
-        Student student = getStudentByCodeFromDb(studentId);
-        Course course = getCourseByCodeFromDb(courseId);
-        CourseEnrollment oldCourseEnrollment = getCourseEnrollmentByStudentAndCourseFromDb(student, course);
-
-
-        if (oldCourseEnrollment.getCompletedTopics() == null) {
-            oldCourseEnrollment.setCompletedTopics(new HashSet<>());
-        }
-
-        if (oldCourseEnrollment.getCompletedTopics() != null && oldCourseEnrollment.getCompletedTopics().size() == 0) {
-
-            // add the new completed topic to the empty list
-            oldCourseEnrollment.getCompletedTopics().add(topic);
-
-            // check if that was the last topic and test are done
-            Set<StatusEnum> testStatuses = getTestStatuses(oldCourseEnrollment);
-            Set<Topic> topics = course.getTopics();
-            if (topics != null && topics.size() == oldCourseEnrollment.getCompletedTopics().size() && !testStatuses.contains(StatusEnum.PENDING)) {
-                oldCourseEnrollment.setStatus(StatusEnum.COMPLETE);
-            }
-
-            // save changes
-            currentCourseEnrollment = courseEnrollmentRepository.save(oldCourseEnrollment);
-
-        } else if (oldCourseEnrollment.getCompletedTopics() != null) {
-
-            // check if topic is already in the list of completed topics
-            boolean[] topicIsPresent = new boolean[]{false};
-            oldCourseEnrollment.getCompletedTopics().parallelStream().forEach(topic1 -> {
-                if (Objects.equals(topic1.getTopicId(), topicId)) {
-                    topicIsPresent[0] = true;
-                }
-            });
-
-            if (topicIsPresent[0]) {
-                return courseEnrollmentMapper.toDto(oldCourseEnrollment);
-            } else {
-                oldCourseEnrollment.getCompletedTopics().add(topic); // add the new completed topic
-
-                // check if that was the last topic and tests are all done
-                Set<StatusEnum> testStatuses = getTestStatuses(oldCourseEnrollment);
-                Set<Topic> topics = course.getTopics();
-                if (topics != null && topics.size() == oldCourseEnrollment.getCompletedTopics().size() && testStatuses.contains(StatusEnum.PENDING)) {
-                    oldCourseEnrollment.setStatus(StatusEnum.COMPLETE);
-                }
-
-                // save changes
-                currentCourseEnrollment = courseEnrollmentRepository.save(oldCourseEnrollment);
-            }
-        }
-        return courseEnrollmentMapper.toDto(currentCourseEnrollment);
     }
 
     @Override

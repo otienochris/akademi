@@ -132,7 +132,8 @@ class StudentServiceImplTest {
 
         // course enrollment
 
-        Set<TopicDto> completedTopics = Set.of();
+//        Set<TopicDto> completedTopics = Set.of();
+        Map<BigDecimal, Set<BigDecimal>> completedTopics = new HashMap<>();
         Set<TestEnrollmentDto> testEnrollments = Set.of();
         StatusEnum status = StatusEnum.PENDING;
         courseEnrollmentResponse = CourseEnrollmentDto.builder()
@@ -157,7 +158,7 @@ class StudentServiceImplTest {
                 .student(studentEntity)
                 .course(courseEntity)
                 .amount(BigDecimal.valueOf(100))
-                .completedTopics(Set.of(topicDto))
+                .completedTopicsIds("1")
                 .completionDate(null)
                 .testEnrollments(Set.of(testEnrollmentEntity))
                 .status(status)

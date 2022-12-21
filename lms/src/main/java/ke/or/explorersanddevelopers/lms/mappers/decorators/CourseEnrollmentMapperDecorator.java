@@ -15,10 +15,8 @@ import ke.or.explorersanddevelopers.lms.model.entity.TestEnrollment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -68,7 +66,35 @@ public class CourseEnrollmentMapperDecorator implements CourseEnrollmentMapper {
             testEnrollments.forEach(testEnrollment -> mappedCourseEnrollmentDto.getTestEnrollments().add(testEnrollmentMapper.toDto(testEnrollment)));
         }
 
+        // set the completed topics
+        String completedTopicsIdsFromDb = courseEnrollment.getCompletedTopicsIds();
+        List<String> completedTopicsIdsList = new ArrayList<>();
+
+        if (completedTopicsIdsFromDb != null && !completedTopicsIdsFromDb.isEmpty() && !completedTopicsIdsFromDb.isBlank())
+            completedTopicsIdsList.addAll(List.of(completedTopicsIdsFromDb.split(",")));
+
+        Map<BigDecimal, Set<BigDecimal>> completedTopicsForResponse = new HashMap<>();
+        courseEnrollment.getCourse().getTopics()
+                .forEach(topic -> topic.getSubTopics()
+                        .forEach(subTopic -> {
+                            if (completedTopicsIdsList.contains(Integer.toString(subTopic.getSubTopicId().intValueExact())))
+                                setSubTopicAsCompleted(completedTopicsForResponse, topic.getTopicId(), subTopic.getSubTopicId());
+                        }));
+        mappedCourseEnrollmentDto.setCompletedTopics(completedTopicsForResponse);
+
         return mappedCourseEnrollmentDto;
+    }
+
+    private void setSubTopicAsCompleted(Map<BigDecimal, Set<BigDecimal>> completedTopicsForResponse, BigDecimal topicId, BigDecimal subTopicId) {
+        if (completedTopicsForResponse.containsKey(topicId)) {
+            // if key (topicId id) exists push the subtopic to its value
+            completedTopicsForResponse.get(topicId).add(subTopicId);
+        } else {
+            // if key (topicId id) doesn't exist add the key and a set of value
+            Set<BigDecimal> value = new HashSet<>();
+            value.add(subTopicId);
+            completedTopicsForResponse.put(topicId, value);
+        }
     }
 
     @Override

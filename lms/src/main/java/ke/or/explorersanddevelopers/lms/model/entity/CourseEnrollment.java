@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -55,9 +54,8 @@ public class CourseEnrollment {
     @ToString.Exclude
     private Set<TestEnrollment> testEnrollments = new HashSet<>();
 
-    @OneToMany
-    @ToString.Exclude
-    private Set<Topic> completedTopics = new HashSet<>();
+    @Column(name = "COMPLETED_TOPICS_IDS")
+    private String completedTopicsIds;
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE", nullable = false)
