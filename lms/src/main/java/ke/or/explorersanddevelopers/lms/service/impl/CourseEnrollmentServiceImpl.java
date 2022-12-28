@@ -8,7 +8,7 @@ import ke.or.explorersanddevelopers.lms.model.dto.CourseEnrollmentDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Course;
 import ke.or.explorersanddevelopers.lms.model.entity.CourseEnrollment;
 import ke.or.explorersanddevelopers.lms.model.entity.Student;
-import ke.or.explorersanddevelopers.lms.model.entity.SubTopic;
+import ke.or.explorersanddevelopers.lms.model.entity.Topic;
 import ke.or.explorersanddevelopers.lms.repositories.CourseEnrollmentRepository;
 import ke.or.explorersanddevelopers.lms.repositories.CourseRepository;
 import ke.or.explorersanddevelopers.lms.repositories.StudentRepository;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -33,6 +34,7 @@ public class CourseEnrollmentServiceImpl implements CourseEnrollmentService {
     private final CourseRepository courseRepository;
 
     private static void setSubTopicAsCompleted(Map<BigDecimal, Set<BigDecimal>> completedTopicsForResponse, BigDecimal topicId, BigDecimal subTopicId) {
+        log.info("Adding subtopic " + subTopicId + " as completed in topic " + topicId);
         if (completedTopicsForResponse.containsKey(topicId)) {
             // if key (topicId id) exists push the subtopic to its value
             completedTopicsForResponse.get(topicId).add(subTopicId);
@@ -42,6 +44,19 @@ public class CourseEnrollmentServiceImpl implements CourseEnrollmentService {
             value.add(subTopicId);
             completedTopicsForResponse.put(topicId, value);
         }
+    }
+
+    public static String convertListItemsIntoCommaSeperatedString(List<String> listItems) {
+        StringBuilder finalCompletedSubTopics = new StringBuilder();
+        int count = 1;
+        for (String id : listItems) {
+            if (count != listItems.size())
+                finalCompletedSubTopics.append(id).append(",");
+            else
+                finalCompletedSubTopics.append(id);
+            count += 1;
+        }
+        return finalCompletedSubTopics.toString();
     }
 
     private Student getStudentByIdFromDb(BigDecimal studentId) {
@@ -93,55 +108,69 @@ public class CourseEnrollmentServiceImpl implements CourseEnrollmentService {
     public CourseEnrollmentDto completeSubTopic(BigDecimal courseEnrollmentId, BigDecimal subTopicId) {
         log.info("Updating a course enrollment [" + courseEnrollmentId + "] adding a completed topic [" + subTopicId + "]");
         CourseEnrollment oldCourseEnrollment = courseEnrollmentRepository.findByCourseEnrollmentId(courseEnrollmentId);
-        String completedTopicsIds = oldCourseEnrollment.getCompletedTopicsIds();
-        List<String> completedTopicsIdsList = new ArrayList<>();
 
-        if (completedTopicsIds != null && !completedTopicsIds.isEmpty() && !completedTopicsIds.isBlank())
-            completedTopicsIdsList.addAll(List.of(completedTopicsIds.split(",")));
+        // get completed topics
+        String completedSubTopicsIds = oldCourseEnrollment.getCompletedSubTopicsIds();
+
+        List<String> completedSubTopicsIdsList = new ArrayList<>();
+
+        if (completedSubTopicsIds != null && !completedSubTopicsIds.isEmpty() && !completedSubTopicsIds.isBlank())
+            completedSubTopicsIdsList.addAll(List.of(completedSubTopicsIds.split(",")));
 
         // check if subtopic already completed
-        boolean alreadyCompleted = completedTopicsIdsList.contains(subTopicId.toPlainString());
+        boolean alreadyCompleted = completedSubTopicsIdsList.contains(subTopicId.toPlainString());
         if (alreadyCompleted)
-            throw new DuplicateRecordException("Student already completed the subtopic with id: " + subTopicId);
+            throw new DuplicateRecordException("Student already completed this subtopic");
 
         // check if subtopic exists
-        Map<BigDecimal, Set<BigDecimal>> completedTopicsForResponse = new HashMap<>();
-        oldCourseEnrollment.getCourse().getTopics().forEach(topic -> {
-            List<SubTopic> subTopics = topic.getSubTopics().stream()
-                    .filter(subTopic -> {
-                        Integer currentSubtopicId = subTopic.getSubTopicId().intValueExact();
-                        if (completedTopicsIdsList.contains(currentSubtopicId.toString())) {
-                            setSubTopicAsCompleted(completedTopicsForResponse, topic.getTopicId(), subTopic.getSubTopicId());
-                        }
-                        boolean subtopicFound = currentSubtopicId.equals(subTopicId.intValueExact());
-                        if (subtopicFound) {
-                            setSubTopicAsCompleted(completedTopicsForResponse, topic.getTopicId(), subTopic.getSubTopicId());
-                        }
-                        return subtopicFound;
-                    }).collect(Collectors.toList());
+        Map<BigDecimal, Set<BigDecimal>> completedSubTopicsForResponse = new HashMap<>();
+        List<String> completedTopicsForResponse = new ArrayList<>();
 
-            if (!subTopics.isEmpty()) {
-                completedTopicsIdsList.add(subTopicId.toPlainString());
+        Set<Topic> allTopics = oldCourseEnrollment.getCourse().getTopics();
+
+        // complete subtopics
+        allTopics.forEach(topic -> {
+            List<BigDecimal> subTopicIds = topic.getSubTopics().stream()
+                    .flatMap(item -> Stream.of(item.getSubTopicId()))
+                    .collect(Collectors.toList());
+            subTopicIds.forEach(currentSubtopicId -> {
+                System.out.println("Does " + completedSubTopicsIdsList + " contain " + currentSubtopicId.toString() + " ? " + completedSubTopicsIdsList.contains("" + currentSubtopicId.intValueExact()));
+                if (completedSubTopicsIdsList.contains("" + currentSubtopicId.intValueExact())) {
+                    setSubTopicAsCompleted(completedSubTopicsForResponse, topic.getTopicId(), currentSubtopicId);
+                }
+                if (currentSubtopicId.intValueExact() == subTopicId.intValueExact()) {
+                    setSubTopicAsCompleted(completedSubTopicsForResponse, topic.getTopicId(), currentSubtopicId);
+                    completedSubTopicsIdsList.add(subTopicId.toPlainString());
+                }
+            });
+
+        });
+
+        // update completed topics
+        completedSubTopicsForResponse.forEach((topicId, completedSubtopics) -> {
+            List<Topic> topicList = allTopics.stream()
+                    .filter(item -> item.getTopicId().intValueExact() == topicId.intValueExact())
+                    .collect(Collectors.toList());
+
+            if (!topicList.isEmpty()) {
+                topicList.forEach(topic -> {
+                    if (topic.getSubTopics().size() == completedSubTopicsIdsList.size()) {
+                        log.info("Completing topic of id " + topicId);
+                        completedTopicsForResponse.add(topic.getTopicId().toPlainString());
+                    }
+                });
             }
         });
 
-        // save updates
-        StringBuilder finalCompletedTopics = new StringBuilder();
-        int count = 1;
-        for (String id : completedTopicsIdsList) {
-            if (count != completedTopicsIdsList.size())
-                finalCompletedTopics.append(id).append(",");
-            else
-                finalCompletedTopics.append(id);
-            count += 1;
-        }
-
-        oldCourseEnrollment.setCompletedTopicsIds(finalCompletedTopics.toString());
+        // save updates to course enrollment
+        oldCourseEnrollment.setCompletedTopicsIds(convertListItemsIntoCommaSeperatedString(completedTopicsForResponse));
+        oldCourseEnrollment.setCompletedSubTopicsIds(convertListItemsIntoCommaSeperatedString(completedSubTopicsIdsList));
         CourseEnrollment updatedCourseEnrollment = courseEnrollmentRepository.save(oldCourseEnrollment);
 
-        // retrieve the topics and check for subtopic
+        // construct the response
         CourseEnrollmentDto updatedCourseEnrollmentDto = courseEnrollmentMapper.toDto(updatedCourseEnrollment);
-        updatedCourseEnrollmentDto.setCompletedTopics(completedTopicsForResponse);
+        updatedCourseEnrollmentDto.setCompletedSubTopicsIds(completedSubTopicsForResponse);
+        updatedCourseEnrollmentDto.setCompletedTopicsIds(completedTopicsForResponse.stream().map(Double::parseDouble).map(BigDecimal::valueOf).collect(Collectors.toList()));
 
         return updatedCourseEnrollmentDto;
     }

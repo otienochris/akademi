@@ -57,6 +57,9 @@ public class CourseEnrollment {
     @Column(name = "COMPLETED_TOPICS_IDS")
     private String completedTopicsIds;
 
+    @Column(name = "COMPLETED_SUB_TOPICS_IDS")
+    private String completedSubTopicsIds;
+
     @CreationTimestamp
     @Column(name = "CREATION_DATE", nullable = false)
     private Date creationDate;

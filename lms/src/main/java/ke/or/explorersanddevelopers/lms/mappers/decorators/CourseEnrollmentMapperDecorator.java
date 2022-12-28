@@ -17,6 +17,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static ke.or.explorersanddevelopers.lms.service.impl.CourseEnrollmentServiceImpl.convertListItemsIntoCommaSeperatedString;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -66,34 +70,41 @@ public class CourseEnrollmentMapperDecorator implements CourseEnrollmentMapper {
             testEnrollments.forEach(testEnrollment -> mappedCourseEnrollmentDto.getTestEnrollments().add(testEnrollmentMapper.toDto(testEnrollment)));
         }
 
-        // set the completed topics
-        String completedTopicsIdsFromDb = courseEnrollment.getCompletedTopicsIds();
-        List<String> completedTopicsIdsList = new ArrayList<>();
+        // set the completed sub topics
+        String completedSubTopicsIds = courseEnrollment.getCompletedSubTopicsIds();
+        List<String> completedSubTopicsIdsList = new ArrayList<>();
 
-        if (completedTopicsIdsFromDb != null && !completedTopicsIdsFromDb.isEmpty() && !completedTopicsIdsFromDb.isBlank())
-            completedTopicsIdsList.addAll(List.of(completedTopicsIdsFromDb.split(",")));
+        if (completedSubTopicsIds != null && !completedSubTopicsIds.isEmpty() && !completedSubTopicsIds.isBlank())
+            completedSubTopicsIdsList.addAll(List.of(completedSubTopicsIds.split(",")));
 
-        Map<BigDecimal, Set<BigDecimal>> completedTopicsForResponse = new HashMap<>();
+        Map<BigDecimal, Set<BigDecimal>> completedSubTopicsForResponse = new HashMap<>();
         courseEnrollment.getCourse().getTopics()
                 .forEach(topic -> topic.getSubTopics()
                         .forEach(subTopic -> {
-                            if (completedTopicsIdsList.contains(Integer.toString(subTopic.getSubTopicId().intValueExact())))
-                                setSubTopicAsCompleted(completedTopicsForResponse, topic.getTopicId(), subTopic.getSubTopicId());
+                            if (completedSubTopicsIdsList.contains(Integer.toString(subTopic.getSubTopicId().intValueExact())))
+                                setSubTopicAsCompleted(completedSubTopicsForResponse, topic.getTopicId(), subTopic.getSubTopicId());
                         }));
-        mappedCourseEnrollmentDto.setCompletedTopics(completedTopicsForResponse);
+        mappedCourseEnrollmentDto.setCompletedSubTopicsIds(completedSubTopicsForResponse);
+
+        // set the completed topics
+        String completedTopicsIds = courseEnrollment.getCompletedTopicsIds();
+        if (completedTopicsIds != null && !completedTopicsIds.isEmpty() && !completedTopicsIds.isBlank()) {
+            List<BigDecimal> ids = Arrays.stream(completedTopicsIds.split(",")).mapToDouble(Double::parseDouble).mapToObj(BigDecimal::valueOf).collect(Collectors.toList());
+            mappedCourseEnrollmentDto.setCompletedTopicsIds(ids);
+        }
 
         return mappedCourseEnrollmentDto;
     }
 
-    private void setSubTopicAsCompleted(Map<BigDecimal, Set<BigDecimal>> completedTopicsForResponse, BigDecimal topicId, BigDecimal subTopicId) {
-        if (completedTopicsForResponse.containsKey(topicId)) {
+    private void setSubTopicAsCompleted(Map<BigDecimal, Set<BigDecimal>> completedSubTopicsForResponse, BigDecimal topicId, BigDecimal subTopicId) {
+        if (completedSubTopicsForResponse.containsKey(topicId)) {
             // if key (topicId id) exists push the subtopic to its value
-            completedTopicsForResponse.get(topicId).add(subTopicId);
+            completedSubTopicsForResponse.get(topicId).add(subTopicId);
         } else {
             // if key (topicId id) doesn't exist add the key and a set of value
             Set<BigDecimal> value = new HashSet<>();
             value.add(subTopicId);
-            completedTopicsForResponse.put(topicId, value);
+            completedSubTopicsForResponse.put(topicId, value);
         }
     }
 
@@ -121,6 +132,16 @@ public class CourseEnrollmentMapperDecorator implements CourseEnrollmentMapper {
         if (testEnrollmentDtoList != null && !testEnrollmentDtoList.isEmpty()) {
             testEnrollmentDtoList.forEach(testEnrollment -> mappedCourseEnrollment.getTestEnrollments().add(testEnrollmentMapper.toEntity(testEnrollment)));
         }
+
+        // set completed subtopics
+        Map<BigDecimal, Set<BigDecimal>> completedSubTopicsIds = courseEnrollmentDto.getCompletedSubTopicsIds();
+        List<String> completedSubTopics = new ArrayList<>();
+        completedSubTopicsIds.forEach((topicId, subtopicIds) -> subtopicIds.forEach(id -> completedSubTopics.add(id.toPlainString())));
+        mappedCourseEnrollment.setCompletedSubTopicsIds(convertListItemsIntoCommaSeperatedString(completedSubTopics));
+
+        // set the completed topics
+        List<BigDecimal> completedTopicsIds = courseEnrollmentDto.getCompletedTopicsIds();
+        mappedCourseEnrollment.setCompletedTopicsIds(convertListItemsIntoCommaSeperatedString(completedTopicsIds.stream().flatMap(item -> Stream.of(String.valueOf(item.intValueExact()))).collect(Collectors.toList())));
 
         return mappedCourseEnrollment;
     }

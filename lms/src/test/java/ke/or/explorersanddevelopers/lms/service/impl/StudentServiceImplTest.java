@@ -141,7 +141,7 @@ class StudentServiceImplTest {
                 .student(newStudentDto)
                 .course(course)
                 .amount(BigDecimal.valueOf(100))
-                .completedTopics(completedTopics)
+                .completedSubTopicsIds(completedTopics)
                 .completionDate(null)
                 .testEnrollments(testEnrollments)
                 .status(status)
