@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author oduorfrancis134@gmail.com;
@@ -50,9 +52,9 @@ public class TestServiceImpl implements TestService {
         Test createdTest = testRepository.save(testEntity);
 
         //bind the topic to the test
-        List<Test> testList = topic.getTests();
+        Set<Test> testList = topic.getTests();
         if (testList == null)
-            topic.setTests(new ArrayList<>());
+            topic.setTests(new HashSet<>());
         topic.getTests().add(createdTest);
         topicRepository.save(topic);
 

@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -72,7 +72,7 @@ public interface StudentService {
      * @param pageable - a pagination objection with details like page number and page size
      * @return a list of students
      */
-    List<StudentDto> getListOfStudents(Pageable pageable);
+    Set<StudentDto> getListOfStudents(Pageable pageable);
 
     /**
      * This method submits a review
@@ -98,7 +98,7 @@ public interface StudentService {
      * @param studentId - a student record Id
      * @return a list of certificates owned by a student
      */
-    List<CertificateDto> retrieveCertificates(BigDecimal studentId);
+    Set<CertificateDto> retrieveCertificates(BigDecimal studentId);
 
     /**
      * This method generates a token parents can use to track the student's progress
@@ -109,13 +109,10 @@ public interface StudentService {
     UUID generateToken(BigDecimal studentId);
 
     /**
-     * This method allows a student to submit a completed topic
+     * This method retrieves a student by student email.
      *
-     * @param studentId - the id of the student submitting the completed topic
-     * @param topicId   - the id of the topic being submitted
-     * @param courseId  - the id of the topic's course
-     * @return the updated course enrollment record
+     * @param email - the student email of the record to be retrieved.
+     * @return the retrieved student record
      */
-    CourseEnrollmentDto completeTopic(BigDecimal studentId, BigDecimal courseId, BigDecimal topicId);
-
+    StudentDto getStudentByEmail(String email);
 }

@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -41,21 +43,21 @@ public class InstructorMapperDecorator implements InstructorMapper {
     @Override
     public Instructor toEntity(InstructorDto instructorDto) {
         Instructor mappedInstructor = instructorMapper.toEntity(instructorDto);
-        mappedInstructor.setReviews(new ArrayList<>());
-        mappedInstructor.setAddresses(new ArrayList<>());
-        mappedInstructor.setCourses(new ArrayList<>());
+        mappedInstructor.setReviews(new HashSet<>());
+        mappedInstructor.setAddresses(new HashSet<>());
+        mappedInstructor.setCourses(new HashSet<>());
 
-        List<ReviewDto> reviewDtoList = instructorDto.getReviews();
+        Set<ReviewDto> reviewDtoList = instructorDto.getReviews();
         if (reviewDtoList != null && !reviewDtoList.isEmpty()) {
             reviewDtoList.forEach(reviewDto -> mappedInstructor.getReviews().add(reviewMapper.toEntity(reviewDto)));
         }
 
-        List<AddressDto> addressDtoList = instructorDto.getAddresses();
+        Set<AddressDto> addressDtoList = instructorDto.getAddresses();
         if (addressDtoList != null && !addressDtoList.isEmpty()) {
             addressDtoList.forEach(addressDto -> mappedInstructor.getAddresses().add(addressMapper.toEntity(addressDto)));
         }
 
-        List<CourseDto> courseDtoList = instructorDto.getCourses();
+        Set<CourseDto> courseDtoList = instructorDto.getCourses();
         if (courseDtoList != null && !courseDtoList.isEmpty())
             courseDtoList.forEach(courseDto -> mappedInstructor.getCourses().add(courseMapper.toEntity(courseDto)));
 
@@ -65,21 +67,21 @@ public class InstructorMapperDecorator implements InstructorMapper {
     @Override
     public InstructorDto toDto(Instructor instructor) {
         InstructorDto mappedInstructorDto = instructorMapper.toDto(instructor);
-        mappedInstructorDto.setReviews(new ArrayList<>());
-        mappedInstructorDto.setAddresses(new ArrayList<>());
-        mappedInstructorDto.setCourses(new ArrayList<>());
+        mappedInstructorDto.setReviews(new HashSet<>());
+        mappedInstructorDto.setAddresses(new HashSet<>());
+        mappedInstructorDto.setCourses(new HashSet<>());
 
-        List<Review> reviews = instructor.getReviews();
+        Set<Review> reviews = instructor.getReviews();
         if (reviews != null && !reviews.isEmpty()) {
             reviews.forEach(review -> mappedInstructorDto.getReviews().add(reviewMapper.toDto(review)));
         }
 
-        List<Address> addresses = instructor.getAddresses();
+        Set<Address> addresses = instructor.getAddresses();
         if (addresses != null && !addresses.isEmpty()) {
             addresses.forEach(address -> mappedInstructorDto.getAddresses().add(addressMapper.toDto(address)));
         }
 
-        List<Course> courses = instructor.getCourses();
+        Set<Course> courses = instructor.getCourses();
         if (courses != null && !courses.isEmpty())
             courses.forEach(course -> mappedInstructorDto.getCourses().add(courseMapper.toDto(course)));
 

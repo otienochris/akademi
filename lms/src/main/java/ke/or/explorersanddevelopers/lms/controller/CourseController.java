@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import ke.or.explorersanddevelopers.lms.exception.ErrorDetails;
 import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
+import ke.or.explorersanddevelopers.lms.model.dto.TopicDto;
 import ke.or.explorersanddevelopers.lms.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ke.or.explorersanddevelopers.lms.controller.TopicController.addHateoasLinksToTopicDto;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -33,7 +35,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  **/
 
 @RestController
-@RequestMapping("/courses")
+@RequestMapping("/api/v1/courses")
 @RequiredArgsConstructor
 @ApiResponses(value = {
         @ApiResponse(responseCode = "400", description = "BAD REQUEST", content = {
@@ -75,18 +77,29 @@ public class CourseController {
         return ResponseEntity.ok(addHateoasLinks(courseByCode));
     }
 
+    @GetMapping("/{courseId}/topics")
+    @Operation(summary = "Retrieve  a course by course id", description = "An end point to retrieve a course by course id", tags = "Course")
+    @ApiResponse(responseCode = "200", description = "Course retrieved successfully")
+    public ResponseEntity<CollectionModel<TopicDto>> getCourseTopicsByCourseCode(@PathVariable(value = "courseId") BigDecimal courseId) {
+        List<TopicDto> listOfTopics = new ArrayList<>();
+        courseService.getCourseTopicsByCourseCode(courseId)
+                .forEach(topicDto -> listOfTopics.add(addHateoasLinksToTopicDto(topicDto)));
+
+        CollectionModel<TopicDto> topicDtoCollectionModel = CollectionModel.of(listOfTopics);
+        return ResponseEntity.ok(topicDtoCollectionModel);
+    }
+
     @GetMapping
     @Operation(summary = "Get a List of courses", description = "An end point to get a list of courses", tags =
             "Course")
     @ApiResponse(responseCode = "200", description = "List of Courses retrieved successfully")
     public ResponseEntity<CollectionModel<CourseDto>> getListOfCourses(@RequestParam(name = "pageNo",
             defaultValue = "0") Integer pageNo,
-                                                                        @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+                                                                       @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
 
-        List<CourseDto> listOfCourses = new  ArrayList<>();
+        List<CourseDto> listOfCourses = new ArrayList<>();
         courseService.getListOfCourses(PageRequest.of(pageNo, pageSize))
                         .forEach(courseDto -> listOfCourses.add(addHateoasLinks(courseDto)));
-        System.out.println("Found the following courses: " + listOfCourses);
 
         CollectionModel<CourseDto> courseDtoCollectionModel = CollectionModel.of(listOfCourses);
         return ResponseEntity.ok(courseDtoCollectionModel);

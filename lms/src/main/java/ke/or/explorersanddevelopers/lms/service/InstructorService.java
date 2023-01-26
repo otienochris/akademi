@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -38,7 +39,7 @@ public interface InstructorService {
      * @param pageable - the paging object with details like page number and page size
      * @return a list of instructors
      */
-    List<InstructorDto> getListOfInstructors(Pageable pageable);
+    Set<InstructorDto> getListOfInstructors(Pageable pageable);
 
     /**
      * This method deletes an instructor record using an id
@@ -55,4 +56,21 @@ public interface InstructorService {
      * @return the new instructor details
      */
     InstructorDto addAddress(BigDecimal instructorId, AddressDto addressDto);
+
+    /**
+     * This method retrieves an instructor by the record's email
+     *
+     * @param email - the email of the instructor to be retrieved
+     * @return the retrieved instructor.
+     */
+    InstructorDto getInstructorByEmail(String email);
+
+    /**
+     * This method update an instructor record
+     *
+     * @param studentId     - the student id
+     * @param instructorDto - the instructor to be saved
+     * @return the saved instructor record
+     */
+    InstructorDto updateInstructor(BigDecimal studentId, InstructorDto instructorDto);
 }

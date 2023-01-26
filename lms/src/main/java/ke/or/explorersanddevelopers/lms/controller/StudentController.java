@@ -7,7 +7,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import ke.or.explorersanddevelopers.lms.exception.ErrorDetails;
-import ke.or.explorersanddevelopers.lms.model.dto.*;
+import ke.or.explorersanddevelopers.lms.model.dto.AddressDto;
+import ke.or.explorersanddevelopers.lms.model.dto.CertificateDto;
+import ke.or.explorersanddevelopers.lms.model.dto.ReviewDto;
+import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
 import ke.or.explorersanddevelopers.lms.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -18,9 +21,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -34,7 +37,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/students")
+@RequestMapping("/api/v1/students")
 @ApiResponses(value = {
         @ApiResponse(responseCode = "400", description = "BAD REQUEST", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))
@@ -57,11 +60,20 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    @PostMapping
+    @PostMapping("/signup")
     @Operation(summary = "Save a new student")
     @ApiResponse(responseCode = "201", description = "Student Created and Saved Successfully.")
-    public ResponseEntity<StudentDto> saveNewStudent(@RequestBody @Validated StudentDto studentDto){
+    public ResponseEntity<StudentDto> saveNewStudent(@RequestBody @Validated StudentDto studentDto) {
         StudentDto savedStudentDto = studentService.saveNewStudent(studentDto);
+        return ResponseEntity.created(linkTo(methodOn(StudentController.class).getStudentById(savedStudentDto.getStudentId())).toUri()).body(addHateoasLinks(savedStudentDto));
+    }
+
+    @PutMapping("/{studentId}")
+    @Operation(summary = "Update a student")
+    @ApiResponse(responseCode = "202", description = "Student updated Successfully.")
+    public ResponseEntity<StudentDto> updateStudent(@PathVariable BigDecimal studentId,
+                                                    @RequestBody @Validated StudentDto studentDto) {
+        StudentDto savedStudentDto = studentService.updateStudent(studentId, studentDto);
         return ResponseEntity.created(linkTo(methodOn(StudentController.class).getStudentById(savedStudentDto.getStudentId())).toUri()).body(addHateoasLinks(savedStudentDto));
     }
 
@@ -73,12 +85,20 @@ public class StudentController {
         return ResponseEntity.ok(addHateoasLinks(studentByCode));
     }
 
+    @GetMapping("/username/{email}")
+    @Operation(summary = "Get a student by their username/email.")
+    @ApiResponse(responseCode = "200", description = "Student Retrieved Successfully")
+    public ResponseEntity<StudentDto> getStudentByEmail(@PathVariable String email) {
+        StudentDto studentByEmail = studentService.getStudentByEmail(email);
+        return ResponseEntity.ok(addHateoasLinks(studentByEmail));
+    }
+
     @GetMapping
     @Operation(summary = "Get a list of students")
     @ApiResponse(responseCode = "200", description = "Students' list Retrieved Successfully")
     public ResponseEntity<CollectionModel<StudentDto>> getListOfStudents(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
                                                                          @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-        List<StudentDto> response = new ArrayList<>();
+        Set<StudentDto> response = new HashSet<>();
         studentService.getListOfStudents(PageRequest.of(pageNo, pageSize)).forEach(studentDto -> response.add(addHateoasLinks(studentDto)));
         CollectionModel<StudentDto> collectionModel = CollectionModel.of(response);
         return ResponseEntity.ok(collectionModel);
@@ -108,7 +128,7 @@ public class StudentController {
     @GetMapping("/{studentId}/certificates")
     @Operation(summary = "Retrieves a list of certificates owned by a student.")
     @ApiResponse(responseCode = "200", description = "The certificates were retrieved successfully")
-    public ResponseEntity<List<CertificateDto>> retrieveCertificates(@PathVariable BigDecimal studentId) {
+    public ResponseEntity<Set<CertificateDto>> retrieveCertificates(@PathVariable BigDecimal studentId) {
         return ResponseEntity.ok(studentService.retrieveCertificates(studentId));
     }
 
@@ -119,17 +139,6 @@ public class StudentController {
         UUID uuid = studentService.generateToken(studentId);
         Map<String, UUID> response = Map.of("Token", uuid);
         return ResponseEntity.ok(response);
-    }
-
-
-    @PostMapping("/{studentId}/complete-topic")
-    @Operation(summary = "This endpoint allows a student to submit completed topic for persistence")
-    @ApiResponse(responseCode = "202", description = "The completed topic was persisted successfully")
-    public ResponseEntity<CourseEnrollmentDto> completeTopic(@PathVariable BigDecimal studentId,
-                                                             @RequestParam(name = "courseId") BigDecimal courseId,
-                                                             @RequestParam(name = "topicId") BigDecimal topicId) {
-        CourseEnrollmentDto courseEnrollmentDto = studentService.completeTopic(studentId, courseId, topicId);
-        return ResponseEntity.accepted().body(courseEnrollmentDto);
     }
 
     private StudentDto addHateoasLinks(StudentDto savedStudentDto) {

@@ -31,7 +31,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * @since Saturday 15/10/2022
  **/
 @RestController
-@RequestMapping("/topics")
+@RequestMapping("/api/v1/topics")
 @RequiredArgsConstructor
 @ApiResponses(value = {
         @ApiResponse(responseCode = "400", description = "BAD REQUEST", content = {
@@ -56,18 +56,28 @@ public class TopicController {
     private final TopicService topicService;
 
 
+    //hateoas links
+    public static TopicDto addHateoasLinksToTopicDto(TopicDto topicById) {
+        topicById.add(linkTo(methodOn(TopicController.class).getTopicById(topicById.getTopicId())).withSelfRel());
+        topicById.add(linkTo(methodOn(TopicController.class).deleteTopicById(topicById.getTopicId())).withRel("delete"));
+        topicById.add(linkTo(methodOn(TopicController.class).getListOfTopics(0, 10)).withRel(IanaLinkRelations.COLLECTION));
+
+        return topicById;
+
+    }
+
     @PostMapping
     @Operation(summary = "Create new topic", description = "This is an endpoint to create  add a new topic to a given" +
             " course", tags = "Topic")
     @ApiResponse(responseCode = "201", description = "Topic successfully created, mapped to the course, and saved to" +
             " the database")
-    public ResponseEntity<TopicDto> createNewTopic(@RequestParam(name = "topicId")BigDecimal courseId,
-                                                   @RequestBody @Validated TopicDto topicDto){
+    public ResponseEntity<TopicDto> createNewTopic(@RequestParam(name = "courseId") BigDecimal courseId,
+                                                   @RequestBody @Validated TopicDto topicDto) {
 
         TopicDto createdTopic = topicService.createNewTopic(courseId, topicDto);
 
         return ResponseEntity.created(linkTo(methodOn(TopicController.class).getTopicById(createdTopic.getTopicId())).toUri())
-                .body(addHateoasLinks(createdTopic));
+                .body(addHateoasLinksToTopicDto(createdTopic));
 
     }
 
@@ -78,25 +88,8 @@ public class TopicController {
 
         TopicDto topicById = topicService.getTopicById(topicId);
 
-        return ResponseEntity.ok(addHateoasLinks(topicById));
+        return ResponseEntity.ok(addHateoasLinksToTopicDto(topicById));
 
-    }
-
-    @GetMapping
-    @Operation(summary = "Get a list of topics", description = "This is n endpoint to retrieve a list of all the " +
-            "topics", tags = "Topic")
-    @ApiResponse(responseCode = "200", description = "A list of topics successfully retrieved")
-    public ResponseEntity<CollectionModel<TopicDto>> getListOfTopics(@RequestParam(name = "pageNo",
-            defaultValue = "0") Integer pageNo,
-                                                                      @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize){
-
-        List<TopicDto> listOfTopics = new ArrayList<>();
-                topicService.getListOfTopics(PageRequest.of(pageNo, pageSize)).
-                        forEach(topicDto -> listOfTopics.add(addHateoasLinks(topicDto)));
-
-        CollectionModel<TopicDto> topicDtoCollectionModel = CollectionModel.of(listOfTopics);
-
-        return ResponseEntity.ok(topicDtoCollectionModel);
     }
 
     @DeleteMapping("/{topicId}")
@@ -125,25 +118,33 @@ public class TopicController {
 
     }
 
+    @GetMapping
+    @Operation(summary = "Get a list of topics", description = "This is n endpoint to retrieve a list of all the " +
+            "topics", tags = "Topic")
+    @ApiResponse(responseCode = "200", description = "A list of topics successfully retrieved")
+    public ResponseEntity<CollectionModel<TopicDto>> getListOfTopics(@RequestParam(name = "pageNo",
+            defaultValue = "0") Integer pageNo,
+                                                                      @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize){
+
+        List<TopicDto> listOfTopics = new ArrayList<>();
+        topicService.getListOfTopics(PageRequest.of(pageNo, pageSize)).
+                forEach(topicDto -> listOfTopics.add(addHateoasLinksToTopicDto(topicDto)));
+
+        CollectionModel<TopicDto> topicDtoCollectionModel = CollectionModel.of(listOfTopics);
+
+        return ResponseEntity.ok(topicDtoCollectionModel);
+    }
+
     @PutMapping("/{topicId}")
     @Operation(summary = "Edit a topic", description = "This is an endpoint to edit a given topic using its a id")
     @ApiResponse(responseCode = "200", description = "Sub Topic successfully updated")
     public ResponseEntity<TopicDto> editTopicById(@PathVariable(name = "topicId") BigDecimal topicId,
-                                                  @RequestBody TopicDto topicDto){
+                                                  @RequestBody TopicDto topicDto) {
 
         TopicDto editedTopic = topicService.editTopicById(topicId, topicDto);
 
-        return ResponseEntity.ok(addHateoasLinks(editedTopic));
+        return ResponseEntity.ok(addHateoasLinksToTopicDto(editedTopic));
 
-
-    }
-    //hateoas links
-    private TopicDto addHateoasLinks(TopicDto topicById){
-        topicById.add(linkTo(methodOn(TopicController.class).getTopicById(topicById.getTopicId())).withSelfRel());
-        topicById.add(linkTo(methodOn(TopicController.class).deleteTopicById(topicById.getTopicId())).withRel("delete"));
-        topicById.add(linkTo(methodOn(TopicController.class).getListOfTopics(0, 10)).withRel(IanaLinkRelations.COLLECTION));
-
-        return topicById;
 
     }
 

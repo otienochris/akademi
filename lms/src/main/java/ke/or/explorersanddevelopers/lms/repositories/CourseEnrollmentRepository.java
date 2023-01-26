@@ -6,6 +6,7 @@ import ke.or.explorersanddevelopers.lms.model.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,4 +18,8 @@ public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollme
     Boolean existsByCourseAndStudent(Course course, Student student);
 
     Optional<CourseEnrollment> getByCourseAndStudent(Course course, Student student);
+
+    List<CourseEnrollment> findByStudent(Student student);
+
+    CourseEnrollment findByCourseEnrollmentId(BigDecimal courseEnrollmentId);
 }

@@ -3,21 +3,23 @@ package ke.or.explorersanddevelopers.lms.bootstrap;
 import ke.or.explorersanddevelopers.lms.enums.CourseCategoryEnum;
 import ke.or.explorersanddevelopers.lms.enums.RelativeRoleEnum;
 import ke.or.explorersanddevelopers.lms.enums.RelativeTypeEnum;
+import ke.or.explorersanddevelopers.lms.enums.RolesEnum;
 import ke.or.explorersanddevelopers.lms.model.entity.Course;
 import ke.or.explorersanddevelopers.lms.model.entity.Instructor;
 import ke.or.explorersanddevelopers.lms.model.entity.Relative;
 import ke.or.explorersanddevelopers.lms.model.entity.Student;
-import ke.or.explorersanddevelopers.lms.repositories.CourseRepository;
-import ke.or.explorersanddevelopers.lms.repositories.InstructorRepository;
-import ke.or.explorersanddevelopers.lms.repositories.RelativeRepository;
-import ke.or.explorersanddevelopers.lms.repositories.StudentRepository;
+import ke.or.explorersanddevelopers.lms.model.security.AppUser;
+import ke.or.explorersanddevelopers.lms.model.security.Role;
+import ke.or.explorersanddevelopers.lms.repositories.*;
+import ke.or.explorersanddevelopers.lms.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -29,24 +31,86 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
+    public static final String ROLE_USER = "ROLE_USER", ROLE_MANAGER = "ROLE_MANAGER", ROLE_ADMIN = "ROLE_ADMIN", ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN", ROLE_STUDENT = "ROLE_STUDENT";
+    public static final String ROLE_INSTRUCTOR = "ROLE_INSTRUCTOR";
+    public static final String ROLE_RELATIVE = "ROLE_RELATIVE";
     private final StudentRepository studentRepository;
     private final InstructorRepository instructorRepository;
     private final RelativeRepository relativeRepository;
-
     private final CourseRepository courseRepository;
 
+    private final UserService userService;
+
+    private final AppUserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    @Value("${admin.email}")
+    String email;
+
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+
+        if (roleRepository.count() == 0)
+            roleRepository.saveAll(getRoles());
+
+        if(userRepository.count() == 0 ){
+            userRepository.save(AppUser.builder()
+                            .username(email)
+                            .password(passwordEncoder.encode("admin1234"))
+                            .isAccountDisabled(false)
+                    .build());
+            userService.addRoleToUser(email, RolesEnum.ROLE_SUPER_ADMIN.name());
+        }
+
+    }
+
+    private void initUsers() {
         List<Instructor> instructors = new ArrayList<>();
-        if (studentRepository.count() == 0)
-            studentRepository.saveAll(getAllStudents());
+
+        // save student and user
+        if (studentRepository.count() == 0) {
+            studentRepository.saveAll(getAllStudents()).forEach(student -> {
+                AppUser appUser = userService.saveUser(getAppUser(student.getEmail()));
+                if (appUser != null) {
+                    userService.addRoleToUser(student.getEmail(), ROLE_STUDENT);
+                }
+                // update the student
+                student.setAppUser(appUser);
+                studentRepository.save(student);
+            });
+        }
 
         if (instructorRepository.count() == 0) {
             instructors = instructorRepository.saveAll(getAllInstructors());
+            instructors.forEach(instructor -> {
+                AppUser appUser = userService.saveUser(getAppUser(instructor.getEmail()));
+                if (appUser != null) {
+                    userService.addRoleToUser(instructor.getEmail(), ROLE_INSTRUCTOR);
+                }
+
+                // update the instructor
+                instructor.setAppUser(appUser);
+                System.out.println(instructor);
+
+            });
         }
 
-        if (relativeRepository.count() == 0)
-            relativeRepository.saveAll(getAllRelatives());
+        if (relativeRepository.count() == 0) {
+
+            relativeRepository.saveAll(getAllRelatives()).forEach(relative -> {
+
+                AppUser appUser = userService.saveUser(getAppUser(relative.getEmail()));
+                if (appUser != null) {
+                    userService.addRoleToUser(relative.getEmail(), ROLE_RELATIVE);
+                }
+
+                // update the relative
+                relative.setAppUser(appUser);
+                relativeRepository.save(relative);
+
+            });
+        }
 
         if (courseRepository.count() == 0 && instructors.size() > 0) {
             Instructor instructor = instructors.get(0); // instructor saving the course
@@ -57,49 +121,63 @@ public class DataInitializer implements CommandLineRunner {
                     .title("Introduction to some useless course")
                     .introductionVideoLink("https://youtu.be/Y2rdmKtVss0")
                     .description("There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words e")
-                    .instructors(new ArrayList<>(List.of(instructor)))
+                    .instructors(new HashSet<>(List.of(instructor)))
                     .build();
             Course savedCourse = courseRepository.save(course);
 
             if (instructor.getCourses() == null)
-                instructor.setCourses(new ArrayList<>());
+                instructor.setCourses(new HashSet<>());
             instructor.getCourses().add(savedCourse);
             instructorRepository.save(instructor);
         }
+    }
 
+    private AppUser getAppUser(String instructor) {
+        return AppUser.builder()
+                .id(null)
+                .isAccountDisabled(true)
+                .emailVerificationCode(UUID.randomUUID().toString())
+                .password(passwordEncoder.encode("pass"))
+                .username(instructor)
+                .build();
+    }
 
+    private List<Role> getRoles() {
+        return Arrays.asList(
+                Role.builder().name(ROLE_USER).build(),
+//                Role.builder().name().build(),
+                Role.builder().name(ROLE_ADMIN).build(),
+                Role.builder().name(ROLE_STUDENT).build(),
+                Role.builder().name(ROLE_INSTRUCTOR).build(),
+                Role.builder().name(ROLE_RELATIVE).build(),
+                Role.builder().name(ROLE_SUPER_ADMIN).build()
+        );
     }
 
     private List<Relative> getAllRelatives() {
         Relative relative1 = Relative.builder()
                 .countryCode("TZ")
                 .relativeType(RelativeTypeEnum.PARENT)
-                .password("relativePass1")
                 .lastName("last1")
                 .firstName("first1")
                 .role(RelativeRoleEnum.PASSIVE)
                 .email("relative1@gmail.com")
-                .isAccountDisabled(false)
                 .build();
         Relative relative2 = Relative.builder()
                 .countryCode("TZ")
                 .relativeType(RelativeTypeEnum.PARENT)
-                .password("relativePass2")
                 .lastName("last2")
                 .firstName("first2")
                 .role(RelativeRoleEnum.PASSIVE)
                 .email("relative2@gmail.com")
-                .isAccountDisabled(false)
                 .build();
         Relative relative3 = Relative.builder()
                 .countryCode("TZ")
                 .relativeType(RelativeTypeEnum.PARENT)
-                .password("relativePass3")
                 .lastName("last3")
                 .firstName("first3")
                 .role(RelativeRoleEnum.PASSIVE)
                 .email("relative3@gmail.com")
-                .isAccountDisabled(false)
                 .build();
         return new ArrayList<>(List.of(relative1, relative2, relative3));
     }
@@ -113,8 +191,6 @@ public class DataInitializer implements CommandLineRunner {
                 .description("Very passionate about teaching.")
                 .title("Mathematician")
                 .expertise("Mathematics")
-                .password("instructorPass1")
-                .isAccountDisabled(false)
                 .build();
         Instructor instructor2 = Instructor.builder()
                 .countryCode("UG")
@@ -124,8 +200,6 @@ public class DataInitializer implements CommandLineRunner {
                 .description("Very passionate about teaching.")
                 .title("Mathematician")
                 .expertise("Mathematics")
-                .password("instructorPass2")
-                .isAccountDisabled(false)
                 .build();
         Instructor instructor3 = Instructor.builder()
                 .countryCode("UG")
@@ -135,32 +209,24 @@ public class DataInitializer implements CommandLineRunner {
                 .description("Very passionate about teaching.")
                 .title("Mathematician")
                 .expertise("Mathematics")
-                .password("instructorPass3")
-                .isAccountDisabled(false)
                 .build();
         return new ArrayList<>(List.of(instructor1, instructor2, instructor3));
     }
 
     private List<Student> getAllStudents() {
         Student student1 = Student.builder()
-                .password("studentPass1")
-                .isAccountDisabled(false)
                 .lastName("Last1")
                 .email("student1@gmail.com")
                 .firstName("First1")
                 .countryCode("KE")
                 .build();
         Student student2 = Student.builder()
-                .password("pass2")
-                .isAccountDisabled(false)
                 .lastName("Last2")
                 .email("student2@gmail.com")
                 .firstName("First2")
                 .countryCode("KE")
                 .build();
         Student student3 = Student.builder()
-                .password("pass3")
-                .isAccountDisabled(false)
                 .lastName("Last3")
                 .email("student3@gmail.com")
                 .firstName("First3")

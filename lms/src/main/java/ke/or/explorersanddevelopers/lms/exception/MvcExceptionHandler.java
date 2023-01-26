@@ -4,8 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
@@ -22,7 +25,7 @@ import java.util.List;
  */
 
 @Slf4j
-//@ControllerAdvice
+@ControllerAdvice
 public class MvcExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -64,6 +67,17 @@ public class MvcExceptionHandler {
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ErrorDetails> handleNullPointerException(NullPointerException e) {
         return new ResponseEntity<>(createErrorDetails(e), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserDisabledException.class)
+    public ResponseEntity<ErrorDetails> handleNullPointerException(UserDisabledException e) {
+        return new ResponseEntity<>(createErrorDetails(e), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleNullPointerException(UsernameNotFoundException e) {
+
+        return new ResponseEntity<>(createErrorDetails(e), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)

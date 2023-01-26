@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,8 +29,8 @@ class QuestionMapperDecoratorTest {
 
     private final Answer answer = Answer.builder().answerId(BigDecimal.ONE).build();
     private final AnswerDto answerDto = AnswerDto.builder().answerId(BigDecimal.ONE).build();
-    private final List<Answer> answers = List.of(answer);
-    private final List<AnswerDto> answersDto = List.of(answerDto);
+    private final Set<Answer> answers = Set.of(answer);
+    private final Set<AnswerDto> answersDto = Set.of(answerDto);
     @Mock
     private QuestionMapper questionMapper;
     @Mock

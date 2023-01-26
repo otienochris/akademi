@@ -9,7 +9,9 @@ import javax.validation.constraints.Null;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -46,13 +48,13 @@ public class Organization {
     @Column(name = "COUNTRY_CODE")
     private String countryCode;
 
-    @ManyToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Student> students = new ArrayList<>();
+    private Set<Student> students = new HashSet<>();
 
-    @ManyToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Instructor> instructors = new ArrayList<>();
+    private Set<Instructor> instructors = new HashSet<>();
 
     @Lob
     @Column(name = "LOGO")

@@ -15,7 +15,9 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -57,7 +59,7 @@ public class QuestionDto extends RepresentationModel<QuestionDto> implements Ser
     private AnswerTypeEnum answerType;
 
     @Schema(description = "A list of answers")
-    private List<AnswerDto> answers;
+    private Set<AnswerDto> answers = new HashSet<>();
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

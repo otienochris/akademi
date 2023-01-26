@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author oduorfrancis134@gmail.com;
@@ -42,22 +44,18 @@ public class TopicServiceImp implements TopicService {
 
         //Associate a topic to a given course
         Topic topicEntity = topicMapper.toEntity(topicDto);
-        Course associatedCourse = topicEntity.getCourse();
-        if (associatedCourse == null)
-            topicEntity.setCourse(new Course());
-        topicEntity.getCourse().setCourseId(courseId);
 
-        Topic createdTopic = topicRepository.save(topicEntity);
+        Topic savedTopic = topicRepository.save(topicEntity);
 
         // Associate a course to the created topic
-        List<Topic> topics = course.getTopics();
+        Set<Topic> topics = course.getTopics();
         if (topics == null)
-            course.setTopics(new ArrayList<>());
-        course.getTopics().add(createdTopic);
+            course.setTopics(new HashSet<>());
+        course.getTopics().add(savedTopic);
         courseRepository.save(course);
 
         log.info("Successfully created a topic");
-        return topicMapper.toDto(createdTopic);
+        return topicMapper.toDto(savedTopic);
     }
 
     //method to retrieve the course associated with a given topic
@@ -118,7 +116,7 @@ public class TopicServiceImp implements TopicService {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchRecordException(TOPIC_WITH_ID + topicId + NOT_FOUND));
 
-        topic.setCourse(topicDto.getCourse());
+//        topic.setCourse(topicDto.getCourse());
         topic.setDescription(topicDto.getDescription());
         topic.setVersion(topicDto.getVersion());
         topic.setTitle(topicDto.getTitle());

@@ -8,9 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -34,6 +32,7 @@ public class Topic {
     @Column(name = "TITLE", nullable = false)
     private String title;
 
+    @Lob
     @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
@@ -44,9 +43,9 @@ public class Topic {
     @Column(name = "CONTENT")
     private String content;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<SubTopic> subTopics = new ArrayList<>();
+    private Set<SubTopic> subTopics = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")
@@ -60,13 +59,9 @@ public class Topic {
     @Column(name = "VERSION")
     private Long version;
 
-    @ManyToOne
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private Course course;
-
-    @ManyToMany
-    @ToString.Exclude
-    private List<Test> tests = new ArrayList<>();
+    private Set<Test> tests = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

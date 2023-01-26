@@ -13,7 +13,7 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -51,10 +51,13 @@ public class CourseEnrollmentDto implements Serializable {
     private CourseDto course;
 
     @Schema(description = "A list of test enrollment details chosen by the student.")
-    private List<TestEnrollmentDto> testEnrollments;
+    private Set<TestEnrollmentDto> testEnrollments = new HashSet<>();
 
     @Schema(description = "A list of completed topics.")
-    private List<TopicDto> completedTopics;
+    private Map<BigDecimal, Set<BigDecimal>> completedSubTopicsIds = new HashMap<>();
+
+    @Schema(description = "A list of completed topics.")
+    private List<BigDecimal> completedTopicsIds = new ArrayList<>();
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -2,7 +2,6 @@ package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import ke.or.explorersanddevelopers.lms.model.entity.Topic;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -61,6 +60,4 @@ public class SubTopicDto extends RepresentationModel<SubTopicDto> implements Ser
     @Schema(example = "0", description = "Address record version.")
     private Long version;
 
-    @Schema(description = "Topic associated  with the sub topic", accessMode = Schema.AccessMode.READ_ONLY)
-    private Topic topic;
 }

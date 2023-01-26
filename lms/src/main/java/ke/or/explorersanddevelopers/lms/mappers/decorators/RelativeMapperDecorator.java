@@ -57,13 +57,6 @@ public class RelativeMapperDecorator implements RelativeMapper {
             mappedRelativeDto.setReviews(reviewDtoList);
         }
 
-        // map students
-        List<Student> students = relative.getStudents();
-        if (students != null && !students.isEmpty()) {
-            List<StudentDto> studentDtoList = new ArrayList<>();
-            students.forEach(student -> studentDtoList.add(studentMapper.toDto(student)));
-            mappedRelativeDto.setStudents(studentDtoList);
-        }
         return mappedRelativeDto;
     }
 
@@ -85,14 +78,6 @@ public class RelativeMapperDecorator implements RelativeMapper {
             List<Review> reviews = new ArrayList<>();
             reviewDtoList.forEach(reviewDto -> reviews.add(reviewMapper.toEntity(reviewDto)));
             mappedRelative.setReviews(reviews);
-        }
-
-        // map student
-        List<StudentDto> studentDtoList = relativeDto.getStudents();
-        if (studentDtoList != null && !studentDtoList.isEmpty()) {
-            List<Student> students = new ArrayList<>();
-            studentDtoList.forEach(studentDto -> students.add(studentMapper.toEntity(studentDto)));
-            mappedRelative.setStudents(students);
         }
 
         return mappedRelative;

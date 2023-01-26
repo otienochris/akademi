@@ -34,7 +34,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/instructors")
+@RequestMapping("/api/v1/instructors")
 @ApiResponses(value = {
         @ApiResponse(responseCode = "400", description = "BAD REQUEST", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))
@@ -57,12 +57,21 @@ public class InstructorController {
     private final InstructorService instructorService;
 
 
-    @PostMapping
+    @PostMapping("/signup")
     @Operation(summary = "Save a new instructor")
     @ApiResponse(responseCode = "201", description = "The student was saved successfully")
     public ResponseEntity<InstructorDto> saveNewInstructor(@RequestBody @Validated InstructorDto instructorDto) {
         InstructorDto newInstructor = instructorService.saveNewInstructor(instructorDto);
         return ResponseEntity.created(linkTo(methodOn(InstructorController.class).getInstructorById(newInstructor.getInstructorId())).toUri()).body(addHateoasLinks(newInstructor));
+    }
+
+    @PutMapping("/{studentId}")
+    @Operation(summary = "Update an instructor")
+    @ApiResponse(responseCode = "202", description = "The student was updated successfully")
+    public ResponseEntity<InstructorDto> updateInstructor(@PathVariable BigDecimal studentId,
+                                                          @RequestBody @Validated InstructorDto instructorDto) {
+        InstructorDto newInstructor = instructorService.updateInstructor(studentId, instructorDto);
+        return ResponseEntity.accepted().body(addHateoasLinks(newInstructor));
     }
 
     @GetMapping("/{instructorId}")
@@ -82,6 +91,14 @@ public class InstructorController {
         instructorService.getListOfInstructors(PageRequest.of(pageNo, pageSize)).forEach(instructorDto -> response.add(addHateoasLinks(instructorDto)));
         CollectionModel<InstructorDto> collectionModel = CollectionModel.of(response);
         return ResponseEntity.ok(collectionModel);
+    }
+
+    @GetMapping("/username/{email}")
+    @Operation(summary = "Get an instructor by email")
+    @ApiResponse(responseCode = "200", description = "The student was retrieved successfully")
+    public ResponseEntity<InstructorDto> getInstructorByEmail(@PathVariable String email) {
+        InstructorDto newInstructor = instructorService.getInstructorByEmail(email);
+        return ResponseEntity.ok(addHateoasLinks(newInstructor));
     }
 
     @DeleteMapping("/{instructorId}")

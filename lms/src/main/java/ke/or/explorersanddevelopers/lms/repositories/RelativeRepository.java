@@ -13,4 +13,6 @@ import java.util.Optional;
  */
 public interface RelativeRepository extends JpaRepository<Relative, BigDecimal> {
     Optional<Relative> getByRelativeId(BigDecimal relativeId);
+
+    Optional<Relative> findByEmail(String email);
 }

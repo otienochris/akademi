@@ -46,7 +46,6 @@ public interface StudentMapper {
             @Mapping(target = "addresses", ignore = true),
             @Mapping(target = "certificates", ignore = true),
             @Mapping(target = "relatives", ignore = true),
-            @Mapping(target = "organizations", ignore = true),
     })
     Student toEntity(StudentDto studentDto);
 }

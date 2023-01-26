@@ -2,6 +2,7 @@ package ke.or.explorersanddevelopers.lms.service;
 
 import ke.or.explorersanddevelopers.lms.model.dto.TopicDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * @author oduorfrancis134@gmail.com;
  * @since Thursday 13/10/2022
  **/
+@Transactional
 public interface TopicService {
 
     /**

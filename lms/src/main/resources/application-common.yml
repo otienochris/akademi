@@ -1,17 +1,28 @@
 spring:
-#  mvc:
-  #    pathmatch:
-  #      matching-strategy: ant_path_matcher
   application:
     name: learning-management-system
   boot:
     admin:
       client:
         enabled: true
-        url: http://localhost:8081
+        url: http://localhost:8080/monitoring-service
 server:
+  port: 8083
   servlet:
-    context-path: /lms/api/v1
+    context-path: /lms
+jwt:
+  secret_key: secret
+admin:
+  email: explorersanddevelopers@gmail.com
+service:
+  notification:
+    url: http://localhost:8081/notification-service/mail/send-simple-message
+  front-end:
+    email-verification:
+      url: http://localhost:3000/verify-email/
+#      url: http://localhost:8083/lms/api/v1/authentication/verifyEmail/
+  payment:
+    url:
 
 #logging:
 #  level:

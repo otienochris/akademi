@@ -31,6 +31,8 @@ public interface CourseEnrollmentMapper {
             @Mapping(target = "course", ignore = true),
             @Mapping(target = "student", ignore = true),
             @Mapping(target = "testEnrollments", ignore = true),
+            @Mapping(target = "completedTopicsIds", ignore = true),
+            @Mapping(target = "completedSubTopicsIds", ignore = true),
     })
     CourseEnrollmentDto toDto(CourseEnrollment courseEnrollment);
 
@@ -38,6 +40,8 @@ public interface CourseEnrollmentMapper {
             @Mapping(target = "course", ignore = true),
             @Mapping(target = "student", ignore = true),
             @Mapping(target = "testEnrollments", ignore = true),
+            @Mapping(target = "completedTopicsIds", ignore = true),
+            @Mapping(target = "completedSubTopicsIds", ignore = true),
     })
     CourseEnrollment toEntity(CourseEnrollmentDto courseEnrollmentDto);
 }

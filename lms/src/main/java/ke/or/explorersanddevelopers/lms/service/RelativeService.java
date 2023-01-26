@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -37,7 +38,7 @@ public interface RelativeService {
      * @param pageable - the paging object with details like page number and page size
      * @return a list of relatives
      */
-    List<RelativeDto> getListOfRelatives(Pageable pageable);
+    Set<RelativeDto> getListOfRelatives(Pageable pageable);
 
     /**
      * This method allows a relative to track a student
@@ -54,4 +55,12 @@ public interface RelativeService {
      * @return true if operation was successful
      */
     Boolean deleteRelativeById(BigDecimal relativeId);
+
+    /**
+     * This method retrieves a relative by email
+     *
+     * @param email - the email of the student to be retrieved
+     * @return the retrieved relative
+     */
+    RelativeDto getRelativeByEmail(String email);
 }

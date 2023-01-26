@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,7 +50,7 @@ class TopicMapperDecoratorTest {
         BigDecimal topicId = BigDecimal.ONE;
         topicEntity = Topic.builder()
                 .topicId(topicId)
-                .subTopics(List.of(subtopicEntity))
+                .subTopics(Set.of(subtopicEntity))
                 .version(version)
                 .content(content)
                 .creationDate(creationDate)
@@ -72,7 +73,7 @@ class TopicMapperDecoratorTest {
                 .build();
         topicDto = TopicDto.builder()
                 .topicId(topicId)
-                .subTopics(List.of(subtopicDto))
+                .subTopics(Set.of(subtopicDto))
                 .version(version)
                 .content(content)
                 .creationDate(creationDate)

@@ -13,7 +13,9 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -48,7 +50,7 @@ public class TestEnrollmentDto implements Serializable {
     private Double score;
 
     @Schema(description = "A list of completed topics")
-    private List<QuestionDto> completedQuestions;
+    private Set<QuestionDto> completedQuestions = new HashSet<>();
 
     @Schema(description = "A list of all chosen tests")
     private TestDto test;

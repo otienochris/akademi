@@ -3,7 +3,9 @@ package ke.or.explorersanddevelopers.lms.service.impl;
 import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
 import ke.or.explorersanddevelopers.lms.exception.ResourceNotFoundException;
 import ke.or.explorersanddevelopers.lms.mappers.CourseMapper;
+import ke.or.explorersanddevelopers.lms.mappers.TopicMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
+import ke.or.explorersanddevelopers.lms.model.dto.TopicDto;
 import ke.or.explorersanddevelopers.lms.model.entity.Course;
 import ke.or.explorersanddevelopers.lms.model.entity.Instructor;
 import ke.or.explorersanddevelopers.lms.repositories.CourseRepository;
@@ -16,7 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -33,6 +37,8 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final InstructorRepository instructorRepository;
 
+    private final TopicMapper topicMapper;
+
     @Override
     public CourseDto createNewCourse(BigDecimal instructorId, CourseDto courseDto) {
         log.info("Creating  a new course ");
@@ -42,16 +48,16 @@ public class CourseServiceImpl implements CourseService {
         // process course
         Course courseEntity = courseMapper.toEntity(courseDto);
         courseEntity.setVersion(null);
-        List<Instructor> instructors = courseEntity.getInstructors();
+        Set<Instructor> instructors = courseEntity.getInstructors();
         if (instructors == null)
-            courseEntity.setInstructors(new ArrayList<>());
+            courseEntity.setInstructors(new HashSet<>());
         courseEntity.getInstructors().add(instructor);
         Course createdCourse = courseRepository.save(courseEntity);
 
         // assign the course to the instructor
-        List<Course> courses = instructor.getCourses();
+        Set<Course> courses = instructor.getCourses();
         if (courses == null)
-            instructor.setCourses(new ArrayList<>());
+            instructor.setCourses(new HashSet<>());
         instructor.getCourses().add(createdCourse);
         instructorRepository.save(instructor);
 
@@ -88,10 +94,10 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDto> getListOfCourses(Pageable pageable) {
+    public Set<CourseDto> getListOfCourses(Pageable pageable) {
         log.info("Retrieving a list of courses");
 
-        List<CourseDto> listOfCourses = new ArrayList<>();
+        Set<CourseDto> listOfCourses = new HashSet<>();
         courseRepository.findAll(pageable).forEach(course -> listOfCourses.add(courseMapper.toDto(course)));
         if (listOfCourses.size() == 0)
             log.warn("Retrieved an empty list of courses");
@@ -120,5 +126,13 @@ public class CourseServiceImpl implements CourseService {
 
         return courseMapper.toDto(updatedCourse);
 
+    }
+
+    @Override
+    public List<TopicDto> getCourseTopicsByCourseCode(BigDecimal courseId) {
+        Course course = courseRepository.getByCourseId(courseId).orElseThrow(() -> new NoSuchRecordException("Course with id: " + courseId + ", not found"));
+        List<TopicDto> topicDtos = new ArrayList<>();
+        course.getTopics().forEach(topic -> topicDtos.add(topicMapper.toDto(topic)));
+        return topicDtos;
     }
 }

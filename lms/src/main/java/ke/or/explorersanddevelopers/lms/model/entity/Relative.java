@@ -2,6 +2,7 @@ package ke.or.explorersanddevelopers.lms.model.entity;
 
 import ke.or.explorersanddevelopers.lms.enums.RelativeRoleEnum;
 import ke.or.explorersanddevelopers.lms.enums.RelativeTypeEnum;
+import ke.or.explorersanddevelopers.lms.model.security.AppUser;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,7 +12,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -28,7 +28,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "RELATIVES")
-
 public class Relative  {
 
     @Id
@@ -55,12 +54,6 @@ public class Relative  {
     @Column(name = "ROLE")
     private RelativeRoleEnum role;
 
-    @Column(name = "IS_ACCOUNT_DISABLED")
-    private boolean isAccountDisabled;
-
-    @Column(name = "EMAIL_VERIFICATION_CODE")
-    private UUID emailVerificationCode;
-
     @OneToMany
     @ToString.Exclude
     private List<Address> addresses = new ArrayList<>();
@@ -68,13 +61,6 @@ public class Relative  {
     @OneToMany
     @ToString.Exclude
     private List<Review> reviews = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "relatives")
-    @ToString.Exclude
-    private List<Student> students = new ArrayList<>();
-
-    @Column(name = "PASSWORD")
-    private String password;
 
     @CreationTimestamp
     @Column(name = "CREATION_DATE")
@@ -87,4 +73,8 @@ public class Relative  {
     @Version
     @Column(name = "VERSION")
     private Long version;
+
+    @OneToOne
+    @JoinColumn(referencedColumnName = "id", name = "user_id")
+    private AppUser appUser;
 }

@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,7 +50,7 @@ class TestEnrollmentMapperDecoratorTest {
     void setUp() {
 
         Long version = 0L;
-        List<Question> completedQuestions = List.of(questionEntity);
+        Set<Question> completedQuestions = Set.of(questionEntity);
         BigDecimal testEnrollmentId = BigDecimal.ONE;
         BigDecimal amount = BigDecimal.valueOf(200);
         StatusEnum status = StatusEnum.PENDING;
@@ -77,7 +78,7 @@ class TestEnrollmentMapperDecoratorTest {
                 .modificationDate(modificationDate)
                 .completionDate(null)
                 .version(version)
-                .completedQuestions(List.of(questionDto))
+                .completedQuestions(Set.of(questionDto))
                 .build();
         testEnrollmentDto = TestEnrollmentDto.builder()
                 .testEnrollmentId(testEnrollmentId)
@@ -89,7 +90,7 @@ class TestEnrollmentMapperDecoratorTest {
                 .modificationDate(modificationDate)
                 .completionDate(null)
                 .version(version)
-                .completedQuestions(List.of(questionDto))
+                .completedQuestions(Set.of(questionDto))
                 .build();
     }
 

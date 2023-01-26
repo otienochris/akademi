@@ -1,22 +1,33 @@
 package ke.or.explorersanddevelopers.lms.service.impl;
 
+import ke.or.explorersanddevelopers.lms.enums.RolesEnum;
 import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
 import ke.or.explorersanddevelopers.lms.exception.DuplicateRecordException;
 import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
 import ke.or.explorersanddevelopers.lms.mappers.*;
 import ke.or.explorersanddevelopers.lms.model.dto.*;
 import ke.or.explorersanddevelopers.lms.model.entity.*;
+import ke.or.explorersanddevelopers.lms.model.security.AppUser;
 import ke.or.explorersanddevelopers.lms.repositories.*;
 import ke.or.explorersanddevelopers.lms.service.StudentService;
+import ke.or.explorersanddevelopers.lms.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -32,6 +43,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
+    public static String EMAIL_VERIFICATION_URL = "http://localhost:3000/verify-email/";
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
     private final CourseRepository courseRepository;
@@ -46,15 +58,80 @@ public class StudentServiceImpl implements StudentService {
     private final CertificateMapper certificateMapper;
     private final InstructorRepository instructorRepository;
     private final TopicRepository topicRepository;
+    private final AppUserRepository appUserRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final UserService userService;
+
+    private static final RestTemplate restTemplate = new RestTemplate();
+
+    private static final String NOTIFICATION_ENDPOINT = "http://localhost:8081/notification-service/mail/send-simple-message";
 
     @Override
     public StudentDto saveNewStudent(StudentDto studentDto) {
         log.info("Saving a new student");
         Student studentEntity = studentMapper.toEntity(studentDto);
         studentEntity.setVersion(null);
+
+        String username = studentDto.getEmail();
+
+        log.info("Saving app user details associated with the new student");
+        String emailVerificationCode = UUID.randomUUID().toString();
+        AppUser savedAppUser = appUserRepository.save(AppUser.builder()
+                .emailVerificationCode(emailVerificationCode)
+                .password(passwordEncoder.encode(studentDto.getNewPassword()))
+                .username(username)
+                .isAccountDisabled(true)
+                .build());
+
+        log.info("Adding role to student");
+        userService.addRoleToUser(username, RolesEnum.ROLE_STUDENT.name());
+
+        log.info("Associating the app user details with the new student details");
+        studentEntity.setAppUser(savedAppUser);
         Student savedStudent = studentRepository.save(studentEntity);
+
+        sendEmailVerificationCode(username, emailVerificationCode,studentDto.getLastName());
+
         log.info("Student saved successfully");
         return studentMapper.toDto(savedStudent);
+    }
+
+    public static boolean sendEmailVerificationCode(String email, String emailVerificationCode, String lastName) {
+        //TODO send email verification code
+        // https://www.springcloud.io/post/2022-03/resttemplate-multipart/#gsc.tab=0
+        log.info("Sending email verification code");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        multipartBodyBuilder.part("to", email);
+        multipartBodyBuilder.part("subject", "EMAIL VERIFICATION CODE");
+        String template = "<section style=\"background-color: #33475b; color: white; margin: 0; padding: 20px; min-height: 200px;\">\n" +
+                "        <h2>Dear "+lastName+",</h2>\n" +
+                "        <p style=\"margin-bottom: 50px; color: white; font-weight: bold;\">Welcome to Akademi. Click the following button to verify your email:</p>\n" +
+                "        <div style=\"margin: 10px 2px;\">\n" +
+                "            <a href=\"" +
+                "" + EMAIL_VERIFICATION_URL + emailVerificationCode +
+                "\" style=\"text-decoration: none; color: black; font-weight: bolder; background-color: orange; padding: 10px; margin: 2px; border-radius: 5px;\">verify email</a>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <div></div>\n" +
+                "    </section>";
+//        String link  = "<a href=\"" + EMAIL_VERIFICATION_URL + emailVerificationCode +"\">Verify email</a>";
+        multipartBodyBuilder.part("text", template);
+
+        MultiValueMap<String, HttpEntity<?>> multipartBody = multipartBodyBuilder.build();
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> httpEntity = new HttpEntity<>(multipartBody, headers);
+
+        ResponseEntity<Object> responseEntity = restTemplate.postForEntity(NOTIFICATION_ENDPOINT, httpEntity, Object.class);
+        int status = responseEntity.getStatusCodeValue();
+        Object body = responseEntity.getBody();
+        if (status >= 200 && status < 300) {
+            log.info("Successfully sent the email verification code");
+            return true;
+        } else {
+            log.error("Error sending email verification code");
+            return false;
+        }
     }
 
     @Override
@@ -70,10 +147,9 @@ public class StudentServiceImpl implements StudentService {
         log.info("Updating a student of id: " + studentId);
         Student student = getStudentByCodeFromDb(studentId);
 
-        student.setEmail(studentDto.getEmail());
         student.setCountryCode(studentDto.getCountryCode());
-        student.setFirstName(student.getFirstName());
-        student.setLastName(student.getLastName());
+        student.setFirstName(studentDto.getFirstName());
+        student.setLastName(studentDto.getLastName());
 
         Student savedStudent = studentRepository.save(student);
 
@@ -106,10 +182,9 @@ public class StudentServiceImpl implements StudentService {
         } else {
             courseEnrollment = CourseEnrollment.builder()
                     .course(course)
-                    .testEnrollments(new ArrayList<>())
+                    .testEnrollments(new HashSet<>())
                     .student(student)
                     .status(StatusEnum.PENDING)
-                    .completedTopics(new ArrayList<>())
                     .build();
             courseEnrollmentRepository.save(courseEnrollment);
         }
@@ -129,7 +204,7 @@ public class StudentServiceImpl implements StudentService {
             throw new NoSuchRecordException(message);
         });
 
-        List<TestEnrollment> oldTestEnrollments = courseEnrollment.getTestEnrollments();
+        Set<TestEnrollment> oldTestEnrollments = courseEnrollment.getTestEnrollments();
         if (oldTestEnrollments != null && oldTestEnrollments.size() > 0) {
             oldTestEnrollments.forEach(testEnrollment -> {
                 Test test = testEnrollment.getTest();
@@ -150,7 +225,7 @@ public class StudentServiceImpl implements StudentService {
                 .build();
 
         if (oldTestEnrollments == null || oldTestEnrollments.size() == 0) {
-            oldTestEnrollments = new ArrayList<>();
+            oldTestEnrollments = new HashSet<>();
         }
         oldTestEnrollments.add(newTestEnrollment);
         courseEnrollment.setTestEnrollments(oldTestEnrollments);
@@ -160,9 +235,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDto> getListOfStudents(Pageable pageable) {
+    public Set<StudentDto> getListOfStudents(Pageable pageable) {
         log.info("Retrieving a list of students");
-        List<StudentDto> response = new ArrayList<>();
+        Set<StudentDto> response = new HashSet<>();
         studentRepository.findAll(pageable).forEach(student -> response.add(studentMapper.toDto(student)));
         if (response.size() == 0)
             log.warn("Retrieve an empty list of students");
@@ -182,10 +257,10 @@ public class StudentServiceImpl implements StudentService {
                 instructorRepository.getByInstructorId(targetID)
                         .ifPresentOrElse(
                                 (instructor) -> {
-                                    List<Review> reviews = instructor.getReviews();
+                                    Set<Review> reviews = instructor.getReviews();
                                     Review savedReview = reviewRepository.save(mappedReview);
                                     if (reviews == null) {
-                                        instructor.setReviews(new ArrayList<>());
+                                        instructor.setReviews(new HashSet<>());
                                         instructor.getReviews().add(savedReview);
                                     } else {
                                         instructor.getReviews().add(savedReview);
@@ -207,9 +282,9 @@ public class StudentServiceImpl implements StudentService {
                     throw new NoSuchRecordException(message);
                 });
                 Review savedReview = reviewRepository.save(mappedReview);
-                List<Review> reviews = course.getReviews();
+                Set<Review> reviews = course.getReviews();
                 if (reviews == null) {
-                    course.setReviews(new ArrayList<>());
+                    course.setReviews(new HashSet<>());
                     course.getReviews().add(savedReview);
                 } else {
                     course.getReviews().add(savedReview);
@@ -223,11 +298,11 @@ public class StudentServiceImpl implements StudentService {
         }
 
         Review savedReview = reviewRepository.save(mappedReview);
-        List<Review> reviews = studentByCodeFromDb.getReviews();
+        Set<Review> reviews = studentByCodeFromDb.getReviews();
         if (reviews != null) {
             studentByCodeFromDb.getReviews().add(savedReview);
         } else {
-            studentByCodeFromDb.setReviews(new ArrayList<>());
+            studentByCodeFromDb.setReviews(new HashSet<>());
             studentByCodeFromDb.getReviews().add(savedReview);
         }
 
@@ -240,7 +315,7 @@ public class StudentServiceImpl implements StudentService {
 
         Student student = getStudentByCodeFromDb(studentId);
 
-        List<Address> addresses = student.getAddresses();
+        Set<Address> addresses = student.getAddresses();
         // map the address from dto to entity
         Address mappedAddress = addressMapper.toEntity(addressDto);
 
@@ -249,7 +324,7 @@ public class StudentServiceImpl implements StudentService {
 
         // set eh address
         if (addresses == null) {
-            student.setAddresses(new ArrayList<>());
+            student.setAddresses(new HashSet<>());
             student.getAddresses().add(savedAddress);
         } else {
             student.getAddresses().add(savedAddress);
@@ -261,9 +336,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<CertificateDto> retrieveCertificates(BigDecimal studentId) {
+    public Set<CertificateDto> retrieveCertificates(BigDecimal studentId) {
         Student studentByCodeFromDb = getStudentByCodeFromDb(studentId);
-        List<CertificateDto> response = new ArrayList<>();
+        Set<CertificateDto> response = new HashSet<>();
         studentByCodeFromDb.getCertificates().forEach(certificate -> response.add(certificateMapper.toDto(certificate)));
         return response;
     }
@@ -271,72 +346,32 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public UUID generateToken(BigDecimal studentId) {
         Student student = getStudentByCodeFromDb(studentId);
-        UUID token = UUID.randomUUID();
-        student.setToken(token.toString());
-        studentRepository.save(student);
+        AppUser appUser = student.getAppUser();
+        UUID token = null;
+        if (appUser != null) {
+            token = UUID.randomUUID();
+            appUser.setToken(token.toString());
+            appUserRepository.save(appUser);
+        }
         return token;
     }
 
-    private static List<StatusEnum> getTestStatuses(CourseEnrollment oldCourseEnrollment) {
-        return oldCourseEnrollment.getTestEnrollments().stream().flatMap(testEnrollment -> Stream.of(testEnrollment.getStatus())).collect(Collectors.toList());
+    private static Set<StatusEnum> getTestStatuses(CourseEnrollment oldCourseEnrollment) {
+        return oldCourseEnrollment.getTestEnrollments().stream().flatMap(testEnrollment -> Stream.of(testEnrollment.getStatus())).collect(Collectors.toSet());
     }
 
     @Override
-    public CourseEnrollmentDto completeTopic(BigDecimal studentId, BigDecimal courseId, BigDecimal topicId) {
+    public StudentDto getStudentByEmail(String email) {
+        log.info("Retrieving a student with email: " + email);
+        Student student = getStudentByEmailFromDb(email);
+        log.info("Successfully retrieved a student with email: " + email);
+        return studentMapper.toDto(student);
+    }
 
-        CourseEnrollment currentCourseEnrollment = null;
-        Topic topic = getTopicByCodeFromDb(topicId);
-        Student student = getStudentByCodeFromDb(studentId);
-        Course course = getCourseByCodeFromDb(courseId);
-        CourseEnrollment oldCourseEnrollment = getCourseEnrollmentByStudentAndCourseFromDb(student, course);
-
-
-        if (oldCourseEnrollment.getCompletedTopics() == null) {
-            oldCourseEnrollment.setCompletedTopics(new ArrayList<>());
-        }
-
-        if (oldCourseEnrollment.getCompletedTopics() != null && oldCourseEnrollment.getCompletedTopics().size() == 0) {
-
-            // add the new completed topic to the empty list
-            oldCourseEnrollment.getCompletedTopics().add(topic);
-
-            // check if that was the last topic and test are done
-            List<StatusEnum> testStatuses = getTestStatuses(oldCourseEnrollment);
-            List<Topic> topics = course.getTopics();
-            if (topics != null && topics.size() == oldCourseEnrollment.getCompletedTopics().size() && !testStatuses.contains(StatusEnum.PENDING)) {
-                oldCourseEnrollment.setStatus(StatusEnum.COMPLETE);
-            }
-
-            // save changes
-            currentCourseEnrollment = courseEnrollmentRepository.save(oldCourseEnrollment);
-
-        } else if (oldCourseEnrollment.getCompletedTopics() != null) {
-
-            // check if topic is already in the list of completed topics
-            boolean[] topicIsPresent = new boolean[]{false};
-            oldCourseEnrollment.getCompletedTopics().parallelStream().forEach(topic1 -> {
-                if (Objects.equals(topic1.getTopicId(), topicId)) {
-                    topicIsPresent[0] = true;
-                }
-            });
-
-            if (topicIsPresent[0]) {
-                return courseEnrollmentMapper.toDto(oldCourseEnrollment);
-            } else {
-                oldCourseEnrollment.getCompletedTopics().add(topic); // add the new completed topic
-
-                // check if that was the last topic and tests are all done
-                List<StatusEnum> testStatuses = getTestStatuses(oldCourseEnrollment);
-                List<Topic> topics = course.getTopics();
-                if (topics != null && topics.size() == oldCourseEnrollment.getCompletedTopics().size() && testStatuses.contains(StatusEnum.PENDING)) {
-                    oldCourseEnrollment.setStatus(StatusEnum.COMPLETE);
-                }
-
-                // save changes
-                currentCourseEnrollment = courseEnrollmentRepository.save(oldCourseEnrollment);
-            }
-        }
-        return courseEnrollmentMapper.toDto(currentCourseEnrollment);
+    private Student getStudentByEmailFromDb(String email) {
+        return studentRepository.findByEmail(email).orElseThrow(() -> {
+            throw new NoSuchRecordException("Student not found");
+        });
     }
 
     private CourseEnrollment getCourseEnrollmentByStudentAndCourseFromDb(Student student, Course course) {

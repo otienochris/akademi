@@ -2,8 +2,14 @@ package ke.or.explorersanddevelopers.lms.mappers;
 
 import ke.or.explorersanddevelopers.lms.enums.StatusEnum;
 import ke.or.explorersanddevelopers.lms.mappers.decorators.CourseEnrollmentMapperDecorator;
-import ke.or.explorersanddevelopers.lms.model.dto.*;
-import ke.or.explorersanddevelopers.lms.model.entity.*;
+import ke.or.explorersanddevelopers.lms.model.dto.CourseDto;
+import ke.or.explorersanddevelopers.lms.model.dto.CourseEnrollmentDto;
+import ke.or.explorersanddevelopers.lms.model.dto.StudentDto;
+import ke.or.explorersanddevelopers.lms.model.dto.TestEnrollmentDto;
+import ke.or.explorersanddevelopers.lms.model.entity.Course;
+import ke.or.explorersanddevelopers.lms.model.entity.CourseEnrollment;
+import ke.or.explorersanddevelopers.lms.model.entity.Student;
+import ke.or.explorersanddevelopers.lms.model.entity.TestEnrollment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,8 +35,8 @@ class CourseEnrollmentMapperDecoratorTest {
     private final StudentDto studentDto = StudentDto.builder().studentId(BigDecimal.ONE).build();
     private final Course courseEntity = Course.builder().courseId(BigDecimal.ONE).build();
     private final CourseDto courseDto = CourseDto.builder().courseId(BigDecimal.ONE).build();
-    private final List<TestEnrollment> testEnrollmentEntities = List.of(TestEnrollment.builder().testEnrollmentId(BigDecimal.valueOf(101)).build());
-    private final List<TestEnrollmentDto> testEnrollmentDtos = List.of(TestEnrollmentDto.builder().testEnrollmentId(BigDecimal.valueOf(101)).build());
+    private final Set<TestEnrollment> testEnrollmentEntities = Set.of(TestEnrollment.builder().testEnrollmentId(BigDecimal.valueOf(101)).build());
+    private final Set<TestEnrollmentDto> testEnrollmentDtos = Set.of(TestEnrollmentDto.builder().testEnrollmentId(BigDecimal.valueOf(101)).build());
     @Mock
     private CourseEnrollmentMapper courseEnrollmentMapper;
     @Mock
@@ -43,6 +50,7 @@ class CourseEnrollmentMapperDecoratorTest {
     private CourseEnrollment courseEnrollmentEntity;
     private CourseEnrollmentDto courseEnrollmentDto;
     private CourseEnrollmentDto partialCourseEnrollmentDto;
+    private Map<BigDecimal, Set<BigDecimal>> completedTopicsDtos = Map.of(BigDecimal.ONE, Set.of(BigDecimal.ONE));
 
     @BeforeEach
     void setUp() {
@@ -50,8 +58,7 @@ class CourseEnrollmentMapperDecoratorTest {
         long version = 0L;
         BigDecimal amount = BigDecimal.valueOf(100);
         BigDecimal courseEnrollmentId = BigDecimal.ONE;
-        List<Topic> completedTopics = List.of(Topic.builder().topicId(BigDecimal.ONE).build());
-        List<TopicDto> completedTopicsDtos = List.of(TopicDto.builder().topicId(BigDecimal.ONE).build());
+        String completedTopics = "1";
         LocalDate now = LocalDate.now();
         Date creationDate = Date.valueOf(now);
         Date modificationDate = Date.valueOf(now.plusDays(2));
@@ -63,7 +70,7 @@ class CourseEnrollmentMapperDecoratorTest {
                 .testEnrollments(testEnrollmentEntities)
                 .courseEnrollmentId(courseEnrollmentId)
                 .student(studentEntity)
-                .completedTopics(completedTopics)
+                .completedTopicsIds(completedTopics)
                 .creationDate(creationDate)
                 .status(pending)
                 .version(version)
@@ -78,7 +85,7 @@ class CourseEnrollmentMapperDecoratorTest {
                 .testEnrollments(null)
                 .courseEnrollmentId(courseEnrollmentId)
                 .student(null)
-                .completedTopics(completedTopicsDtos)
+                .completedSubTopicsIds(completedTopicsDtos)
                 .creationDate(creationDate)
                 .status(pending)
                 .version(version)
@@ -92,7 +99,7 @@ class CourseEnrollmentMapperDecoratorTest {
                 .testEnrollments(testEnrollmentDtos)
                 .courseEnrollmentId(courseEnrollmentId)
                 .student(studentDto)
-                .completedTopics(completedTopicsDtos)
+                .completedSubTopicsIds(completedTopicsDtos)
                 .creationDate(creationDate)
                 .status(pending)
                 .version(version)

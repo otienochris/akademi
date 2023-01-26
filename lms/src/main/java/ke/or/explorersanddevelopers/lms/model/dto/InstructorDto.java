@@ -14,8 +14,10 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -60,28 +62,24 @@ public class InstructorDto extends RepresentationModel<InstructorDto> implements
     @Schema(example = "An experienced software engineer.", description = "A user's verbose description.")
     private String description;
 
-    @Schema(example = "true", description = "Is account diabled?")
+    @Schema(example = "true", description = "Is account disabled?")
     private boolean isAccountDisabled;
 
     @Null
-    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "Email verification code.")
-    private UUID emailVerificationCode;
-
-    @Null
     @Schema(description = "A list of users' addresses", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<AddressDto> addresses;
+    private Set<AddressDto> addresses = new HashSet<>();
 
     @Null
     @Schema(description = "A list of reviews", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<ReviewDto> reviews;
+    private Set<ReviewDto> reviews = new HashSet<>();
 
     @Null
     @Schema(description = "A list of courses", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<CourseDto> courses;
+    private Set<CourseDto> courses = new HashSet<>();
 
     @Null
     @Schema(description = "A list of organizations", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<OrganizationDto> organizations;
+    private Set<OrganizationDto> organizations = new HashSet<>();
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -96,4 +94,7 @@ public class InstructorDto extends RepresentationModel<InstructorDto> implements
     @NotNull
     @Schema(example = "0", description = "Address record version.")
     private Long version;
+
+    @Schema(example = "sf34t3P0fs", description = "Account Password", accessMode = Schema.AccessMode.WRITE_ONLY)
+    private String newPassword;
 }

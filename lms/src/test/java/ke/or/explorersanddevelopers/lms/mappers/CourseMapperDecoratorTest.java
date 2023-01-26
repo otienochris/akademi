@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,15 +30,15 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class CourseMapperDecoratorTest {
 
-    private final List<CourseEnrollment> courseEnrollmentEntities = List.of(CourseEnrollment.builder().courseEnrollmentId(BigDecimal.ONE).build());
-    private final List<Topic> topicEntities = List.of(Topic.builder().topicId(BigDecimal.ONE).build());
-    private final List<Review> reviews = List.of(Review.builder().reviewId(BigDecimal.ONE).build());
+    private final Set<CourseEnrollment> courseEnrollmentEntities = Set.of(CourseEnrollment.builder().courseEnrollmentId(BigDecimal.ONE).build());
+    private final Set<Topic> topicEntities = Set.of(Topic.builder().topicId(BigDecimal.ONE).build());
+    private final Set<Review> reviews = Set.of(Review.builder().reviewId(BigDecimal.ONE).build());
     private final CourseEnrollmentDto courseEnrollmentDto = CourseEnrollmentDto.builder().courseEnrollmentId(BigDecimal.ONE).build();
-    private final List<CourseEnrollmentDto> courseEnrollmentDtos = List.of(courseEnrollmentDto);
+    private final Set<CourseEnrollmentDto> courseEnrollmentDtos = Set.of(courseEnrollmentDto);
     private final TopicDto topicDto = TopicDto.builder().topicId(BigDecimal.ONE).build();
-    private final List<TopicDto> topicDtos = List.of(topicDto);
+    private final Set<TopicDto> topicDtos = Set.of(topicDto);
     private final ReviewDto reviewDto = ReviewDto.builder().reviewId(BigDecimal.ONE).build();
-    private final List<ReviewDto> reviewDtos = List.of(reviewDto);
+    private final Set<ReviewDto> reviewDtos = Set.of(reviewDto);
     @Mock
     private CourseMapper courseMapper;
     @Mock

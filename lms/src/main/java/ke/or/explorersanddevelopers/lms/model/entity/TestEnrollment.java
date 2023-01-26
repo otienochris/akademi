@@ -9,9 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author: oduorfrancis134@gmail.com;
@@ -44,7 +42,7 @@ public class TestEnrollment {
 
     @OneToMany
     @ToString.Exclude
-    private List<Question> completedQuestions = new ArrayList<>();
+    private Set<Question> completedQuestions = new HashSet<>();
 
     @Column(name = "SCORE", nullable = false)
     private Double score;

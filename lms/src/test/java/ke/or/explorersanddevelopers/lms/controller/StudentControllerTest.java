@@ -17,7 +17,9 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
@@ -74,9 +76,9 @@ class StudentControllerTest {
                 .firstName(firstName)
                 .countryCode(countryCode)
                 .creationDate(Date.valueOf(LocalDate.parse(date).plusDays(1))) // date is off by 1 day
-                .addresses(new ArrayList<>())
-                .reviews(new ArrayList<>())
-                .certificates(new ArrayList<>())
+                .addresses(new HashSet<>())
+                .reviews(new HashSet<>())
+                .certificates(new HashSet<>())
                 .build();
     }
 
@@ -124,7 +126,7 @@ class StudentControllerTest {
 
     @Test
     void getListOfStudents() throws Exception {
-        given(studentService.getListOfStudents(ArgumentMatchers.any(Pageable.class))).willReturn(List.of(responseBody));
+        given(studentService.getListOfStudents(ArgumentMatchers.any(Pageable.class))).willReturn(Set.of(responseBody));
 
         mockMvc.perform(get(baseUrl.toString()))
                 .andExpect(jsonPath("$._embedded.studentDtoList[0].studentId", is(studentId.intValue())))
