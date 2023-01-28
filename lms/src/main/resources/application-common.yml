@@ -5,7 +5,7 @@ spring:
     admin:
       client:
         enabled: true
-        url: http://localhost:8080/monitoring-service
+        url: https://monitoring-service.explorersanddevelopers.or.ke/monitoring-service
 server:
   port: 8083
   servlet:
@@ -16,11 +16,10 @@ admin:
   email: explorersanddevelopers@gmail.com
 service:
   notification:
-    url: http://localhost:8081/notification-service/mail/send-simple-message
+    url: https://notification-service.explorersanddevelopers.or.ke/notification-service/mail/send-simple-message
   front-end:
     email-verification:
-      url: http://localhost:3000/verify-email/
-#      url: http://localhost:8083/lms/api/v1/authentication/verifyEmail/
+      url: https://akademi.explorersanddevelopers.or.ke/verify-email/
   payment:
     url:
 
