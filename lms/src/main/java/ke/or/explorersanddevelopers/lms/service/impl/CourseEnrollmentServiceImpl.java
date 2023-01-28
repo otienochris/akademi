@@ -67,7 +67,7 @@ public class CourseEnrollmentServiceImpl implements CourseEnrollmentService {
     public CourseEnrollmentDto enrollStudentToCourse(BigDecimal studentId, BigDecimal courseId) {
         Student student = getStudentByIdFromDb(studentId);
         Course course = getCourseById(courseId);
-        Boolean alreadyEnrolled = courseEnrollmentRepository.existsByCourseAndStudent(course, student);
+        boolean alreadyEnrolled = courseEnrollmentRepository.existsByCourseAndStudent(course, student);
 
         if (alreadyEnrolled)
             throw new DuplicateRecordException("Student already enrolled for the course");
@@ -98,17 +98,20 @@ public class CourseEnrollmentServiceImpl implements CourseEnrollmentService {
         Student student = getStudentByIdFromDb(studentId);
         List<CourseEnrollmentDto> response = new ArrayList<>();
         courseEnrollmentRepository.findByStudent(student)
-                .forEach(courseEnrollment -> {
-                    response.add(courseEnrollmentMapper.toDto(courseEnrollment));
-                });
+                .forEach(courseEnrollment -> response.add(courseEnrollmentMapper.toDto(courseEnrollment)));
         return response;
     }
 
     @Override
     public CourseEnrollmentDto completeSubTopic(BigDecimal courseEnrollmentId, BigDecimal subTopicId) {
-        log.info("Updating a course enrollment [" + courseEnrollmentId + "] adding a completed topic [" + subTopicId + "]");
-        CourseEnrollment oldCourseEnrollment = courseEnrollmentRepository.findByCourseEnrollmentId(courseEnrollmentId);
-
+        log.info("Updating a course enrollment [" + courseEnrollmentId + "].Completing the sub-topic [" + subTopicId + "]");
+        CourseEnrollment oldCourseEnrollment = courseEnrollmentRepository.findByCourseEnrollmentId(courseEnrollmentId)
+                .orElseThrow(() -> {
+                    log.error("Error find course enrollment with id: " + courseEnrollmentId);
+                    return new NoSuchRecordException("No such course enrollment: " + courseEnrollmentId);
+                });
+        log.info("Currently completed topics are : " + oldCourseEnrollment.getCompletedTopicsIds());
+        log.info("Currently completed sub-topics are : " + oldCourseEnrollment.getCompletedSubTopicsIds());
         // get completed topics
         String completedSubTopicsIds = oldCourseEnrollment.getCompletedSubTopicsIds();
 
@@ -134,7 +137,7 @@ public class CourseEnrollmentServiceImpl implements CourseEnrollmentService {
                     .flatMap(item -> Stream.of(item.getSubTopicId()))
                     .collect(Collectors.toList());
             subTopicIds.forEach(currentSubtopicId -> {
-                System.out.println("Does " + completedSubTopicsIdsList + " contain " + currentSubtopicId.toString() + " ? " + completedSubTopicsIdsList.contains("" + currentSubtopicId.intValueExact()));
+                log.debug("Does " + completedSubTopicsIdsList + " contain " + currentSubtopicId.toString() + " ? " + completedSubTopicsIdsList.contains("" + currentSubtopicId.intValueExact()));
                 if (completedSubTopicsIdsList.contains("" + currentSubtopicId.intValueExact())) {
                     setSubTopicAsCompleted(completedSubTopicsForResponse, topic.getTopicId(), currentSubtopicId);
                 }
@@ -149,12 +152,12 @@ public class CourseEnrollmentServiceImpl implements CourseEnrollmentService {
         // update completed topics
         completedSubTopicsForResponse.forEach((topicId, completedSubtopics) -> {
             List<Topic> topicList = allTopics.stream()
-                    .filter(item -> item.getTopicId().intValueExact() == topicId.intValueExact())
+                    .filter(item -> item.getTopicId().intValueExact() == topicId.intValueExact()) // get the current topic
                     .collect(Collectors.toList());
 
             if (!topicList.isEmpty()) {
                 topicList.forEach(topic -> {
-                    if (topic.getSubTopics().size() == completedSubTopicsIdsList.size()) {
+                    if (topic.getSubTopics().size() == completedSubtopics.size()) {
                         log.info("Completing topic of id " + topicId);
                         completedTopicsForResponse.add(topic.getTopicId().toPlainString());
                     }
