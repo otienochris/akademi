@@ -23,6 +23,10 @@ service:
   payment:
     url:
 
-#logging:
-#  level:
-#    root: debug
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    health:
+      show-details: always
