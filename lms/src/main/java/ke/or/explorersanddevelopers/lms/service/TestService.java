@@ -1,8 +1,8 @@
 package ke.or.explorersanddevelopers.lms.service;
 
 import ke.or.explorersanddevelopers.lms.model.dto.TestDto;
+import org.springframework.data.domain.Pageable;
 
-import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -31,14 +31,14 @@ public interface TestService {
     /**
      * This method retrieves and edits a test using its id
      *
-     * @param testId - required to retrieve a test
+     * @param testId  - required to retrieve a test
      * @param testDto - test details needed to update  test
      * @return - the updated test
      */
     TestDto edtTestById(BigDecimal testId, TestDto testDto);
 
     /**
-     *This method retrieves a list of all tests
+     * This method retrieves a list of all tests
      *
      * @param pageable - a page object of test with useful information such as total pages
      * @return a list of tests
@@ -46,7 +46,7 @@ public interface TestService {
     List<TestDto> getListOfTests(Pageable pageable);
 
     /**
-     *  This method deletes a test using its id
+     * This method deletes a test using its id
      *
      * @param testId - required to delete a test
      * @return true if a test is deleted

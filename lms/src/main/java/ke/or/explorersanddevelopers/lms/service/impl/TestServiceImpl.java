@@ -3,7 +3,6 @@ package ke.or.explorersanddevelopers.lms.service.impl;
 import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
 import ke.or.explorersanddevelopers.lms.mappers.TestMapper;
 import ke.or.explorersanddevelopers.lms.model.dto.TestDto;
-import ke.or.explorersanddevelopers.lms.model.entity.SubTopic;
 import ke.or.explorersanddevelopers.lms.model.entity.Test;
 import ke.or.explorersanddevelopers.lms.model.entity.Topic;
 import ke.or.explorersanddevelopers.lms.repositories.TestRepository;
@@ -11,10 +10,9 @@ import ke.or.explorersanddevelopers.lms.repositories.TopicRepository;
 import ke.or.explorersanddevelopers.lms.service.TestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,6 +27,8 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
+    public static final String DOES_NOT_EXIST = " does not exist";
+    public static final String TEST_WITH_ID = "Test with id: ";
     private final TestRepository testRepository;
 
     private final TopicRepository topicRepository;
@@ -43,9 +43,9 @@ public class TestServiceImpl implements TestService {
         Topic topic = getTopicById(topicId);
 
         //bind the test to the topic
-        Test testEntity  = testMapper.toEntity(testDto);
+        Test testEntity = testMapper.toEntity(testDto);
         List<Topic> associatedTopic = testEntity.getTopics();
-        if(associatedTopic == null)
+        if (associatedTopic == null)
             testEntity.setTopics(new ArrayList<>());
         testEntity.getTopics().add(topic);
 
@@ -65,7 +65,7 @@ public class TestServiceImpl implements TestService {
 
     private Topic getTopicById(BigDecimal topicId) {
         return topicRepository.getByTopicId(topicId)
-                .orElseThrow(() -> new NoSuchRecordException("Topic with id: " + topicId + " does not exist"));
+                .orElseThrow(() -> new NoSuchRecordException("Topic with id: " + topicId + DOES_NOT_EXIST));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class TestServiceImpl implements TestService {
 
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> {
-                    String message = "Test with id: " + testId + " does not exist";
+                    String message = TEST_WITH_ID + testId + DOES_NOT_EXIST;
                     log.warn(message);
                     throw new NoSuchRecordException(message);
                 });
@@ -89,9 +89,9 @@ public class TestServiceImpl implements TestService {
 
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> {
-                    String message = "Test with id: " + testId + "does not exist";
-                    log.warn(message);
-                    throw new NoSuchRecordException(message);
+                            String message = TEST_WITH_ID + testId + "does not exist";
+                            log.warn(message);
+                            throw new NoSuchRecordException(message);
                         }
                 );
         log.info("Test successfully retrieved, proceeding to editing");
@@ -113,9 +113,9 @@ public class TestServiceImpl implements TestService {
 
         List<TestDto> testDtoList = new ArrayList<>();
 
-        testRepository.findAll((Sort) pageable).forEach(test -> testDtoList.add(testMapper.toDto(test)));
+        testRepository.findAll(pageable).forEach(test -> testDtoList.add(testMapper.toDto(test)));
 
-        if(testDtoList.size() == 0)
+        if (testDtoList.isEmpty())
             log.warn("Retrieving an empty list of test");
         else
             log.info("Successfully retrieved a list of test");
@@ -129,7 +129,7 @@ public class TestServiceImpl implements TestService {
 
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> {
-                    String message = "Test with id: " + testId + " does not exist";
+                    String message = TEST_WITH_ID + testId + DOES_NOT_EXIST;
                     log.warn(message);
                     throw new NoSuchRecordException(message);
                 });

@@ -11,7 +11,6 @@ import ke.or.explorersanddevelopers.lms.service.TopicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -65,7 +64,7 @@ public class TopicServiceImp implements TopicService {
                             "provided: " + courseId + ".";
                     log.error(message);
                     throw new NoSuchRecordException(message);
-                    }
+                }
         );
     }
 
@@ -99,7 +98,7 @@ public class TopicServiceImp implements TopicService {
         log.info("Retrieving all the topics");
 
         List<TopicDto> listOfTopics = new ArrayList<>();
-        topicRepository.findAll((Sort) pageable).forEach(topic -> listOfTopics.add(topicMapper.toDto(topic)));
+        topicRepository.findAll(pageable).forEach(topic -> listOfTopics.add(topicMapper.toDto(topic)));
 
         if (listOfTopics.isEmpty())
             log.warn("Retrieved an empty list of topics");
@@ -116,7 +115,6 @@ public class TopicServiceImp implements TopicService {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchRecordException(TOPIC_WITH_ID + topicId + NOT_FOUND));
 
-//        topic.setCourse(topicDto.getCourse());
         topic.setDescription(topicDto.getDescription());
         topic.setVersion(topicDto.getVersion());
         topic.setTitle(topicDto.getTitle());

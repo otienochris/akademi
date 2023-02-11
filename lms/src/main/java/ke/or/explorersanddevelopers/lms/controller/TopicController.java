@@ -84,7 +84,7 @@ public class TopicController {
     @GetMapping("/{topicId}")
     @Operation(summary = "Retrieve a topic by id", description = "An endpoint to retrieve a topic by its id", tags = "Topic")
     @ApiResponse(responseCode = "200", description = "Topic successfully retrieved")
-    public ResponseEntity<TopicDto> getTopicById(@PathVariable(name = "topicId") BigDecimal topicId){
+    public ResponseEntity<TopicDto> getTopicById(@PathVariable(name = "topicId") BigDecimal topicId) {
 
         TopicDto topicById = topicService.getTopicById(topicId);
 
@@ -95,7 +95,7 @@ public class TopicController {
     @DeleteMapping("/{topicId}")
     @Operation(summary = "Delete a topic by id", description = "This is an endpoint to delete  topic using its id", tags = "Topic")
     @ApiResponse(responseCode = "200", description = "Topic successfully deleted")
-    public ResponseEntity<Map<String, Boolean>> deleteTopicById(@PathVariable(value = "topicId") BigDecimal topicId){
+    public ResponseEntity<Map<String, Boolean>> deleteTopicById(@PathVariable(value = "topicId") BigDecimal topicId) {
         topicService.deleteTopicById(topicId);
 
         Map<String, Boolean> response = new HashMap<>();
@@ -122,9 +122,8 @@ public class TopicController {
     @Operation(summary = "Get a list of topics", description = "This is n endpoint to retrieve a list of all the " +
             "topics", tags = "Topic")
     @ApiResponse(responseCode = "200", description = "A list of topics successfully retrieved")
-    public ResponseEntity<CollectionModel<TopicDto>> getListOfTopics(@RequestParam(name = "pageNo",
-            defaultValue = "0") Integer pageNo,
-                                                                      @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize){
+    public ResponseEntity<CollectionModel<TopicDto>> getListOfTopics(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                                                                     @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
 
         List<TopicDto> listOfTopics = new ArrayList<>();
         topicService.getListOfTopics(PageRequest.of(pageNo, pageSize)).

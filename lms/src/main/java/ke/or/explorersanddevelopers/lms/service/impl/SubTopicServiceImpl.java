@@ -11,7 +11,6 @@ import ke.or.explorersanddevelopers.lms.service.SubTopicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -99,7 +98,7 @@ public class SubTopicServiceImpl implements SubTopicService {
 
         List<SubTopicDto> subTopicDtoList = new ArrayList<>();
 
-        subTopicRepository.findAll((Sort) pageable).forEach(subTopic -> subTopicDtoList.add(subTopicMapper.toDto(subTopic)));
+        subTopicRepository.findAll(pageable).forEach(subTopic -> subTopicDtoList.add(subTopicMapper.toDto(subTopic)));
 
         if (subTopicDtoList.isEmpty())
             log.warn("Retrieved n empty list");
