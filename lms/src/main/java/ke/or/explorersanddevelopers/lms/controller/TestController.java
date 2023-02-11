@@ -18,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,8 +62,8 @@ public class TestController {
     @ApiResponse(responseCode = "201", description = "Test successfully created, mapped to the topic and saved " +
             "to the database")
     public ResponseEntity<TestDto> createNewTest(@RequestParam(name = "topicId") BigDecimal topicId,
-                                                 @RequestBody @Validated TestDto testDto){
-        
+                                                 @RequestBody @Validated TestDto testDto) {
+
         TestDto createdTest = testService.createNewTest(topicId, testDto);
 
         return ResponseEntity.created(linkTo(methodOn(TestController.class).getTestById(createdTest.getTestId())).toUri())
@@ -75,7 +74,7 @@ public class TestController {
     @Operation(summary = "Retrieve a test by id", description = "An endpoint to retrieve a test by id")
     @ApiResponse(responseCode = "200", description = "Test successfully  retrieved")
     public ResponseEntity<TestDto> getTestById(@PathVariable(name = "testId") BigDecimal testId) {
-        
+
         TestDto testById = testService.getTestById(testId);
 
         return ResponseEntity.ok(addHateoasLinks(testById));
@@ -85,7 +84,7 @@ public class TestController {
     @Operation(summary = "Edit a test by id", description = "An endpoint to edit a test by id")
     @ApiResponse(responseCode = "200", description = "Test successfully  updated")
     public ResponseEntity<TestDto> edtTestById(@PathVariable(name = "testId") BigDecimal testId,
-                                               @RequestBody @Validated TestDto testDto){
+                                               @RequestBody @Validated TestDto testDto) {
 
         TestDto updatedTest = testService.edtTestById(testId, testDto);
 
@@ -96,10 +95,10 @@ public class TestController {
     @Operation(summary = "Get a list of tests", description = "An endpoint to retrieve a list of tests")
     @ApiResponse(responseCode = "200", description = "List of tests  successfully  retrieved")
     public ResponseEntity<CollectionModel<TestDto>> getListOfTests(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                                                                   @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize){
+                                                                   @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
 
         List<TestDto> testDtoList = new ArrayList<>();
-        testService.getListOfTests((Pageable) PageRequest.of(pageNo, pageSize))
+        testService.getListOfTests(PageRequest.of(pageNo, pageSize))
                 .forEach(testDto -> testDtoList.add(addHateoasLinks(testDto)));
 
         CollectionModel<TestDto> testDtoCollectionModel = CollectionModel.of(testDtoList);
@@ -110,17 +109,17 @@ public class TestController {
     @DeleteMapping("/{testId}")
     @Operation(summary = "Delete a test", description = "An endpoint to delete a test using its id")
     @ApiResponse(responseCode = "200", description = "Test deleted successfully")
-    public ResponseEntity<Map<String, Boolean>>  deleteTestById(@PathVariable(name = "testId") BigDecimal testId){
+    public ResponseEntity<Map<String, Boolean>> deleteTestById(@PathVariable(name = "testId") BigDecimal testId) {
 
         testService.deleteTestById(testId);
 
         Map<String, Boolean> response = new HashMap<>();
         response.put("Test successfully deleted", Boolean.TRUE);
 
-        return  ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);
     }
 
-    private TestDto addHateoasLinks(TestDto testById){
+    private TestDto addHateoasLinks(TestDto testById) {
         testById.add(linkTo(methodOn(TestController.class).getTestById(testById.getTestId())).withSelfRel());
         testById.add(linkTo(methodOn(TestController.class).deleteTestById(testById.getTestId())).withRel("delete"));
         testById.add(linkTo(methodOn(TestController.class).getListOfTests(0, 10)).withRel(IanaLinkRelations.COLLECTION));
