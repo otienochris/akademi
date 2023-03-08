@@ -1,10 +1,10 @@
 package ke.or.explorersanddevelopers.lms.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
@@ -36,6 +36,12 @@ public class MvcExceptionHandler {
         e.getConstraintViolations().forEach(constraintViolation -> errors.add(constraintViolation.toString()));
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorDetails> handleExpiredJwtException(ExpiredJwtException exception) {
+        log.error("in the bindingExceptionHandler");
+        return new ResponseEntity<>(createErrorDetails(exception), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BindException.class)

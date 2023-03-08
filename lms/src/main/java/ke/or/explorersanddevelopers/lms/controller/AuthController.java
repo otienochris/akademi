@@ -7,6 +7,7 @@ import ke.or.explorersanddevelopers.lms.repositories.AppUserRepository;
 import ke.or.explorersanddevelopers.lms.service.UserService;
 import ke.or.explorersanddevelopers.lms.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/authentication")
@@ -36,19 +38,31 @@ public class AuthController {
 
     @PostMapping
     public ResponseEntity<?> authenticateUser(@Validated @RequestBody AuthenticationRequestDto user) {
+        String username = user.getUsername();
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            log.info("Authenticating {}", username);
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, user.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new UsernameNotFoundException("Incorrect username and password");
+            String errorMessage = "Incorrect username and password";
+            log.error(errorMessage);
+            throw new UsernameNotFoundException(errorMessage);
         } catch (DisabledException e) {
-            throw new UsernameNotFoundException("User is disabled");
-        } catch (Exception e){
-            e.printStackTrace();
+            String errorMessage = "User is disabled";
+            log.error(errorMessage);
+            throw new UsernameNotFoundException(errorMessage);
+        } catch (Exception e) {
+            log.error("Error occurred while trying to authenticate {}", username);
+            throw new RuntimeException(e);
         }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+        log.info("{} authenticated successfully", username);
+        log.info("Loading user details by username {}" + username);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
         String token = getJwtToken(userDetails);
         Date date = jwtUtil.extractExpiration(token);
+        log.info("Generated token will expire on {}", date.toString());
+
         String authority = userDetails.getAuthorities().stream().findFirst().orElseThrow(() -> {
             throw new IllegalStateException("User cannot exist without at least one role");
         }).getAuthority();
@@ -82,6 +96,7 @@ public class AuthController {
     }
 
     private String getJwtToken(UserDetails user) {
+        log.info("Generating jwt token");
         return jwtUtil.generateToken(user);
     }
 

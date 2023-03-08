@@ -4,6 +4,7 @@ import ke.or.explorersanddevelopers.lms.enums.CourseCategoryEnum;
 import ke.or.explorersanddevelopers.lms.enums.RelativeRoleEnum;
 import ke.or.explorersanddevelopers.lms.enums.RelativeTypeEnum;
 import ke.or.explorersanddevelopers.lms.enums.RolesEnum;
+import ke.or.explorersanddevelopers.lms.exception.NoSuchRecordException;
 import ke.or.explorersanddevelopers.lms.model.entity.Course;
 import ke.or.explorersanddevelopers.lms.model.entity.Instructor;
 import ke.or.explorersanddevelopers.lms.model.entity.Relative;
@@ -13,6 +14,7 @@ import ke.or.explorersanddevelopers.lms.model.security.Role;
 import ke.or.explorersanddevelopers.lms.repositories.*;
 import ke.or.explorersanddevelopers.lms.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +29,7 @@ import java.util.*;
  * @since Wednesday, 12/10/2022
  */
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
@@ -34,6 +37,7 @@ public class DataInitializer implements CommandLineRunner {
     public static final String ROLE_USER = "ROLE_USER", ROLE_MANAGER = "ROLE_MANAGER", ROLE_ADMIN = "ROLE_ADMIN", ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN", ROLE_STUDENT = "ROLE_STUDENT";
     public static final String ROLE_INSTRUCTOR = "ROLE_INSTRUCTOR";
     public static final String ROLE_RELATIVE = "ROLE_RELATIVE";
+    public static final String PASSWORD = "admin1234";
     private final StudentRepository studentRepository;
     private final InstructorRepository instructorRepository;
     private final RelativeRepository relativeRepository;
@@ -54,14 +58,16 @@ public class DataInitializer implements CommandLineRunner {
         if (roleRepository.count() == 0)
             roleRepository.saveAll(getRoles());
 
-        if(userRepository.count() == 0 ){
+        if (userRepository.count() == 0) {
             userRepository.save(AppUser.builder()
-                            .username(email)
-                            .password(passwordEncoder.encode("admin1234"))
-                            .isAccountDisabled(false)
+                    .username(email)
+                    .password(passwordEncoder.encode(PASSWORD))
+                    .isAccountDisabled(false)
                     .build());
             userService.addRoleToUser(email, RolesEnum.ROLE_SUPER_ADMIN.name());
         }
+
+        initUsers();
 
     }
 
@@ -71,11 +77,14 @@ public class DataInitializer implements CommandLineRunner {
         // save student and user
         if (studentRepository.count() == 0) {
             studentRepository.saveAll(getAllStudents()).forEach(student -> {
-                AppUser appUser = userService.saveUser(getAppUser(student.getEmail()));
+                String studentEmail = student.getEmail();
+                log.info("Saving user account for student whose email is {}", studentEmail);
+                AppUser appUser = userService.saveUser(getAppUser(studentEmail));
                 if (appUser != null) {
-                    userService.addRoleToUser(student.getEmail(), ROLE_STUDENT);
+                    userService.addRoleToUser(studentEmail, ROLE_STUDENT);
                 }
                 // update the student
+                appUser = getUserByUsername(studentEmail);
                 student.setAppUser(appUser);
                 studentRepository.save(student);
             });
@@ -84,15 +93,16 @@ public class DataInitializer implements CommandLineRunner {
         if (instructorRepository.count() == 0) {
             instructors = instructorRepository.saveAll(getAllInstructors());
             instructors.forEach(instructor -> {
-                AppUser appUser = userService.saveUser(getAppUser(instructor.getEmail()));
+                String instructorEmail = instructor.getEmail();
+                AppUser appUser = userService.saveUser(getAppUser(instructorEmail));
                 if (appUser != null) {
-                    userService.addRoleToUser(instructor.getEmail(), ROLE_INSTRUCTOR);
+                    userService.addRoleToUser(instructorEmail, ROLE_INSTRUCTOR);
                 }
 
                 // update the instructor
+                appUser = getUserByUsername(instructorEmail);
                 instructor.setAppUser(appUser);
-                System.out.println(instructor);
-
+                instructorRepository.save(instructor);
             });
         }
 
@@ -100,19 +110,19 @@ public class DataInitializer implements CommandLineRunner {
 
             relativeRepository.saveAll(getAllRelatives()).forEach(relative -> {
 
-                AppUser appUser = userService.saveUser(getAppUser(relative.getEmail()));
+                String relativeEmail = relative.getEmail();
+                AppUser appUser = userService.saveUser(getAppUser(relativeEmail));
                 if (appUser != null) {
-                    userService.addRoleToUser(relative.getEmail(), ROLE_RELATIVE);
+                    userService.addRoleToUser(relativeEmail, ROLE_RELATIVE);
                 }
-
                 // update the relative
+                appUser = getUserByUsername(relativeEmail);
                 relative.setAppUser(appUser);
                 relativeRepository.save(relative);
-
             });
         }
 
-        if (courseRepository.count() == 0 && instructors.size() > 0) {
+        if (courseRepository.count() == 0 && instructors.isEmpty()) {
             Instructor instructor = instructors.get(0); // instructor saving the course
             Course course = Course.builder()
                     .thumbnailLink("https://p0.piqsels.com/preview/724/71/644/flowwer-white-blur-leaves.jpg")
@@ -128,17 +138,24 @@ public class DataInitializer implements CommandLineRunner {
             if (instructor.getCourses() == null)
                 instructor.setCourses(new HashSet<>());
             instructor.getCourses().add(savedCourse);
+
             instructorRepository.save(instructor);
         }
     }
 
-    private AppUser getAppUser(String instructor) {
+    private AppUser getUserByUsername(String studentEmail) {
+        return userRepository.findByUsername(studentEmail).orElseThrow(() -> {
+            throw new NoSuchRecordException("User could not be found with the provided email " + studentEmail);
+        });
+    }
+
+    private AppUser getAppUser(String user) {
         return AppUser.builder()
                 .id(null)
                 .isAccountDisabled(true)
                 .emailVerificationCode(UUID.randomUUID().toString())
                 .password(passwordEncoder.encode("pass"))
-                .username(instructor)
+                .username(user)
                 .build();
     }
 
@@ -183,32 +200,35 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private List<Instructor> getAllInstructors() {
+        String description = "Very passionate about teaching.";
+        String title = "Mathematician";
+        String expertise = "Mathematics";
         Instructor instructor1 = Instructor.builder()
                 .countryCode("UG")
                 .firstName("first1")
                 .lastName("last1")
                 .email("instructor1@gmail.com")
-                .description("Very passionate about teaching.")
-                .title("Mathematician")
-                .expertise("Mathematics")
+                .description(description)
+                .title(title)
+                .expertise(expertise)
                 .build();
         Instructor instructor2 = Instructor.builder()
                 .countryCode("UG")
                 .firstName("first2")
                 .lastName("last2")
                 .email("instructor2@gmail.com")
-                .description("Very passionate about teaching.")
-                .title("Mathematician")
-                .expertise("Mathematics")
+                .description(description)
+                .title(title)
+                .expertise(expertise)
                 .build();
         Instructor instructor3 = Instructor.builder()
                 .countryCode("UG")
                 .firstName("first3")
                 .lastName("last3")
                 .email("instructor3@gmail.com")
-                .description("Very passionate about teaching.")
-                .title("Mathematician")
-                .expertise("Mathematics")
+                .description(description)
+                .title(title)
+                .expertise(expertise)
                 .build();
         return new ArrayList<>(List.of(instructor1, instructor2, instructor3));
     }
