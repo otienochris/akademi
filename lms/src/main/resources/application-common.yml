@@ -30,3 +30,7 @@ management:
         include: "*"
     health:
       show-details: always
+logging:
+  file:
+    name: lms.logs
+    path: ./logs

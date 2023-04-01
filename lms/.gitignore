@@ -35,3 +35,6 @@ build/
 
 ###
 .run
+
+*logs*
+lms.logs
