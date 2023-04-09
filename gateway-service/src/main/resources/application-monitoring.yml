@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: monitoring
+          uri: lb://MONITORING-SERVICE
+          predicates:
+            - Path=/monitoring
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: monitoringCircuitBreaker
+                fallbackUri: forward:/monitoring/failure

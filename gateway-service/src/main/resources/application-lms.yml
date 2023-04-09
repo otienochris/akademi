@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: lms
+          uri: lb://LMS-SERVICE
+          predicates:
+            - Path=/lms
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: lmsCircuitBreaker
+                fallbackUri: forward:/lms/failure

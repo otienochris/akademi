@@ -10,3 +10,6 @@ eureka:
 spring:
   application:
     name: service-discovery
+logging:
+  file:
+    name: logs/service-discovery.log
