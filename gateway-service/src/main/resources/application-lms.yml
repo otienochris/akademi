@@ -3,10 +3,11 @@ spring:
     gateway:
       routes:
         - id: lms
-          uri: lb://LMS-SERVICE
+          uri: lb://LEARNING-MANAGEMENT-SYSTEM
           predicates:
-            - Path=/lms
+            - Path=/lms/**
           filters:
+            - StripPrefix=1
             - name: CircuitBreaker
               args:
                 name: lmsCircuitBreaker

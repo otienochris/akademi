@@ -1,4 +1,14 @@
 server:
-  port: 8080
-  servlet:
-    context-path: /monitoring-service
+  port: 8000
+spring:
+  application:
+    name: MONITORING-SERVICE
+eureka:
+  instance:
+    prefer-ip-address: true
+    appname: MONITORING-SERVICE
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: http://192.168.0.102:8001/eureka

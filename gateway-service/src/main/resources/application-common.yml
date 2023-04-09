@@ -9,6 +9,7 @@ eureka:
       defaultZone: http://192.168.0.102:8001/eureka
   instance:
     appname: GATEWAY-SERVICE
+    prefer-ip-address: true
 spring:
   application:
     name: GATEWAY-SERVICE
