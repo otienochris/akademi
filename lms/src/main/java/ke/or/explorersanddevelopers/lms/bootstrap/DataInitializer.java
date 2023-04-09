@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -31,6 +32,7 @@ import java.util.*;
 
 @Slf4j
 @Component
+@Service
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
@@ -122,7 +124,7 @@ public class DataInitializer implements CommandLineRunner {
             });
         }
 
-        if (courseRepository.count() == 0 && instructors.isEmpty()) {
+        if (courseRepository.count() == 0 && !instructors.isEmpty()) {
             Instructor instructor = instructors.get(0); // instructor saving the course
             Course course = Course.builder()
                     .thumbnailLink("https://p0.piqsels.com/preview/724/71/644/flowwer-white-blur-leaves.jpg")

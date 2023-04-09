@@ -1,10 +1,12 @@
 package ke.or.explorersanddevelopers.lms.model.security;
 
 
-import ke.or.explorersanddevelopers.lms.enums.RolesEnum;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Getter

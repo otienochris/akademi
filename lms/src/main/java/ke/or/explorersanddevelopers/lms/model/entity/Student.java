@@ -1,15 +1,17 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
+import jakarta.persistence.*;
 import ke.or.explorersanddevelopers.lms.model.security.AppUser;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author christopherochiengotieno@gmail.com
@@ -44,11 +46,11 @@ public class Student {
     @Column(name = "COUNTRY_CODE")
     private String countryCode;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
     private Set<Certificate> certificates = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
     private Set<Address> addresses = new HashSet<>();
 
@@ -56,7 +58,7 @@ public class Student {
     @ToString.Exclude
     private Set<Review> reviews = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
     private Set<Relative> relatives = new HashSet<>();
 

@@ -2,6 +2,8 @@ package ke.or.explorersanddevelopers.lms.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import ke.or.explorersanddevelopers.lms.enums.CertificateStatusEnum;
 import ke.or.explorersanddevelopers.lms.enums.CertificateTypeEnum;
 import lombok.AllArgsConstructor;
@@ -10,8 +12,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;

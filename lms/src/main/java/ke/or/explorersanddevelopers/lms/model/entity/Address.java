@@ -1,11 +1,11 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Objects;

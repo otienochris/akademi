@@ -1,15 +1,21 @@
 spring:
   application:
-    name: learning-management-system
+    name: LEARNING_MANAGEMENT_SYSTEM
   boot:
     admin:
       client:
         enabled: true
         url: https://monitoring-service.explorersanddevelopers.or.ke/monitoring-service
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+    table: lms-schema-version
+    out-of-order: true
+    validate-on-migrate: false
 server:
-  port: 8083
-  servlet:
-    context-path: /lms
+  port: 0
+  #  port: ${random.int(5000,5100)}
+  address: localhost
 jwt:
   secret_key: secret
 admin:
@@ -34,3 +40,13 @@ logging:
   file:
     name: lms.logs
     path: ./logs
+eureka:
+  instance:
+    appname: LEARNING_MANAGEMENT_SYSTEM
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://192.168.0.102:8001/eureka}
+    register-with-eureka: true
+    fetch-registry: true
+

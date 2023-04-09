@@ -1,11 +1,11 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
+import jakarta.persistence.*;
 import ke.or.explorersanddevelopers.lms.enums.YesOrNoEnum;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Objects;
@@ -57,8 +57,7 @@ public class Answer {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Answer)) return false;
-        Answer answer = (Answer) o;
+        if (!(o instanceof Answer answer)) return false;
         return getAnswerId().equals(answer.getAnswerId()) && Objects.equals(getContent(), answer.getContent()) && getIsCorrect() == answer.getIsCorrect() && Objects.equals(getReason(), answer.getReason()) && getCreationDate().equals(answer.getCreationDate()) && Objects.equals(getModificationDate(), answer.getModificationDate()) && getVersion().equals(answer.getVersion());
     }
 

@@ -1,15 +1,17 @@
 package ke.or.explorersanddevelopers.lms.model.entity;
 
+import jakarta.persistence.*;
 import ke.or.explorersanddevelopers.lms.enums.CourseCategoryEnum;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author: oduorfrancis134@gmail.com;
